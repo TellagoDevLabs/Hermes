@@ -7,6 +7,7 @@ namespace TellagoStudios.Hermes.Business
         public static class FieldNames
         {
             public const string Id = "_id";
+            public const string TopicId = "TopicId";
         }
 
         public static class Relationships

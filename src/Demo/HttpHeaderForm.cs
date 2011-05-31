@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Windows.Forms;
 using TellagoStudios.Hermes.RestService.Facade;
 using TellagoStudios.Hermes.Client;
@@ -13,8 +14,7 @@ namespace Demo
             InitializeComponent();
 
             cbName.Sorted = true;
-            cbName.Items.AddRange(Constants.HttpContentHeaders);
-            cbName.Items.AddRange(Constants.HttpRequestHeaders);
+            cbName.Items.AddRange(Enum.GetNames(typeof(HttpRequestHeader)));
             cbName.SelectedIndex = 0;
         }
 

@@ -109,7 +109,15 @@ namespace TellagoStudios.Hermes.Client
             {
                 foreach (var header in headers)
                 {
-                    request.Headers.Add(header.Name, header.Value);
+                    HttpRequestHeader httpHeader;
+                    if (Enum.TryParse(header.Name, true, out httpHeader))
+                    {
+                        request.SetHttpHeader(httpHeader, header.Value);
+                    }
+                    else
+                    {
+                        request.Headers.Add(header.Name, header.Value);
+                    }
                 }
             }
             return request;
@@ -118,6 +126,52 @@ namespace TellagoStudios.Hermes.Client
 
     static class RestClientExtensions
     {
+        public static void SetHttpHeader(this HttpWebRequest request, HttpRequestHeader header, string value)
+        {
+            switch (header)
+            {
+                case HttpRequestHeader.Accept:
+                    request.Accept = value;
+                    break;
+                case HttpRequestHeader.Connection:
+                    request.Connection = value;
+                    break;
+                case HttpRequestHeader.ContentLength:
+                    request.ContentLength = long.Parse(value);
+                    break;
+                case HttpRequestHeader.ContentType:
+                    request.ContentType = value;
+                    break;
+                case HttpRequestHeader.Date:
+                    request.Date = DateTime.Parse(value);
+                    break;
+                case HttpRequestHeader.Expect:
+                    request.Expect = value;
+                    break;
+                case HttpRequestHeader.Host:
+                    request.Host = value;
+                    break;
+                case HttpRequestHeader.IfModifiedSince:
+                    request.IfModifiedSince = DateTime.Parse(value);
+                    break;
+                case HttpRequestHeader.KeepAlive:
+                    request.KeepAlive = bool.Parse(value);
+                    break;
+                case HttpRequestHeader.Referer:
+                    request.Referer = value;
+                    break;
+                case HttpRequestHeader.TransferEncoding:
+                    request.TransferEncoding = value;
+                    break;
+                case HttpRequestHeader.UserAgent:
+                    request.UserAgent = value;
+                    break;
+                default:
+                    request.Headers.Add(header.ToString(), value);
+                    break;
+            }
+        }
+
         public static HttpWebResponse Send(this HttpWebRequest request, Action<WebException> webExceptionHandler)
         {
             try
@@ -143,7 +197,11 @@ namespace TellagoStudios.Hermes.Client
 
         static public HttpWebRequest Serialize<T>(this HttpWebRequest request, T data)
         {
-            request.ContentType = "application/xml";  // TODO: Replace. We should support many content types
+            if (string.IsNullOrEmpty(request.ContentType))
+            {
+                request.ContentType = "application/xml"; // TODO: Replace. We should support many content types
+            }
+
             var stream = request.GetRequestStream();
 
             var dataAsStream = data as Stream;
