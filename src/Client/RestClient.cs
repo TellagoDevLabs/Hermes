@@ -174,25 +174,28 @@ namespace TellagoStudios.Hermes.Client
 
         public static HttpWebResponse Send(this HttpWebRequest request, Action<WebException> webExceptionHandler)
         {
+            HttpWebResponse response = null;
             try
             {
-                var response = (HttpWebResponse)request.GetResponse();
-                return response;
+                response = (HttpWebResponse)request.GetResponse();
             }
             catch (WebException e)
             {
                 if (webExceptionHandler != null)
                 {
                     webExceptionHandler(e);
-                    return null;
                 }
-                if (RestClient.WebExceptionHandler != null)
+                else if (RestClient.WebExceptionHandler != null)
                 {
                     RestClient.WebExceptionHandler(e);
-                    return null;
                 }
-                throw;
+                else
+                {
+                    throw;
+                }
             }
+
+            return response;
         }
 
         static public HttpWebRequest Serialize<T>(this HttpWebRequest request, T data)
@@ -225,6 +228,8 @@ namespace TellagoStudios.Hermes.Client
 
         static public T Deserialize<T>(this HttpWebResponse response)
         {
+            if (response == null) return default(T);
+
             Debug.Assert(response.ContentType.Contains("xml"));
 
             using (var stream = response.GetResponseStream())

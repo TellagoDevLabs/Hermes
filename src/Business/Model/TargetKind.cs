@@ -1,4 +1,6 @@
-﻿namespace TellagoStudios.Hermes.Business.Model
+﻿using System.Xml.Serialization;
+
+namespace TellagoStudios.Hermes.Business.Model
 {
     public enum TargetKind
     {

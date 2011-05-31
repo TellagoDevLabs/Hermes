@@ -28,7 +28,6 @@ namespace TellagoStudios.Hermes.Business.Service
 
             // Push message to subscribers (callback)
             Task.Factory.StartNew(() => PushToSubscribers(result), TaskCreationOptions.None);
-
             return result;
         }
 

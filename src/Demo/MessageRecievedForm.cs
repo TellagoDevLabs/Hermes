@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Windows.Forms;
 
@@ -41,6 +42,34 @@ namespace Demo
                                        SelectionLength = 0
                                    }
                            };
+            form.Show();
+            MainForm.AddForm(form);
+        }
+
+        public static void ShowRequest(HttpRequestMessage request)
+        {
+            if (request == null) throw new ArgumentNullException("request");
+
+            var sb = new StringBuilder();
+            foreach (var header in request.Headers)
+            {
+                sb.AppendFormat("{0} = {1}", header.Key, header.Value);
+                sb.AppendLine();
+            }
+            sb.AppendLine();
+
+            sb.Append(request.Content.ReadAsString());
+
+            var form = new MessageRecievedForm
+            {
+                Text = request.Method + @" " + request.RequestUri,
+                txt =
+                {
+                    Text = sb.ToString(),
+                    SelectionStart = 0,
+                    SelectionLength = 0
+                }
+            };
             form.Show();
             MainForm.AddForm(form);
         }

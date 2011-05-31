@@ -95,12 +95,12 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
 
         public string QueryGetByGroup(Identity groupId)
         {
-            return "{\"Callback\":{$ne:null}, \"TargetKind\":\"" + Constants.Relationships.Group + "\", \"TargetId\" : " + groupId.ToBsonString() + "}";
+            return "{\"Callback\":{$ne:null}, \"TargetKind\":" + (int)TargetKind.Group + ", \"TargetId\" : " + groupId.ToBsonString() + "}";
         }
 
         public string QueryGetByTopic(Identity topicId)
         {
-            return "{\"Callback\":{$ne:null}, \"TargetKind\":\"" + Constants.Relationships.Topic + "\", \"TargetId\" : " + topicId.ToBsonString() + "}";
+            return "{\"Callback\":{$ne:null}, \"TargetKind\":" + (int)TargetKind.Topic + ", \"TargetId\" : " + topicId.ToBsonString() + "}";
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using System.Net.Http;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
@@ -11,7 +11,7 @@ namespace Demo
     {
         [OperationContract]
         [WebInvoke(Method="POST", UriTemplate="*")]
-        public void Callback(HttpWebRequest request)
+        public void Callback(HttpRequestMessage request)
         {
             MessageRecievedForm.ShowRequest(request);
         }
