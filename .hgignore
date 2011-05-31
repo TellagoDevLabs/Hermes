@@ -1,0 +1,21 @@
+syntax: glob
+Obj
+obj
+Bin
+bin
+*.user
+*.suo
+*.Cache
+*.cache
+*.bak
+*.ncb
+*.log 
+*.DS_Store
+Thumbs.db 
+thumbs.db 
+_ReSharper.*
+*.resharper
+*.orig
+Packages\*
+*.log*
+*.svclog

@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{804039D3-A911-43CC-A75F-85E544C71629}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TellagoStudios.Hermes.Business</RootNamespace>
+    <AssemblyName>TellagoStudios.Hermes.Business</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ApplicationServer.Common">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.ApplicationServer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationServer.Http">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.ApplicationServer.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationServer.HttpEnhancements">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.ApplicationServer.HttpEnhancements.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationServer.Serialization">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.ApplicationServer.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationServer.ServiceModel">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.ApplicationServer.ServiceModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Net.Http">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Exceptions\EntityNotFoundException.cs" />
+    <Compile Include="Exceptions\ValidationException.cs" />
+    <Compile Include="Extensions\LogServiceExtensions.cs" />
+    <Compile Include="Extensions\MessageExtensions.cs" />
+    <Compile Include="Extensions\ModelExtensions.cs" />
+    <Compile Include="Extensions\SystemCollectionsExtensions.cs" />
+    <Compile Include="Extensions\SystemCollectionsGenericExtensions.cs" />
+    <Compile Include="Factory.cs" />
+    <Compile Include="Guard.cs" />
+    <Compile Include="Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Callback.cs" />
+    <Compile Include="Model\CallbackKind.cs" />
+    <Compile Include="Model\Group.cs" />
+    <Compile Include="Model\Identity.cs" />
+    <Compile Include="Model\LogEntry.cs" />
+    <Compile Include="Model\LogEntryType.cs" />
+    <Compile Include="Model\Message.cs" />
+    <Compile Include="Model\MessageKey.cs" />
+    <Compile Include="Model\Retry.cs" />
+    <Compile Include="Model\Subscription.cs" />
+    <Compile Include="Model\TargetKind.cs" />
+    <Compile Include="Model\Topic.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\ISubscriptionQueries.cs" />
+    <Compile Include="Repository\ITopicQueries.cs" />
+    <Compile Include="Repository\IGroupRepository.cs" />
+    <Compile Include="Repository\ILogRepository.cs" />
+    <Compile Include="Repository\IMessageRepository.cs" />
+    <Compile Include="Repository\IRetryRepository.cs" />
+    <Compile Include="Repository\ISubscriptionRepository.cs" />
+    <Compile Include="Repository\ITopicRepository.cs" />
+    <Compile Include="ResourceLocation.cs" />
+    <Compile Include="Service\IGroupService.cs" />
+    <Compile Include="Repository\IGroupQueries.cs" />
+    <Compile Include="Service\ILogService.cs" />
+    <Compile Include="Service\IMessageService.cs" />
+    <Compile Include="Service\IRetryService.cs" />
+    <Compile Include="Service\ISubscriptionService.cs" />
+    <Compile Include="Service\ITopicService.cs" />
+    <Compile Include="Service\LogService.cs" />
+    <Compile Include="Service\MessageService.cs" />
+    <Compile Include="Service\RetryService.cs" />
+    <Compile Include="Service\SubscriptionService.cs" />
+    <Compile Include="Service\GroupService.cs" />
+    <Compile Include="Service\TopicService.cs" />
+    <Compile Include="Validator\MessageValidator.cs" />
+    <Compile Include="Validator\SubscriptionValidator.cs" />
+    <Compile Include="Validator\GroupValidator.cs" />
+    <Compile Include="Validator\TopicValidator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Messages.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
