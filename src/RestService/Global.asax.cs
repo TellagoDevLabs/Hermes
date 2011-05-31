@@ -13,15 +13,6 @@ namespace TellagoStudios.Hermes.RestService
 {
     public class Global : System.Web.HttpApplication
     {
-        private static bool _initialized;
-
-        protected void Application_BeginRequest(object sender, EventArgs e)
-        {
-            if (!_initialized)
-            {
-                Initialize();                           
-            }
-        }
 
         private void Initialize()
         {
@@ -217,12 +208,12 @@ namespace TellagoStudios.Hermes.RestService
             
             #endregion
 
-            _initialized = true;
         }
 
         void Application_Start(object sender, EventArgs e)
         {
-            log4net.Config.XmlConfigurator.Configure();          
+            log4net.Config.XmlConfigurator.Configure();
+            Initialize();
         }        
     }
 }
