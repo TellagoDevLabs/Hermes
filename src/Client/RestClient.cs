@@ -12,60 +12,61 @@ namespace TellagoStudios.Hermes.Client
     public abstract class RestClient
     {
         protected static Uri BaseAddress { get; set; }
+        public static Action<WebException> WebExceptionHandler { get; set; }
 
-        protected HttpWebResponse GetResponse(string operation, IEnumerable<Header> headers = null)
+        protected HttpWebResponse GetResponse(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             return Client(operation, "GET", headers)
-                .Send();
+                .Send(webExceptionHandler);
         }
 
-        protected void Get(string operation, IEnumerable<Header> headers = null)
+        protected void Get(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             Client(operation, "GET", headers)
-                .Send();
+                .Send(webExceptionHandler);
         }
 
-        protected T Get<T>(string operation, IEnumerable<Header> headers = null)
+        protected T Get<T>(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             return Client(operation, "GET", headers)
-                .Send()
+                .Send(webExceptionHandler)
                 .Deserialize<T>();
         }
-        
-        protected void Put<T>(string operation, T data, IEnumerable<Header> headers = null) 
+
+        protected void Put<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
         {
             Client(operation, "PUT", headers)
                 .Serialize(data)
-                .Send();
+                .Send(webExceptionHandler);
         }
 
-        protected U Put<T, U>(string operation, T data, IEnumerable<Header> headers = null)
+        protected U Put<T, U>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             return Client(operation, "PUT", headers)
                 .Serialize(data)
-                .Send()
+                .Send(webExceptionHandler)
                 .Deserialize<U>();
         }
 
-        protected void Post<T>(string operation, T data, IEnumerable<Header> headers = null) 
+        protected void Post<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
         {
             Client(operation, "POST", headers)
                 .Serialize(data)
-                .Send();
+                .Send(webExceptionHandler);
         }
 
-        protected U Post<T, U>(string operation, T data, IEnumerable<Header> headers = null)
+        protected U Post<T, U>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             return Client(operation, "POST", headers)
                 .Serialize(data)
-                .Send()
+                .Send(webExceptionHandler)
                 .Deserialize<U>();
         }
 
-        protected void Delete(string operation, IEnumerable<Header> headers = null)
+        protected void Delete(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             Client(operation, "DELETE", headers)
-                .Send();
+                .Send(webExceptionHandler);
         }
 
         private static HttpWebRequest Client(string operation, string method, IEnumerable<Header> headers)
@@ -108,7 +109,15 @@ namespace TellagoStudios.Hermes.Client
             {
                 foreach (var header in headers)
                 {
-                    request.Headers.Add(header.Name, header.Value);
+                    HttpRequestHeader httpHeader;
+                    if (Enum.TryParse(header.Name, true, out httpHeader))
+                    {
+                        request.SetHttpHeader(httpHeader, header.Value);
+                    }
+                    else
+                    {
+                        request.Headers.Add(header.Name, header.Value);
+                    }
                 }
             }
             return request;
@@ -117,15 +126,82 @@ namespace TellagoStudios.Hermes.Client
 
     static class RestClientExtensions
     {
-        public static HttpWebResponse Send(this HttpWebRequest request)
+        public static void SetHttpHeader(this HttpWebRequest request, HttpRequestHeader header, string value)
         {
-            var response = (HttpWebResponse)request.GetResponse();
-            return response;
+            switch (header)
+            {
+                case HttpRequestHeader.Accept:
+                    request.Accept = value;
+                    break;
+                case HttpRequestHeader.Connection:
+                    request.Connection = value;
+                    break;
+                case HttpRequestHeader.ContentLength:
+                    request.ContentLength = long.Parse(value);
+                    break;
+                case HttpRequestHeader.ContentType:
+                    request.ContentType = value;
+                    break;
+                case HttpRequestHeader.Date:
+                    request.Date = DateTime.Parse(value);
+                    break;
+                case HttpRequestHeader.Expect:
+                    request.Expect = value;
+                    break;
+                case HttpRequestHeader.Host:
+                    request.Host = value;
+                    break;
+                case HttpRequestHeader.IfModifiedSince:
+                    request.IfModifiedSince = DateTime.Parse(value);
+                    break;
+                case HttpRequestHeader.KeepAlive:
+                    request.KeepAlive = bool.Parse(value);
+                    break;
+                case HttpRequestHeader.Referer:
+                    request.Referer = value;
+                    break;
+                case HttpRequestHeader.TransferEncoding:
+                    request.TransferEncoding = value;
+                    break;
+                case HttpRequestHeader.UserAgent:
+                    request.UserAgent = value;
+                    break;
+                default:
+                    request.Headers.Add(header.ToString(), value);
+                    break;
+            }
+        }
+
+        public static HttpWebResponse Send(this HttpWebRequest request, Action<WebException> webExceptionHandler)
+        {
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                return response;
+            }
+            catch (WebException e)
+            {
+                if (webExceptionHandler != null)
+                {
+                    webExceptionHandler(e);
+                    return null;
+                }
+                if (RestClient.WebExceptionHandler != null)
+                {
+                    RestClient.WebExceptionHandler(e);
+                    return null;
+                }
+                throw;
+            }
         }
 
         static public HttpWebRequest Serialize<T>(this HttpWebRequest request, T data)
         {
-            request.ContentType = "application/xml";  // TODO: Replace. We should support many content types
+            if (string.IsNullOrEmpty(request.ContentType))
+            {
+                request.ContentType = "application/xml"; // TODO: Replace. We should support many content types
+            }
+
             var stream = request.GetRequestStream();
 
             var dataAsStream = data as Stream;
@@ -135,13 +211,13 @@ namespace TellagoStudios.Hermes.Client
             }
             else
             {
-                var settings = new XmlWriterSettings {OmitXmlDeclaration = true};
+                var settings = new XmlWriterSettings { OmitXmlDeclaration = true };
                 var writer = XmlWriter.Create(stream, settings);
 
                 var ns = new XmlSerializerNamespaces();
                 ns.Add("", "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade");
 
-                var serializer = new XmlSerializer(typeof (T));
+                var serializer = new XmlSerializer(typeof(T));
                 serializer.Serialize(writer, data, ns);
             }
             return request;

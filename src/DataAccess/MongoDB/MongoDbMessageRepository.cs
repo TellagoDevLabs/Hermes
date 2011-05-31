@@ -35,7 +35,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
                     msgCollection.FindAll() :
                     msgCollection.Find(queryDoc);
             
-            cursor.SetFields(Constants.FieldNames.Id);
+            cursor.SetFields(Constants.FieldNames.Id, Constants.FieldNames.TopicId);
             return cursor.Select(msg => new MessageKey
                                            {
                                                TopicId = msg.TopicId,

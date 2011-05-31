@@ -4,12 +4,12 @@ namespace Demo
 {
     public static class Extensions
     {
-        static public string GetId (this Link link)
+        static public Identity GetId (this Link link)
         {
-            if (link == null || string.IsNullOrEmpty(link.href)) return null;
+            if (link == null || string.IsNullOrEmpty(link.href)) return Identity.Empty;
 
             var index = link.href.LastIndexOf('/');
-            return link.href.Substring(index + 1);
+            return new Identity(link.href.Substring(index + 1));
         }
 
         static public string ToXmlString (this Link link)

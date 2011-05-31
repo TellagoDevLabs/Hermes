@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 using TellagoStudios.Hermes.Client;
 using TellagoStudios.Hermes.RestService.Facade;
@@ -30,20 +31,31 @@ namespace Demo
             var message = Dialog<MessagesForm>.Show(
                 f =>
                 {
+                    var headers = f.lbHeaders.Items
+                        .Cast<Header>()
+                        .ToList();
+
+                    headers.Add(new Header { Name = HttpRequestHeader.ContentType.ToString(), Value = f.cbContentType.Text });
+
+                    var promotedProperties = f.lbPP.Items
+                        .Cast<Header>();
+
                     Stream stream = null;
                     if (f.txtContent.Text!=null)
                     {
                         stream = new MemoryStream();
                         var writer = new StreamWriter(stream);
                         writer.Write(f.txtContent.Text);
+                        writer.Flush();
+                        stream.Seek(0, SeekOrigin.Begin);
                     }
 
                     var msg = new TellagoStudios.Hermes.Client.Message
                     {
                         TopicId = topicId,
                         Payload = stream,
-                        Headers = f.lbHeaders.Items.Cast<Header>(),
-                        PromotedProperties = f.lbPP.Items.Cast<Header>()
+                        Headers = headers,
+                        PromotedProperties = promotedProperties
                     };
 
                     return msg;

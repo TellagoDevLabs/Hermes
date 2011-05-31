@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 using TellagoStudios.Hermes.Client;
 using TellagoStudios.Hermes.RestService.Facade;
@@ -16,12 +17,20 @@ namespace Demo
             InitializeComponent();
 
             HermesClient.GetUrl = () => txtUrl.Text;
+            HermesClient.WebExceptionHandler = ProcessWebException;
             
             RefreshGroups();
             RefreshSubscriptions();
         }
 
         public string Url { get { return txtUrl.Text; } }
+
+        private void ProcessWebException(WebException e)
+        {
+            var response = (HttpWebResponse)(e.Response);
+            RequestResult.ShowResponse(response, "Error!");
+        }
+
 
         private void btGroupRefresh_Click(object sender, EventArgs e)
         {
@@ -67,7 +76,7 @@ namespace Demo
                     }
                     else
                     {
-                        var parent = tvGroups.Nodes.Find(group.Parent.GetId());
+                        var parent = tvGroups.Nodes.Find(group.Parent.GetId().ToString());
                         if (parent != null)
                         {
                             var newNode = parent.Nodes.Add(group.Id.ToString(), group.Name);
