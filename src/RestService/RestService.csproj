@@ -13,6 +13,7 @@
     <RootNamespace>TellagoStudios.Hermes.RestService</RootNamespace>
     <AssemblyName>TellagoStudios.Hermes.RestService</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -120,6 +121,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
+    <Compile Include="Modules\RepositoriesModule.cs" />
+    <Compile Include="Modules\ResourcesModule.cs" />
+    <Compile Include="Modules\ServicesModule.cs" />
+    <Compile Include="Modules\ValidatorsModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="Extensions\SubscriptionExtensions.cs" />
