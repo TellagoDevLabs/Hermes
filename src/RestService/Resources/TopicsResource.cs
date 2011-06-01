@@ -1,17 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using TellagoStudios.Hermes.Business.Service;
+using TellagoStudios.Hermes.Facade;
 using TellagoStudios.Hermes.RestService.Extensions;
-using TellagoStudios.Hermes.RestService.Facade;
 using System.Net.Http;
 using Microsoft.ApplicationServer.Http;
-using Topic = TellagoStudios.Hermes.RestService.Facade.Topic;
-using M= TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.RestService
+namespace TellagoStudios.Hermes.RestService.Resources
 {
     [ServiceContract]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]

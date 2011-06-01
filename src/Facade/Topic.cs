@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace TellagoStudios.Hermes.RestService.Facade
+namespace TellagoStudios.Hermes.Facade
 {
     [XmlRoot(ElementName = "Topic", Namespace = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade")]
     public class Topic

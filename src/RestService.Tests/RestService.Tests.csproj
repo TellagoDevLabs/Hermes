@@ -99,6 +99,10 @@
       <Project>{804039D3-A911-43CC-A75F-85E544C71629}</Project>
       <Name>Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Facade\Facade.csproj">
+      <Project>{70D93217-DEB3-4843-9C0F-BED6CC0E654C}</Project>
+      <Name>Facade</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RestService\RestService.csproj">
       <Project>{6D79F25E-0BF5-466B-A1B3-FAFD9A211046}</Project>
       <Name>RestService</Name>

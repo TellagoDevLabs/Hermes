@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Xml.Serialization;
 
-namespace TellagoStudios.Hermes.RestService.Facade
+namespace TellagoStudios.Hermes.Facade
 {
     [TypeConverter(typeof(IdentityConverter))]
     public struct Identity : IComparable<Identity>, IXmlSerializable

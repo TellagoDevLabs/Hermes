@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using TellagoStudios.Hermes.Business;
-using TellagoStudios.Hermes.RestService.Facade;
+using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client
 {

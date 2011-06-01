@@ -9,6 +9,7 @@ using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.Business.Validator;
 using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
+using TellagoStudios.Hermes.RestService.Resources;
 
 namespace TellagoStudios.Hermes.RestService
 {

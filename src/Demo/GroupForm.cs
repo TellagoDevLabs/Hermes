@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using TellagoStudios.Hermes.RestService.Facade;
+using TellagoStudios.Hermes.Facade;
 using TellagoStudios.Hermes.Client;
 
 namespace Demo

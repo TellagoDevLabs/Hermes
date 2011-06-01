@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Windows.Forms;
-using TellagoStudios.Hermes.RestService.Facade;
+using TellagoStudios.Hermes.Facade;
 using TellagoStudios.Hermes.Client;
 
 namespace Demo

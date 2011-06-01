@@ -8,13 +8,12 @@ using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.RestService.Extensions;
-using M = TellagoStudios.Hermes.Business.Model;
-using F = TellagoStudios.Hermes.RestService.Facade;
 using System.Net.Http;
 using System.Collections.Generic;
 using Microsoft.ApplicationServer.Http;
-
-namespace TellagoStudios.Hermes.RestService
+using Identity = TellagoStudios.Hermes.Business.Model.Identity;
+using Link = TellagoStudios.Hermes.Facade.Link;
+namespace TellagoStudios.Hermes.RestService.Resources
 {
     [ServiceContract]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
@@ -28,7 +27,7 @@ namespace TellagoStudios.Hermes.RestService
         }
 
         [WebInvoke(UriTemplate = "/topic/{id}", Method = "POST")]
-        public HttpResponseMessage<F.Link> CreateMessageOnTopic(Identity id, HttpRequestMessage request)
+        public HttpResponseMessage<Link> CreateMessageOnTopic(Identity id, HttpRequestMessage request)
         {
             return Process(()=>
             {
@@ -40,7 +39,7 @@ namespace TellagoStudios.Hermes.RestService
         }
 
         [WebInvoke(UriTemplate = "/topicgroup/{id}", Method = "POST")]
-        public HttpResponseMessage<F.Link[]> CreateMessageOnGroup(Identity id, HttpRequestMessage request)
+        public HttpResponseMessage<Link[]> CreateMessageOnGroup(Identity id, HttpRequestMessage request)
         {
             return Process(() =>
             {
@@ -53,7 +52,7 @@ namespace TellagoStudios.Hermes.RestService
         }
 
         [WebGet(UriTemplate = "/subscription/{id}")]
-        public HttpResponseMessage<F.Link[]> GetBySubscription(Identity id)
+        public HttpResponseMessage<Link[]> GetBySubscription(Identity id)
         {
             return Process(() => 
                 messageService.GetMessageKeysBySubscription(id)
@@ -66,7 +65,7 @@ namespace TellagoStudios.Hermes.RestService
         {
             return Process((response) => 
             {
-                var key = new M.MessageKey { TopicId = topicId, MessageId = messageId }; 
+                var key = new MessageKey { TopicId = topicId, MessageId = messageId }; 
                 var message = messageService.Get(key);
                 if (message == null)
                 {
@@ -80,7 +79,7 @@ namespace TellagoStudios.Hermes.RestService
         }
 
         [WebGet(UriTemplate = "topic/{topicId}")]
-        public HttpResponseMessage<F.Link[]> GetForTopic(Identity topicId)
+        public HttpResponseMessage<Link[]> GetForTopic(Identity topicId)
         {
             return Process(() =>
             {
@@ -92,7 +91,7 @@ namespace TellagoStudios.Hermes.RestService
         }
 
         [WebGet(UriTemplate = "topicgroup/{groupId}")]
-        public HttpResponseMessage<F.Link[]> GetForGroup(Identity groupId)
+        public HttpResponseMessage<Link[]> GetForGroup(Identity groupId)
         {
             return Process(() =>
             {
@@ -105,9 +104,9 @@ namespace TellagoStudios.Hermes.RestService
 
         #region Private methods
 
-        private M.Message Create(HttpRequestMessage request)
+        private Message Create(HttpRequestMessage request)
         {
-            var message = new M.Message
+            var message = new Message
                               {
                                   // Populate system properties
                                   UtcReceivedOn = DateTime.UtcNow,
@@ -145,7 +144,7 @@ namespace TellagoStudios.Hermes.RestService
 
         }
 
-        private void PopulateHttpResponseMessage(ref HttpResponseMessage response, M.Message message)
+        private void PopulateHttpResponseMessage(ref HttpResponseMessage response, Message message)
         {
             Guard.Instance.ArgumentNotNull(()=>message, message);
 

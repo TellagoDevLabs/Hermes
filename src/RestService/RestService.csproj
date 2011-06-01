@@ -94,28 +94,13 @@
     <Compile Include="AutofacResourceFactory.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\IdentityExtensions.cs" />
-    <Compile Include="Facade\Callback.cs" />
-    <Compile Include="Facade\CallbackKind.cs" />
-    <Compile Include="Facade\Identity.cs" />
-    <Compile Include="Facade\Link.cs" />
-    <Compile Include="Facade\LogEntry.cs" />
-    <Compile Include="Facade\LogEntryType.cs" />
-    <Compile Include="Facade\Subscription.cs" />
-    <Compile Include="Facade\SubscriptionPost.cs" />
-    <Compile Include="Facade\SubscriptionPut.cs" />
-    <Compile Include="Facade\Topic.cs" />
-    <Compile Include="Facade\Group.cs" />
-    <Compile Include="Facade\GroupPost.cs" />
-    <Compile Include="Facade\GroupPut.cs" />
-    <Compile Include="Facade\TopicPost.cs" />
-    <Compile Include="Facade\TopicPut.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Extensions\LogExtensions.cs" />
-    <Compile Include="LogResource.cs" />
+    <Compile Include="Resources\LogResource.cs" />
     <Compile Include="Extensions\MessageExtensions.cs" />
-    <Compile Include="MessageResource.cs" />
+    <Compile Include="Resources\MessageResource.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -126,16 +111,17 @@
     <Compile Include="Modules\ServicesModule.cs" />
     <Compile Include="Modules\ValidatorsModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource.cs" />
+    <Compile Include="Resources\Resource.cs" />
     <Compile Include="Extensions\SubscriptionExtensions.cs" />
-    <Compile Include="SubscriptionResource.cs" />
+    <Compile Include="Resources\SubscriptionResource.cs" />
     <Compile Include="Extensions\TopicExtensions.cs" />
     <Compile Include="Extensions\GroupExtensions.cs" />
-    <Compile Include="GroupsResource.cs" />
-    <Compile Include="TopicsResource.cs" />
+    <Compile Include="Resources\GroupsResource.cs" />
+    <Compile Include="Resources\TopicsResource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Facade\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Messages.resx">
@@ -151,6 +137,10 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
       <Project>{4A5D3818-5B3A-41FE-AD1C-5BCAC14BDBA7}</Project>
       <Name>DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Facade\Facade.csproj">
+      <Project>{70D93217-DEB3-4843-9C0F-BED6CC0E654C}</Project>
+      <Name>Facade</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

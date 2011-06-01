@@ -1,6 +1,5 @@
 ﻿using System;
 using TellagoStudios.Hermes.Business.Model;
-using F = TellagoStudios.Hermes.RestService.Facade;
 
 namespace TellagoStudios.Hermes.RestService.Extensions
 {

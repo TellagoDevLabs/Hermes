@@ -1,5 +1,5 @@
 using System.Net;
-using TellagoStudios.Hermes.RestService.Facade;
+using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client
 {

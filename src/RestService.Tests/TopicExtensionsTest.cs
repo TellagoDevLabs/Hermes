@@ -3,9 +3,9 @@ using System.Linq;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.RestService;
 using TellagoStudios.Hermes.RestService.Extensions;
-using F = TellagoStudios.Hermes.RestService.Facade;
 using NUnit.Framework;
 using TellagoStudios.Hermes.Business;
+using F = TellagoStudios.Hermes.Facade;
 
 namespace RestService.Tests
 {

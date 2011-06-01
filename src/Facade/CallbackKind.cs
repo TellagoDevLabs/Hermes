@@ -1,4 +1,4 @@
-﻿namespace TellagoStudios.Hermes.RestService.Facade
+﻿namespace TellagoStudios.Hermes.Facade
 {
     public enum CallbackKind
     {

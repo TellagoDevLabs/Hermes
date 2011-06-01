@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using TellagoStudios.Hermes.RestService.Facade;
+using TellagoStudios.Hermes.Facade;
 
 namespace Demo
 {

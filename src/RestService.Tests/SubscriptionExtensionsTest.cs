@@ -5,7 +5,7 @@ using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.RestService;
 using TellagoStudios.Hermes.RestService.Extensions;
 using M = TellagoStudios.Hermes.Business.Model;
-using F = TellagoStudios.Hermes.RestService.Facade;
+using F = TellagoStudios.Hermes.Facade;
 using NUnit.Framework;
 
 namespace RestService.Tests

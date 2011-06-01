@@ -1,4 +1,5 @@
 using Autofac;
+using TellagoStudios.Hermes.RestService.Resources;
 
 namespace TellagoStudios.Hermes.RestService.Modules
 {

@@ -9,7 +9,7 @@ using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.RestService.Extensions;
 
-namespace TellagoStudios.Hermes.RestService
+namespace TellagoStudios.Hermes.RestService.Resources
 {
     [ServiceContract]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]

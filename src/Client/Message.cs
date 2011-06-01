@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using TellagoStudios.Hermes.RestService.Facade;
+using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client
 {

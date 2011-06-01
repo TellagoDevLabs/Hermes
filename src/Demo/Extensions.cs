@@ -1,4 +1,4 @@
-﻿using TellagoStudios.Hermes.RestService.Facade;
+﻿using TellagoStudios.Hermes.Facade;
 
 namespace Demo
 {

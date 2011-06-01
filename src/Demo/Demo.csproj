@@ -177,6 +177,10 @@
       <Project>{36B7ADBD-E9A0-4B0A-AC1A-9FB83A7664BA}</Project>
       <Name>Client</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Facade\Facade.csproj">
+      <Project>{70D93217-DEB3-4843-9C0F-BED6CC0E654C}</Project>
+      <Name>Facade</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

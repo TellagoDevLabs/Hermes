@@ -11,6 +11,7 @@ using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.RestService;
 using System.Collections.Generic;
+using TellagoStudios.Hermes.RestService.Resources;
 
 namespace RestService.Tests
 {

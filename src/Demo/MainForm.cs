@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using TellagoStudios.Hermes.Client;
-using TellagoStudios.Hermes.RestService.Facade;
+using TellagoStudios.Hermes.Facade;
 using Microsoft.ApplicationServer.Http.Activation;
 using Microsoft.ApplicationServer.Http.Description;
 

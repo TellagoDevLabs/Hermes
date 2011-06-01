@@ -60,6 +60,43 @@ namespace Business.Tests.Services
         }
 
         [Test]
+        [ExpectedException(typeof(ValidationException))]
+        public void Should_throw_an_exception_when_updating_a_group_with_a_loop()
+        {
+            var group1 = new Group
+            {
+                Id = Identity.Random(),
+                Name = "parent name",
+                Description = "parent description"
+            };
+
+            var group2 = new Group
+            {
+                Id = Identity.Random(),
+                Name = "name",
+                Description = "description",
+                ParentId = group1.Id
+            };
+
+            var group3 = new Group
+            {
+                Id = Identity.Random(),
+                Name = "name",
+                Description = "description",
+                ParentId = group2.Id
+            };
+
+            group1.ParentId = group3.Id;
+
+            mockedRepository.Setup(r => r.ExistsById(group1.Id.Value)).Returns(true);
+            mockedRepository.Setup(r => r.Get(group1.Id.Value)).Returns(group1);
+            mockedRepository.Setup(r => r.Get(group2.Id.Value)).Returns(group2);
+            mockedRepository.Setup(r => r.Get(group3.Id.Value)).Returns(group3);
+
+            var result = service.Update(group1);
+        }
+
+        [Test]
         public void Should_delete_a_group()
         {
             var groupId = Identity.Random();
@@ -101,43 +138,6 @@ namespace Business.Tests.Services
         }
 
         [Test]
-        [ExpectedException(typeof(ValidationException))]
-        public void Should_throw_an_exception_when_updating_a_group_with_a_loop()
-        {
-            var group1 = new Group
-            {
-                Id = Identity.Random(),
-                Name = "parent name",
-                Description = "parent description"
-            };
-
-            var group2 = new Group
-            {
-                Id = Identity.Random(),
-                Name = "name",
-                Description = "description",
-                ParentId = group1.Id
-            };
-
-            var group3 = new Group
-            {
-                Id = Identity.Random(),
-                Name = "name",
-                Description = "description",
-                ParentId = group2.Id
-            };
-
-            group1.ParentId = group3.Id;
-
-            mockedRepository.Setup(r => r.ExistsById(group1.Id.Value)).Returns(true);
-            mockedRepository.Setup(r => r.Get(group1.Id.Value)).Returns(group1);
-            mockedRepository.Setup(r => r.Get(group2.Id.Value)).Returns(group2);
-            mockedRepository.Setup(r => r.Get(group3.Id.Value)).Returns(group3);
-
-            var result = service.Update(group1);
-        }
-
-        [Test]
         public void Can_return_all_Groups_for_a_Topic()
         {
             var parent = new Group
@@ -170,5 +170,6 @@ namespace Business.Tests.Services
 
             Assert.IsNotEmpty(groups);
         }
+
     }
 }

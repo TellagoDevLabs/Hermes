@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
@@ -9,8 +8,7 @@ using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.RestService.Extensions;
 
-
-namespace TellagoStudios.Hermes.RestService
+namespace TellagoStudios.Hermes.RestService.Resources
 {
     [ServiceContract]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
