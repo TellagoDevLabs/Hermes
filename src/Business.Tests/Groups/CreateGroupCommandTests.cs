@@ -30,10 +30,21 @@ namespace Business.Tests.Groups
                                     .And
                                     .Exception.Message.Should().Be.EqualTo(Messages.GroupNameMustBeUnique);
         }
-
-        private ICreateGroupCommand CreateCreateGroupCommand(IExistGroupByGroupName existGroupByGroupName = null)
+        [Test]
+        public void WhenParentIdDoesNotExist_ThenThrowException()
         {
-            return new CreateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>());
+            var groupCommand = CreateCreateGroupCommand(existEntityById: Mock.Of<IExistEntityById>(q => q.Execute<Group>(It.IsAny<Identity>())  == false));
+
+            var @group = new Group { Name = "test", ParentId  = new Identity(Guid.NewGuid())};
+            groupCommand.Executing(gc => gc.Create(@group))
+                                    .Throws<ValidationException>()
+                                    .And
+                                    .Exception.Message.Should().Be.EqualTo(Messages.EntityNotFound);
+        }
+        private ICreateGroupCommand CreateCreateGroupCommand(IExistGroupByGroupName existGroupByGroupName = null, IExistEntityById existEntityById = null)
+        {
+            return new CreateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>(),
+                                        existEntityById ?? Mock.Of<IExistEntityById>());
         }
     }
 }
