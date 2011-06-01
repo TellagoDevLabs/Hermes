@@ -14,19 +14,21 @@ namespace TellagoStudios.Hermes.Business.Groups
     {
         private readonly IExistGroupByGroupName existGroupByGroupName;
         private readonly IExistEntityById existEntityById;
+        private readonly ICudOperations<Group> cudOperations;
 
-        public CreateGroupCommand(IExistGroupByGroupName existGroupByGroupName, IExistEntityById existEntityById)
+        public CreateGroupCommand(IExistGroupByGroupName existGroupByGroupName, IExistEntityById existEntityById, ICudOperations<Group> cudOperations)
         {
             this.existGroupByGroupName = existGroupByGroupName;
             this.existEntityById = existEntityById;
+            this.cudOperations = cudOperations;
         }
 
         public void Create(Group group)
         {
             if (group.Name == null) throw new ValidationException(Messages.NameMustBeNotNull);
-            if(existGroupByGroupName.Execute(group.Name)) throw new ValidationException(Messages.GroupNameMustBeUnique);
-            if(group.ParentId.HasValue && !existEntityById.Execute<Group>(group.ParentId.Value)) throw new ValidationException(Messages.EntityNotFound);
-
+            if (existGroupByGroupName.Execute(group.Name)) throw new ValidationException(Messages.GroupNameMustBeUnique);
+            if (group.ParentId.HasValue && !existEntityById.Execute<Group>(group.ParentId.Value)) throw new ValidationException(Messages.EntityNotFound);
+            cudOperations.MakePersistent(group);
         }
     }
 }

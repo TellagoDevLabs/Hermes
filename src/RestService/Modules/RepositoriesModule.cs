@@ -16,6 +16,7 @@ namespace TellagoStudios.Hermes.RestService.Modules
             }
 
             base.Load(builder);
+
             builder.RegisterType<MongoDbMessageRepository>()
                     .AsImplementedInterfaces()
                     .InstancePerLifetimeScope()

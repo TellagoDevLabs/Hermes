@@ -1,4 +1,5 @@
 using System;
+using Business.Tests.Util;
 using Moq;
 using NUnit.Framework;
 using SharpTestsEx;
@@ -41,10 +42,27 @@ namespace Business.Tests.Groups
                                     .And
                                     .Exception.Message.Should().Be.EqualTo(Messages.EntityNotFound);
         }
-        private ICreateGroupCommand CreateCreateGroupCommand(IExistGroupByGroupName existGroupByGroupName = null, IExistEntityById existEntityById = null)
+
+        [Test]
+        public void WhenEverythingIsOK_ThenInsertTheGroup()
+        {
+            var stubCudOperations = new StubCudOperations<Group>();
+            var groupCommand = CreateCreateGroupCommand(cudGroup: stubCudOperations);
+            var @group = new Group { Name = "test"};
+            groupCommand.Create(@group);
+
+            stubCudOperations.Entities.Should().Contain(@group);
+
+        }
+
+        private static ICreateGroupCommand CreateCreateGroupCommand(
+            IExistGroupByGroupName existGroupByGroupName = null, 
+            IExistEntityById existEntityById = null,
+            ICudOperations<Group> cudGroup = null)
         {
             return new CreateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>(),
-                                        existEntityById ?? Mock.Of<IExistEntityById>());
+                                        existEntityById ?? Mock.Of<IExistEntityById>(),
+                                        cudGroup ?? Mock.Of<ICudOperations<Group>>());
         }
     }
 }

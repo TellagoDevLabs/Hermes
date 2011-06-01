@@ -38,6 +38,7 @@
     <Compile Include="Services\MessageServiceFixture.cs" />
     <Compile Include="Services\GroupServiceFixture.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="Util\StubCudOperations.cs" />
     <Compile Include="Validators\MessageValidatorFixture.cs" />
     <Compile Include="Validators\GroupValidatorTest.cs" />
   </ItemGroup>
@@ -67,9 +68,7 @@
       <Name>Business</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Util\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
