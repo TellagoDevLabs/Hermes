@@ -13,8 +13,8 @@ namespace Demo
             cbCallback.DisplayMember = "Name";
             cbCallback.ValueMember = "Value";
             cbCallback.Items.Add(new { Name = "None", Value = string.Empty });
-            cbCallback.Items.Add(new { Name = "Key", Value = CallbackKind.Key });
-            cbCallback.Items.Add(new { Name = "Full", Value = CallbackKind.Message });
+            cbCallback.Items.Add(new { Name = CallbackKind.Key.ToString(), Value = CallbackKind.Key });
+            cbCallback.Items.Add(new { Name = CallbackKind.Message.ToString(), Value = CallbackKind.Message });
             cbCallback.SelectedIndex = 0;
         }
 
@@ -68,7 +68,10 @@ namespace Demo
             },
             form => 
             {
-                var put = new SubscriptionPut { Id = new Identity(form.txtID.Text) };  
+                var put = new SubscriptionPut 
+                { 
+                    Id = new Identity(form.txtID.Text)
+                };  
 
                 if (!string.IsNullOrEmpty(form.txtFilter.Text))
                 {
