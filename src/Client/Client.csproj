@@ -37,9 +37,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Common\Messages.Designer.cs">
-      <Link>Messages.Designer.cs</Link>
-    </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="Header.cs" />
     <Compile Include="Message.cs" />
@@ -47,15 +44,13 @@
     <Compile Include="IPublisher.cs" />
     <Compile Include="ISuscriber.cs" />
     <Compile Include="IAdmin.cs" />
+    <Compile Include="Messages.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Operations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HermesClient.cs" />
     <Compile Include="RestClient.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\Common\Messages.resx">
-      <Link>Messages.resx</Link>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Facade\Facade.csproj">

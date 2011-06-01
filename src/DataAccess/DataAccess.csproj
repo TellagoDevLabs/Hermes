@@ -46,11 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Messages.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Messages.cs" />
     <Compile Include="MongoDB\IdentityGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -68,13 +64,6 @@
     <Compile Include="MongoDB\MongoDbGroupRepository.cs" />
     <Compile Include="MongoDB\MongoDbTopicRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Messages.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">
