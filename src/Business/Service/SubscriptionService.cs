@@ -31,9 +31,17 @@ namespace TellagoStudios.Hermes.Business.Service
 
         public Subscription Update(Subscription subscription)
         {
-            Guard.Instance.ArgumentNotNull(()=>subscription, subscription);            
+            Guard.Instance.ArgumentNotNull(()=>subscription, subscription);
 
             Validator.ValidateBeforeUpdate(subscription);
+
+            var current = Repository.Get(subscription.Id.Value);
+
+            // TargetId and TargetKind are not updateable
+            subscription.TargetId = current.TargetId;
+            subscription.TargetKind = current.TargetKind;
+
+            // Update repository
             return Repository.Update(subscription);
         }
 
