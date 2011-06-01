@@ -121,7 +121,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Facade\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Messages.resx">
