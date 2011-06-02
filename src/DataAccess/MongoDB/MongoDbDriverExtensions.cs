@@ -5,6 +5,7 @@ using MongoDB.Bson.IO;
 using TellagoStudios.Hermes;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.DataAccess;
 
 namespace MongoDB.Driver
 {

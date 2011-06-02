@@ -35,7 +35,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
                     msgCollection.FindAll() :
                     msgCollection.Find(queryDoc);
             
-            cursor.SetFields(Business.Constants.FieldNames.Id, Business.Constants.FieldNames.TopicId);
+            cursor.SetFields(Constants.FieldNames.Id, Constants.FieldNames.TopicId);
             return cursor.Select(msg => new MessageKey
                                            {
                                                TopicId = msg.TopicId,
@@ -60,9 +60,9 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
                 new QueryDocument() :
                 filter.ToQueryDocument();
 
-            if (query.Contains(Business.Constants.FieldNames.Id))
+            if (query.Contains(Constants.FieldNames.Id))
             {
-                if (query[Business.Constants.FieldNames.Id] != key.MessageId.ToBson())
+                if (query[Constants.FieldNames.Id] != key.MessageId.ToBson())
                 {
                     // Filter already has a different message's id. So the query will always return false.
                     return false;
@@ -71,7 +71,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
             else
             {
                 // The filter does not include the message's id. Then add it to que query.
-                query.Add(Business.Constants.FieldNames.Id, key.MessageId.ToBson());
+                query.Add(Constants.FieldNames.Id, key.MessageId.ToBson());
             }
 
             // Run query on appropriate collection
