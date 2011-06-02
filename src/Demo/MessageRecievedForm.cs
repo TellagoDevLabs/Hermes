@@ -53,7 +53,14 @@ namespace Demo
             var sb = new StringBuilder();
             foreach (var header in request.Headers)
             {
-                sb.AppendFormat("{0} = {1}", header.Key, header.Value);
+                sb.AppendFormat("{0} = {1}", header.Key, header.Value.Aggregate((a,b) => a + "; " + b));
+                sb.AppendLine();
+            }
+            sb.AppendLine();
+
+            foreach (var header in request.Content.Headers)
+            {
+                sb.AppendFormat("{0} = {1}", header.Key, header.Value.Aggregate((a, b) => a + "; " + b));
                 sb.AppendLine();
             }
             sb.AppendLine();
