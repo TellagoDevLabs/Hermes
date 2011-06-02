@@ -67,7 +67,9 @@
     <Compile Include="Extensions\SystemCollectionsExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsGenericExtensions.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Groups\ChangeGroupCommandBase.cs" />
     <Compile Include="Groups\ICreateGroupCommand.cs" />
+    <Compile Include="Groups\IUpdateGroupCommand.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -89,7 +91,7 @@
     <Compile Include="Model\Topic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\ICudOperations.cs" />
-    <Compile Include="Queries\IExistEntityById.cs" />
+    <Compile Include="Queries\IQueryEntityById.cs" />
     <Compile Include="Queries\IExistGroupByGroupName.cs" />
     <Compile Include="Repository\ISubscriptionQueries.cs" />
     <Compile Include="Repository\ITopicQueries.cs" />

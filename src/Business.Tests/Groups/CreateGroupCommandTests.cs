@@ -18,15 +18,15 @@ namespace Business.Tests.Groups
         public void WhenNameIsNull_ThenThrowValidateException()
         {
             var groupCommand = CreateCreateGroupCommand();
-            Assert.Throws<ValidationException>(() => groupCommand.Create(new Group {Name = null}));
+            Assert.Throws<ValidationException>(() => groupCommand.Execute(new Group {Name = null}));
         }
 
         [Test]
         public void WhenGroupNameIsDuplicated_ThenThrowValidateException()
         {
-            var groupCommand = CreateCreateGroupCommand(Mock.Of<IExistGroupByGroupName>(q => q.Execute("test") == true));
+            var groupCommand = CreateCreateGroupCommand(Mock.Of<IExistGroupByGroupName>(q => q.Execute("test", null) == true));
 
-            groupCommand.Executing(gc => gc.Create(new Group {Name = "test"}))
+            groupCommand.Executing(gc => gc.Execute(new Group {Name = "test"}))
                                     .Throws<ValidationException>()
                                     .And
                                     .Exception.Message.Should().Be.EqualTo(Messages.GroupNameMustBeUnique);
@@ -34,10 +34,10 @@ namespace Business.Tests.Groups
         [Test]
         public void WhenParentIdDoesNotExist_ThenThrowException()
         {
-            var groupCommand = CreateCreateGroupCommand(existEntityById: Mock.Of<IExistEntityById>(q => q.Execute<Group>(It.IsAny<Identity>())  == false));
+            var groupCommand = CreateCreateGroupCommand(queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == false));
 
             var @group = new Group { Name = "test", ParentId  = new Identity(Guid.NewGuid())};
-            groupCommand.Executing(gc => gc.Create(@group))
+            groupCommand.Executing(gc => gc.Execute(@group))
                                     .Throws<ValidationException>()
                                     .And
                                     .Exception.Message.Should().Be.EqualTo(Messages.EntityNotFound);
@@ -49,7 +49,7 @@ namespace Business.Tests.Groups
             var stubCudOperations = new StubCudOperations<Group>();
             var groupCommand = CreateCreateGroupCommand(cudGroup: stubCudOperations);
             var @group = new Group { Name = "test"};
-            groupCommand.Create(@group);
+            groupCommand.Execute(@group);
 
             stubCudOperations.Entities.Should().Contain(@group);
 
@@ -57,11 +57,11 @@ namespace Business.Tests.Groups
 
         private static ICreateGroupCommand CreateCreateGroupCommand(
             IExistGroupByGroupName existGroupByGroupName = null, 
-            IExistEntityById existEntityById = null,
+            IQueryEntityById queryEntityById = null,
             ICudOperations<Group> cudGroup = null)
         {
             return new CreateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>(),
-                                        existEntityById ?? Mock.Of<IExistEntityById>(),
+                                        queryEntityById ?? Mock.Of<IQueryEntityById>(),
                                         cudGroup ?? Mock.Of<ICudOperations<Group>>());
         }
     }

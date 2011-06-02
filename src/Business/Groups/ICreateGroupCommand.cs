@@ -1,5 +1,3 @@
-using System;
-using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Queries;
 
@@ -7,27 +5,25 @@ namespace TellagoStudios.Hermes.Business.Groups
 {
     public interface ICreateGroupCommand
     {
-        void Create(Group group);
+        void Execute(Group group);
     }
 
-    public class CreateGroupCommand : ICreateGroupCommand
+    public class CreateGroupCommand : ChangeGroupCommandBase
     {
-        private readonly IExistGroupByGroupName existGroupByGroupName;
-        private readonly IExistEntityById existEntityById;
         private readonly ICudOperations<Group> cudOperations;
 
-        public CreateGroupCommand(IExistGroupByGroupName existGroupByGroupName, IExistEntityById existEntityById, ICudOperations<Group> cudOperations)
+        public CreateGroupCommand(
+            IExistGroupByGroupName existGroupByGroupName, 
+            IQueryEntityById queryEntityById, 
+            ICudOperations<Group> cudOperations)
+            : base(existGroupByGroupName, queryEntityById)
         {
-            this.existGroupByGroupName = existGroupByGroupName;
-            this.existEntityById = existEntityById;
             this.cudOperations = cudOperations;
         }
 
-        public void Create(Group group)
+        public override void Execute(Group group)
         {
-            if (group.Name == null) throw new ValidationException(Messages.NameMustBeNotNull);
-            if (existGroupByGroupName.Execute(group.Name)) throw new ValidationException(Messages.GroupNameMustBeUnique);
-            if (group.ParentId.HasValue && !existEntityById.Execute<Group>(group.ParentId.Value)) throw new ValidationException(Messages.EntityNotFound);
+            base.Execute(group);
             cudOperations.MakePersistent(group);
         }
     }
