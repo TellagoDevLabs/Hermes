@@ -6,12 +6,20 @@ using TellagoStudios.Hermes.DataAccess.MongoDB;
 
 namespace TellagoStudios.Hermes.DataAccess.Queries
 {
-    public class ExistEntityById : MongoDbRepository, IExistEntityById
+    public class QueryEntityById : MongoDbRepository, IQueryEntityById
     {
-        public ExistEntityById(string connectionString) : base(connectionString)
+        public QueryEntityById(string connectionString) : base(connectionString)
         {}
 
-        public bool Execute<TCollection>(Identity id)
+        public bool Exist<TCollection>(Identity id)
+        {
+            string collectionName = GetCollectionNameFor<TCollection>();
+
+            return DB.GetCollection(collectionName).Exists(id);
+        }
+
+        //TODO don't like it. JRO
+        private static string GetCollectionNameFor<TCollection>()
         {
             string collectionName;
             if(typeof(TCollection) == typeof(Group))
@@ -29,8 +37,13 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
             {
                 throw new InvalidOperationException(string.Format("Unknow collection {0}", typeof(TCollection).Name));
             }
+            return collectionName;
+        }
 
-            return DB.GetCollection(collectionName).Exists(id);
+        public TDocument Get<TDocument>(Identity id) where TDocument : class
+        {
+            var collectionName = GetCollectionNameFor<TDocument>();
+            return DB.GetCollection<TDocument>(collectionName).FindById(id);
         }
     }
 }
