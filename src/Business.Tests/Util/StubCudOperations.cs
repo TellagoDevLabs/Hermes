@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Queries;
 
 namespace Business.Tests.Util
 {
-    public class StubCudOperations<T> : ICudOperations<T>
+    public class StubCudOperations<T> : ICudOperations<T> where T : DocumentBase
     {
         public StubCudOperations()
         {
@@ -16,19 +17,19 @@ namespace Business.Tests.Util
 
         public HashSet<T> Updates { get; set; }
 
-        public void MakePersistent(T entity)
+        public void MakePersistent(T document)
         {
-            Entities.Add(entity);
+            Entities.Add(document);
         }
 
-        public void MakeTransient(T entity)
+        public void MakeTransient(T document)
         {
-            Entities.Remove(entity);
+            Entities.Remove(document);
         }
 
-        public void Update(T entity)
+        public void Update(T document)
         {
-            Updates.Add(entity);
+            Updates.Add(document);
         }
     }
 }

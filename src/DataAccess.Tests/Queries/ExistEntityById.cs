@@ -10,7 +10,7 @@ using TellagoStudios.Hermes.DataAccess.Queries;
 namespace DataAccess.Tests.Queries
 {
     [TestFixture]
-    public class ExistEntityByIdFixture : MongoDbBaseFixture
+    public class ExistEntityByIdTests : MongoDbBaseFixture
     {
         [Test]
         public void WhenIdExist_ThenReturnsTrue()
