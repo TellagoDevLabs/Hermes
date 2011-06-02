@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.RestService;
+﻿using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.RestService.Extensions;
 using NUnit.Framework;
-using TellagoStudios.Hermes.Business;
+using TellagoStudios.Hermes.RestService.Resources;
 using F = TellagoStudios.Hermes.Facade;
 
 namespace RestService.Tests
@@ -88,7 +85,7 @@ namespace RestService.Tests
             Assert.That(facade.Description, Is.EqualTo(model.Description));
             Assert.That(facade.Name, Is.EqualTo(model.Name));
             Assert.That(facade.Group, Is.Not.Null);
-            Assert.That(facade.Group.rel, Is.EqualTo(TellagoStudios.Hermes.Business.Constants.Relationships.Group));
+            Assert.That(facade.Group.rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Group));
             Assert.That(facade.Group.href, Is.EqualTo(ResourceLocation.OfGroup(_groupId)));
         }
     }

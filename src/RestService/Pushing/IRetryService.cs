@@ -1,6 +1,6 @@
-using TellagoStudios.Hermes.Business.Model;
+﻿using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.Business.Service
+namespace TellagoStudios.Hermes.RestService.Pushing
 {
     public interface IRetryService
     {

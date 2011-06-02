@@ -51,7 +51,7 @@ namespace RestService.Tests
             mockedService.Verify(r => r.Get(topic.Id.Value));
 
             Assert.AreEqual(topic.Description, result.Description);
-            Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Group, result.Group.rel);
+            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Group, result.Group.rel);
             Assert.AreEqual(ResourceLocation.OfGroup(topic.GroupId), result.Group.href);
             Assert.AreEqual(topic.Id, result.Id.ToModel());
             Assert.AreEqual(topic.Name, result.Name);
@@ -170,7 +170,7 @@ namespace RestService.Tests
             mockedService.Verify(r => r.Create(It.Is<M.Topic>(t => t.GroupId == topicPost.GroupId.ToModel())));
 
             Assert.AreEqual(topic.Description, result.Description);
-            Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Group, result.Group.rel);
+            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Group, result.Group.rel);
             Assert.AreEqual(ResourceLocation.OfGroup(topic.GroupId), result.Group.href);
             Assert.AreEqual(topic.Id, result.Id.ToModel());
             Assert.AreEqual(topic.Name, result.Name);
@@ -207,7 +207,7 @@ namespace RestService.Tests
             mockedService.Verify(r => r.Update(It.Is<M.Topic>(t => t.GroupId == topicPut.GroupId.ToModel())));
 
             Assert.AreEqual(topic.Description, result.Description);
-            Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Group, result.Group.rel);
+            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Group, result.Group.rel);
             Assert.AreEqual(ResourceLocation.OfGroup(topic.GroupId), result.Group.href);
             Assert.AreEqual(topic.Id, result.Id.ToModel());
             Assert.AreEqual(topic.Name, result.Name);

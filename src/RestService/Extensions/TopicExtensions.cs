@@ -40,7 +40,7 @@ namespace TellagoStudios.Hermes.RestService.Extensions
                 Id = from.Id.Value.ToFacade(),
                 Name = from.Name,
                 Description = from.Description,
-                Group = from.GroupId.ToLink(Business.Constants.Relationships.Group)
+                Group = from.GroupId.ToLink(Constants.Relationships.Group)
             };
         }
     }

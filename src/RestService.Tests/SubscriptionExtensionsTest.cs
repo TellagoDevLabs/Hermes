@@ -4,6 +4,7 @@ using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.RestService;
 using TellagoStudios.Hermes.RestService.Extensions;
+using TellagoStudios.Hermes.RestService.Resources;
 using M = TellagoStudios.Hermes.Business.Model;
 using F = TellagoStudios.Hermes.Facade;
 using NUnit.Framework;
@@ -135,7 +136,7 @@ namespace RestService.Tests
 
             Assert.That(facade.Id, Is.EqualTo(_id.ToFacade()));
             Assert.IsNotNull(facade.Target);
-            Assert.That(facade.Target.rel, Is.EqualTo(TellagoStudios.Hermes.Business.Constants.Relationships.Topic));
+            Assert.That(facade.Target.rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Topic));
             Assert.That(facade.Target.href, Is.EqualTo(ResourceLocation.OfTopic(_topicId)));
             Assert.IsNotNull(facade.Callback);
             Assert.That(model.Callback.Kind.ToString(), Is.EqualTo(facade.Callback.Kind.ToString()));
@@ -163,7 +164,7 @@ namespace RestService.Tests
 
             Assert.That(facade.Id, Is.EqualTo(_id.ToFacade()));
             Assert.IsNotNull(facade.Target);
-            Assert.That(facade.Target.rel, Is.EqualTo(TellagoStudios.Hermes.Business.Constants.Relationships.Group));
+            Assert.That(facade.Target.rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Group));
             Assert.That(facade.Target.href, Is.EqualTo(ResourceLocation.OfGroup(_groupId)));
             Assert.IsNotNull(facade.Callback);
             Assert.That(facade.Callback.Kind.ToString(), Is.EqualTo(facade.Callback.Kind.ToString()));

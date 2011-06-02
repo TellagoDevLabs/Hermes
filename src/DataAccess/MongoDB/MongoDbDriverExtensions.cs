@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
-using TellagoStudios.Hermes.Business;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
+using TellagoStudios.Hermes;
+using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
 
 namespace MongoDB.Driver

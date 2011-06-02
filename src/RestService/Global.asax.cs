@@ -1,21 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web.Routing;
 using Autofac;
 using Microsoft.ApplicationServer.Http.Activation;
 using Microsoft.ApplicationServer.Http.Description;
-using TellagoStudios.Hermes.Business.Service;
-using TellagoStudios.Hermes.Business.Validator;
-using TellagoStudios.Hermes.Business.Repository;
-using TellagoStudios.Hermes.DataAccess.MongoDB;
+using TellagoStudios.Hermes.RestService.Pushing;
 using TellagoStudios.Hermes.RestService.Resources;
+using TellagoStudios.Hermes.Business.Events;
 
 namespace TellagoStudios.Hermes.RestService
 {
     public class Global : System.Web.HttpApplication
     {
-
+        private IEventAggregator _aggregator;
         private void Initialize()
         {
 
@@ -46,19 +45,26 @@ namespace TellagoStudios.Hermes.RestService
                     .SetResourceFactory(new AutofacResourceFactory(container));
             }
 
-            RouteTable.Routes.MapServiceRoute<TopicsResource>(Business.Constants.Routes.Topics, config);
-            RouteTable.Routes.MapServiceRoute<MessageResource>(Business.Constants.Routes.Messages, config);
-            RouteTable.Routes.MapServiceRoute<GroupsResource>(Business.Constants.Routes.Groups, config);
-            RouteTable.Routes.MapServiceRoute<SubscriptionResource>(Business.Constants.Routes.Subscriptions, config);
-            RouteTable.Routes.MapServiceRoute<LogResource>(Business.Constants.Routes.Log, config);
+            RouteTable.Routes.MapServiceRoute<TopicsResource>(Constants.Routes.Topics, config);
+            RouteTable.Routes.MapServiceRoute<MessageResource>(Constants.Routes.Messages, config);
+            RouteTable.Routes.MapServiceRoute<GroupsResource>(Constants.Routes.Groups, config);
+            RouteTable.Routes.MapServiceRoute<SubscriptionResource>(Constants.Routes.Subscriptions, config);
+            RouteTable.Routes.MapServiceRoute<LogResource>(Constants.Routes.Log, config);
 
             #endregion
 
             #region Initial Process of Retries queue
 
             var retryService = container.Resolve<IRetryService>();
-            retryService.ProcessRetries();  
-            
+            retryService.ProcessRetries();
+
+            _aggregator = container.Resolve<IEventAggregator>();
+            var handlers = container.Resolve<IEnumerable<IEventHandler>>();
+            foreach (var handler in handlers)
+            {
+                _aggregator.Subscribe(handler);
+            }
+
             #endregion
 
         }

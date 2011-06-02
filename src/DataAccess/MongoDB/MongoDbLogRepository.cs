@@ -17,20 +17,20 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
         public MongoDbLogRepository(string connectionString)
             :base(connectionString)
         {
-            if (!DB.CollectionExists(Constants.Routes.Log))
+            if (!DB.CollectionExists(Constants.Collections.Log))
             {
                 var optionsBuilder = new CollectionOptionsBuilder()
                     .SetAutoIndexId(true)
                     .SetCapped(true)
                     .SetMaxSize(1000000);
 
-                var creationResult = DB.CreateCollection(Constants.Routes.Log, optionsBuilder);
+                var creationResult = DB.CreateCollection(Constants.Collections.Log, optionsBuilder);
                 if (!creationResult.Ok)
                     throw new Exception(creationResult.ErrorMessage);
             }
 
 
-            _logCollection = DB.GetCollection<LogEntry>(Constants.Routes.Log);
+            _logCollection = DB.GetCollection<LogEntry>(Constants.Collections.Log);
         }
 
         public LogEntry Create(LogEntry entry)

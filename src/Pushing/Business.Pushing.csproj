@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4A5D3818-5B3A-41FE-AD1C-5BCAC14BDBA7}</ProjectGuid>
+    <ProjectGuid>{412635F3-B3F5-4936-A5B1-DEC441D60C55}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TellagoStudios.Hermes.DataAccess</RootNamespace>
-    <AssemblyName>TellagoStudios.Hermes.DataAccess</AssemblyName>
+    <RootNamespace>TellagoStudios.Hermes.Business.Pushing</RootNamespace>
+    <AssemblyName>TellagoStudios.Hermes.Business.Pushing</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,11 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson">
-      <HintPath>..\..\lib\Mongo\MongoDB.Bson.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationServer.Http">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.ApplicationServer.Http.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver">
-      <HintPath>..\..\lib\Mongo\MongoDB.Driver.dll</HintPath>
+    <Reference Include="Microsoft.Net.Http">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,24 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="Messages.cs" />
-    <Compile Include="MongoDB\IdentityGenerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MongoDB\IdentitySerializer.cs" />
-    <Compile Include="MongoDB\MongoDbBsonExtensions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MongoDB\MongoDbDriverExtensions.cs" />
-    <Compile Include="MongoDB\MongoDbRepository.cs" />
-    <Compile Include="MongoDB\MongoDbConstants.cs" />
-    <Compile Include="MongoDB\MongoDbLogRepository.cs" />
-    <Compile Include="MongoDB\MongoDbMessageRepository.cs" />
-    <Compile Include="MongoDB\MongoDbRetryRepository.cs" />
-    <Compile Include="MongoDB\MongoDbSubscriptionRepository.cs" />
-    <Compile Include="MongoDB\MongoDbGroupRepository.cs" />
-    <Compile Include="MongoDB\MongoDbTopicRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

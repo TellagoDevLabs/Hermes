@@ -1,5 +1,6 @@
 ﻿using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.RestService.Extensions;
+using TellagoStudios.Hermes.RestService.Resources;
 using M = TellagoStudios.Hermes.Business.Model;
 using NUnit.Framework;
 using TellagoStudios.Hermes.Facade;
@@ -77,7 +78,7 @@ namespace RestService.Tests
             Assert.That(facade.Name, Is.EqualTo(_name));
             Assert.That(facade.Id, Is.EqualTo(_id));
             Assert.That(facade.Parent, Is.Not.Null);
-            Assert.That(facade.Parent.rel, Is.EqualTo(TellagoStudios.Hermes.Business.Constants.Relationships.Parent));
+            Assert.That(facade.Parent.rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Parent));
             Assert.That(facade.Parent.href, Is.EqualTo(ResourceLocation.OfGroup(_parentId.ToModel())));
         }
 
@@ -85,9 +86,9 @@ namespace RestService.Tests
         public void GroupsToLinksMapCorrectly()
         {
             var group = new Group { Id = _id };
-            var link = group.Id.ToModel().ToLink(TellagoStudios.Hermes.Business.Constants.Relationships.Group);
+            var link = group.Id.ToModel().ToLink(TellagoStudios.Hermes.RestService.Constants.Relationships.Group);
 
-            Assert.That(link.rel, Is.EqualTo(TellagoStudios.Hermes.Business.Constants.Relationships.Group));
+            Assert.That(link.rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Group));
             Assert.That(link.href, Is.EqualTo(ResourceLocation.OfGroup(_id.ToModel())));
         }
     }

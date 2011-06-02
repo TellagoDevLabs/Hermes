@@ -99,6 +99,13 @@
     </Compile>
     <Compile Include="Extensions\LogExtensions.cs" />
     <Compile Include="Messages.cs" />
+    <Compile Include="Modules\BusinessPushingModule.cs" />
+    <Compile Include="Modules\EventModule.cs" />
+    <Compile Include="Pushing\IRetryService.cs" />
+    <Compile Include="Pushing\MessageExtensions.cs" />
+    <Compile Include="Pushing\NewMessagePusher.cs" />
+    <Compile Include="Pushing\RetryService.cs" />
+    <Compile Include="ResourceLocation.cs" />
     <Compile Include="Resources\LogResource.cs" />
     <Compile Include="Extensions\MessageExtensions.cs" />
     <Compile Include="Resources\MessageResource.cs" />
@@ -109,6 +116,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Extensions\SubscriptionExtensions.cs" />
+    <Compile Include="Resources\ResourceLocation.cs" />
     <Compile Include="Resources\SubscriptionResource.cs" />
     <Compile Include="Extensions\TopicExtensions.cs" />
     <Compile Include="Extensions\GroupExtensions.cs" />

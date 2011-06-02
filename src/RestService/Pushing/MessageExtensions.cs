@@ -5,11 +5,10 @@ using System.Text;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.Business.Extensions
+namespace TellagoStudios.Hermes.RestService.Pushing
 {
-    static class MessageExtensions
+    public static class MessageExtensions
     {
-
         static public void PushToSubscription(this Message message, Subscription subscription)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, subscription.Callback.Url);
@@ -23,11 +22,12 @@ namespace TellagoStudios.Hermes.Business.Extensions
                     request.PopulateWithMessage(message);
                     break;
                 default:
-                    throw new InvalidOperationException(string.Format(Messages.CallbackKindUnknown, subscription.Callback.Kind));
+                    throw new InvalidOperationException(string.Format(Business.Messages.CallbackKindUnknown, subscription.Callback.Kind));
             }
 
             new HttpClient().Send(request);
         }
+
 
         static private void PopulateWithMessage(this HttpRequestMessage request, Message message)
         {

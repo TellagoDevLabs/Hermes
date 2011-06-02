@@ -1,5 +1,6 @@
 ﻿using System;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.RestService.Resources;
 
 namespace TellagoStudios.Hermes.RestService.Extensions
 {
@@ -44,7 +45,7 @@ namespace TellagoStudios.Hermes.RestService.Extensions
             return new Facade.Link
             {
                 rel = rel,
-                href = Business.ResourceLocation.OfGroup(id)
+                href = Resources.ResourceLocation.OfGroup(id)
             };
         }
 
@@ -57,7 +58,7 @@ namespace TellagoStudios.Hermes.RestService.Extensions
                 Id = from.Id.Value.ToFacade(),
                 Name = from.Name,
                 Description = from.Description,
-                Parent = from.ParentId.ToLink(Business.Constants.Relationships.Parent) 
+                Parent = from.ParentId.ToLink(Constants.Relationships.Parent) 
             };
         }
     }

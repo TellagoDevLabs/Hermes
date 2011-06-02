@@ -1,7 +1,7 @@
-﻿using System;
+﻿using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.Business
+namespace TellagoStudios.Hermes.RestService.Resources
 {
     public static class ResourceLocation
     {

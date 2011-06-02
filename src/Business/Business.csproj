@@ -51,6 +51,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.CoreEx, Version=1.0.2856.104, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Reactive, Version=1.0.2856.104, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,10 +61,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Events\EventAggregator.cs" />
+    <Compile Include="Events\IEventAggregator.cs" />
+    <Compile Include="Events\IEventHandler.cs" />
+    <Compile Include="Events\NewMessageEvent.cs" />
     <Compile Include="Exceptions\EntityNotFoundException.cs" />
     <Compile Include="Exceptions\ValidationException.cs" />
     <Compile Include="Extensions\LogServiceExtensions.cs" />
-    <Compile Include="Extensions\MessageExtensions.cs" />
     <Compile Include="Extensions\ModelExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsGenericExtensions.cs" />
@@ -90,17 +95,14 @@
     <Compile Include="Repository\IRetryRepository.cs" />
     <Compile Include="Repository\ISubscriptionRepository.cs" />
     <Compile Include="Repository\ITopicRepository.cs" />
-    <Compile Include="ResourceLocation.cs" />
     <Compile Include="Service\IGroupService.cs" />
     <Compile Include="Repository\IGroupQueries.cs" />
     <Compile Include="Service\ILogService.cs" />
     <Compile Include="Service\IMessageService.cs" />
-    <Compile Include="Service\IRetryService.cs" />
     <Compile Include="Service\ISubscriptionService.cs" />
     <Compile Include="Service\ITopicService.cs" />
     <Compile Include="Service\LogService.cs" />
     <Compile Include="Service\MessageService.cs" />
-    <Compile Include="Service\RetryService.cs" />
     <Compile Include="Service\SubscriptionService.cs" />
     <Compile Include="Service\GroupService.cs" />
     <Compile Include="Service\TopicService.cs" />

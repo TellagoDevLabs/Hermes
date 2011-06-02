@@ -158,15 +158,15 @@ namespace TellagoStudios.Hermes.RestService.Resources
                     headerName = header.Key;
                     headerValues = header.Value;
 
-                    if (Business.Constants.HttpContentHeaders.Contains(header.Key, StringComparer.CurrentCultureIgnoreCase))
+                    if (Constants.HttpContentHeaders.Contains(header.Key, StringComparer.CurrentCultureIgnoreCase))
                     {
                         response.Content.Headers.Add(header.Key, header.Value);
                     }
-                    else if (Business.Constants.HttpResponseHeaders.Contains(header.Key, StringComparer.CurrentCultureIgnoreCase))
+                    else if (Constants.HttpResponseHeaders.Contains(header.Key, StringComparer.CurrentCultureIgnoreCase))
                     {
                         response.Headers.Add(header.Key, header.Value);
                     }
-                    else if (Business.Constants.HttpRequestHeaders.Contains(header.Key, StringComparer.CurrentCultureIgnoreCase))
+                    else if (Constants.HttpRequestHeaders.Contains(header.Key, StringComparer.CurrentCultureIgnoreCase))
                     {
                         // ignore header
                     }
