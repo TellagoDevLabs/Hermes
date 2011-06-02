@@ -9,13 +9,14 @@ bin
 *.cache
 *.bak
 *.ncb
-*.log 
+*.log
 *.DS_Store
-Thumbs.db 
-thumbs.db 
+Thumbs.db
+thumbs.db
 _ReSharper.*
 *.resharper
 *.orig
 Packages\*
 *.log*
 *.svclog
+glob:src/packages/*
