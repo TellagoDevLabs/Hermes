@@ -71,7 +71,6 @@ namespace TellagoStudios.Hermes.RestService
 
         void Application_Start(object sender, EventArgs e)
         {
-            log4net.Config.XmlConfigurator.Configure();
             Initialize();
         }        
     }

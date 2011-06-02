@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace TellagoStudios.Hermes.Business.Events
 {

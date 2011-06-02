@@ -5,7 +5,6 @@ using Microsoft.ApplicationServer.Http;
 using Microsoft.ApplicationServer.Http.Dispatcher;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business;
-using Common.Logging;
 
 namespace TellagoStudios.Hermes.RestService.Resources
 {
@@ -84,8 +83,6 @@ namespace TellagoStudios.Hermes.RestService.Resources
             catch (Exception e)
             {         
                 
-                LogManager.GetLogger("other").Error(e);
-
                 throw new HttpResponseException(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
