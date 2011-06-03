@@ -6,7 +6,7 @@ using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Queries;
 using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.Business.Validator;
-using System.Threading.Tasks;
+using TellagoStudios.Hermes.Business.Events;
 
 namespace TellagoStudios.Hermes.Business.Service
 {
@@ -16,8 +16,7 @@ namespace TellagoStudios.Hermes.Business.Service
         public MessageValidator Validator { get; set; }
         public ITopicService TopicService { get; set; }
         public ISubscriptionService SubscriptionService { get; set; }
-        public IRetryService RetryService { get; set; }
-        public ILogService LogService  { get; set; }
+        public IEventAggregator EventAggregator { get; set; }
         
         public Message Create(Message message)
         {
@@ -26,8 +25,8 @@ namespace TellagoStudios.Hermes.Business.Service
             Validator.ValidateBeforeCreate(message);
             var result = Repository.Create(message);
 
-            // Push message to subscribers (callback)
-            Task.Factory.StartNew(() => PushToSubscribers(result), TaskCreationOptions.None);
+            EventAggregator.Raise(new NewMessageEvent { Message = result });
+
             return result;
         }
 
@@ -107,28 +106,6 @@ namespace TellagoStudios.Hermes.Business.Service
             //{
             //    AddTopicIdsFromGroup(topicIds, group.ParentId.Value);
             //}
-        }
-
-        private void PushToSubscribers(Message message)
-        {
-            var subscriptions = SubscriptionService.GetByTopicAndTopicsGroups(message.TopicId);
-            
-            var filteredSubscriptions = subscriptions
-                .Where(s => string.IsNullOrWhiteSpace(s.Filter) || 
-                            Repository.Exists(message.ToMessageKey(), s.Filter));
-
-            foreach (var subscription in filteredSubscriptions)
-            {
-                try
-                {
-                    message.PushToSubscription(subscription);
-                }
-                catch (Exception ex)
-                {
-                    LogService.LogError(string.Format(Messages.ErrorPushingCallback, message.Id, subscription.Id), ex);
-                    RetryService.Add(new Retry(message, subscription));
-                }
-            }
         }
 
         #endregion

@@ -32,11 +32,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 .InstancePerLifetimeScope()
                 .WithParameter("connectionString", cs.ConnectionString);
 
-            builder.RegisterType<MongoDbLogRepository>()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope()
-                .WithParameter("connectionString", cs.ConnectionString);
-
             builder.RegisterType<MongoDbRetryRepository>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope()

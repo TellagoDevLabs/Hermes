@@ -17,7 +17,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
         public MongoDbRetryRepository(string connectionString)
             :base(connectionString)
         {
-            _retriesCollection = DB.GetCollection<Retry>(Constants.Routes.Retries);            
+            _retriesCollection = DB.GetCollection<Retry>(Constants.Collections.Retries);            
         }
 
         public Retry Create(Retry retry)

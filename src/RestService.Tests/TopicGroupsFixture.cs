@@ -69,7 +69,7 @@ namespace RestService.Tests
             Assert.AreEqual(group.Id, result.Id.ToModel());
             Assert.AreEqual(group.Name, result.Name);
             Assert.IsNotNull(result.Parent);
-            Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Parent, result.Parent.rel);
+            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Parent, result.Parent.rel);
             Assert.AreEqual(ResourceLocation.OfGroup(parent.Id.Value), result.Parent.href);
         }
 
@@ -238,7 +238,7 @@ namespace RestService.Tests
             mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
 
             Assert.AreEqual(group.Description, result.Description);
-            Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Parent, result.Parent.rel);
+            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Parent, result.Parent.rel);
             Assert.AreEqual(ResourceLocation.OfGroup(groupPut.ParentId.Value.ToModel()), result.Parent.href);
             Assert.AreEqual(group.Id, result.Id.ToModel());
             Assert.AreEqual(group.Name, result.Name);

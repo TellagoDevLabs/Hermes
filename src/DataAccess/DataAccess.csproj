@@ -46,11 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Messages.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Messages.cs" />
     <Compile Include="MongoDB\IdentityGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -61,7 +58,6 @@
     <Compile Include="MongoDB\MongoDbDriverExtensions.cs" />
     <Compile Include="MongoDB\MongoDbRepository.cs" />
     <Compile Include="MongoDB\MongoDbConstants.cs" />
-    <Compile Include="MongoDB\MongoDbLogRepository.cs" />
     <Compile Include="MongoDB\MongoDbMessageRepository.cs" />
     <Compile Include="MongoDB\MongoDbRetryRepository.cs" />
     <Compile Include="MongoDB\MongoDbSubscriptionRepository.cs" />
@@ -77,13 +73,6 @@
     <Compile Include="Queries\TopicsByGroup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Messages.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">
       <Project>{804039D3-A911-43CC-A75F-85E544C71629}</Project>
       <Name>Business</Name>
@@ -97,4 +86,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="BeforeBuild">
+    <Exec Condition="Exists('$(ProjectDir)packages.config')"
+            Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
+  </Target>
 </Project>

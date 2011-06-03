@@ -2,11 +2,8 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using TellagoStudios.Hermes.Business.Extensions;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Repository;
-using TellagoStudios.Hermes.Business;
-using TellagoStudios.Hermes.Business.Service;
 
 namespace TellagoStudios.Hermes.Business.Service
 {

@@ -51,6 +51,14 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.CoreEx, Version=1.0.2856.104, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Rx-Core.1.0.2856.0\lib\Net4\System.CoreEx.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive, Version=1.1.10425.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Rx-Main.1.1.10425\lib\Net4\System.Reactive.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,11 +66,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
+    <Compile Include="Events\EventAggregator.cs" />
+    <Compile Include="Events\IEventAggregator.cs" />
+    <Compile Include="Events\IEventHandler.cs" />
+    <Compile Include="Events\NewMessageEvent.cs" />
     <Compile Include="Exceptions\EntityNotFoundException.cs" />
     <Compile Include="Exceptions\ValidationException.cs" />
-    <Compile Include="Extensions\LogServiceExtensions.cs" />
-    <Compile Include="Extensions\MessageExtensions.cs" />
     <Compile Include="Extensions\ModelExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsGenericExtensions.cs" />
@@ -73,18 +82,12 @@
     <Compile Include="Groups\Interfaces.cs" />
     <Compile Include="Groups\UpdateGroupCommand.cs" />
     <Compile Include="Guard.cs" />
-    <Compile Include="Messages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Messages.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Messages.cs" />
     <Compile Include="Model\Callback.cs" />
     <Compile Include="Model\CallbackKind.cs" />
     <Compile Include="Model\DocumentBase.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\Identity.cs" />
-    <Compile Include="Model\LogEntry.cs" />
-    <Compile Include="Model\LogEntryType.cs" />
     <Compile Include="Model\Message.cs" />
     <Compile Include="Model\MessageKey.cs" />
     <Compile Include="Model\Retry.cs" />
@@ -102,21 +105,15 @@
     <Compile Include="Repository\ISubscriptionQueries.cs" />
     <Compile Include="Repository\ITopicQueries.cs" />
     <Compile Include="Repository\IGroupRepository.cs" />
-    <Compile Include="Repository\ILogRepository.cs" />
     <Compile Include="Repository\IMessageRepository.cs" />
     <Compile Include="Repository\IRetryRepository.cs" />
     <Compile Include="Repository\ISubscriptionRepository.cs" />
     <Compile Include="Repository\ITopicRepository.cs" />
-    <Compile Include="ResourceLocation.cs" />
     <Compile Include="Repository\IGroupQueries.cs" />
-    <Compile Include="Service\ILogService.cs" />
     <Compile Include="Service\IMessageService.cs" />
-    <Compile Include="Service\IRetryService.cs" />
     <Compile Include="Service\ISubscriptionService.cs" />
     <Compile Include="Service\ITopicService.cs" />
-    <Compile Include="Service\LogService.cs" />
     <Compile Include="Service\MessageService.cs" />
-    <Compile Include="Service\RetryService.cs" />
     <Compile Include="Service\SubscriptionService.cs" />
     <Compile Include="Service\TopicService.cs" />
     <Compile Include="Validator\MessageValidator.cs" />
@@ -124,13 +121,8 @@
     <Compile Include="Validator\TopicValidator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Messages.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -139,4 +131,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="BeforeBuild">
+    <Exec Condition="Exists('$(ProjectDir)packages.config')"
+            Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
+  </Target>
 </Project>

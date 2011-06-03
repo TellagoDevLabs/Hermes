@@ -3,7 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace TellagoStudios.Hermes.Business
+namespace TellagoStudios.Hermes.Client
 {
     public class Guard
     {

@@ -17,7 +17,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
         public MongoDbTopicRepository(string connectionString)
             :base(connectionString)
         {
-            _topicsCollection = DB.GetCollection<Topic>(Constants.Routes.Topics);
+            _topicsCollection = DB.GetCollection<Topic>(Constants.Collections.Topics);
         }
 
         public Topic Create(Topic topic)

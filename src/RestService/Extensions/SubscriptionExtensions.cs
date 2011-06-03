@@ -1,6 +1,7 @@
 ﻿using System;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.RestService.Resources;
 
 namespace TellagoStudios.Hermes.RestService.Extensions
 {
@@ -89,18 +90,18 @@ namespace TellagoStudios.Hermes.RestService.Extensions
                 case TargetKind.Topic:
                     subscription.Target = new Facade.Link
                                               {
-                                                  rel = Business.Constants.Relationships.Topic, 
+                                                  rel = Constants.Relationships.Topic, 
 // ReSharper disable PossibleInvalidOperationException
-                                                  href = ResourceLocation.OfTopic(from.TargetId.Value)
+                                                  href = Resources.ResourceLocation.OfTopic(from.TargetId.Value)
 // ReSharper restore PossibleInvalidOperationException
                                               };
                     break;
                 case TargetKind.Group:
                     subscription.Target = new Facade.Link
                                               {
-                                                  rel = Business.Constants.Relationships.Group, 
+                                                  rel = Constants.Relationships.Group, 
 // ReSharper disable PossibleInvalidOperationException
-                                                  href = ResourceLocation.OfGroup(from.TargetId.Value)
+                                                  href = Resources.ResourceLocation.OfGroup(from.TargetId.Value)
 // ReSharper restore PossibleInvalidOperationException
                                               };
                     break;

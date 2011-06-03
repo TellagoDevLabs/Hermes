@@ -1,4 +1,5 @@
-﻿using Model = TellagoStudios.Hermes.Business.Model;
+﻿using TellagoStudios.Hermes.RestService.Resources;
+using Model = TellagoStudios.Hermes.Business.Model;
 
 namespace TellagoStudios.Hermes.RestService.Extensions
 {
@@ -10,8 +11,8 @@ namespace TellagoStudios.Hermes.RestService.Extensions
 
             return new Facade.Link
             {
-                rel = Business.Constants.Relationships.Message,
-                href = Business.ResourceLocation.OfMessageByTopic(from)
+                rel = Constants.Relationships.Message,
+                href = Resources.ResourceLocation.OfMessageByTopic(from)
             };
         }
 
@@ -21,8 +22,8 @@ namespace TellagoStudios.Hermes.RestService.Extensions
 
             return new Facade.Link
             {
-                rel = Business.Constants.Relationships.Message,
-                href = Business.ResourceLocation.OfMessageByTopic(from)
+                rel = Constants.Relationships.Message,
+                href = Resources.ResourceLocation.OfMessageByTopic(from)
             };
         }
     }
