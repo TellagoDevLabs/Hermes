@@ -97,6 +97,7 @@
     <Compile Include="Pushing\RetryService.cs" />
     <Compile Include="ResourceLocation.cs" />
     <Compile Include="Extensions\MessageExtensions.cs" />
+    <Compile Include="Resources\LogResource.cs" />
     <Compile Include="Resources\MessageResource.cs" />
     <Compile Include="Modules\RepositoriesModule.cs" />
     <Compile Include="Modules\ResourcesModule.cs" />
@@ -165,7 +166,6 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Exec Condition="Exists('$(ProjectDir)packages.config')"
-            Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)packages.config')" Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
   </Target>
 </Project>

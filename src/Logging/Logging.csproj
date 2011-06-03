@@ -31,12 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ApplicationServer.Http">
-      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.ApplicationServer.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Net.Http">
-      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.Net.Http.dll</HintPath>
-    </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>..\..\lib\Mongo\MongoDB.Bson.dll</HintPath>
     </Reference>
@@ -45,8 +39,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -63,20 +55,18 @@
     <Compile Include="IdentitySerializer.cs" />
     <Compile Include="ILogRepository.cs" />
     <Compile Include="ILogService.cs" />
-    <Compile Include="LogEntry.cs" />
-    <Compile Include="LogEntryType.cs" />
     <Compile Include="LogExtensions.cs" />
-    <Compile Include="LogResource.cs" />
     <Compile Include="LogService.cs" />
     <Compile Include="LogServiceExtensions.cs" />
     <Compile Include="Messages.cs" />
+    <Compile Include="Model\LogEntry.cs" />
+    <Compile Include="Model\LogEntryType.cs" />
     <Compile Include="MongoDbBsonExtensions.cs" />
     <Compile Include="MongoDbDriverExtensions.cs" />
     <Compile Include="MongoDbLogRepository.cs" />
     <Compile Include="MongoDbRepository.cs" />
     <Compile Include="MongoTraceListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">

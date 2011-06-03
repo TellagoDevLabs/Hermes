@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Logging.Model;
 
 namespace TellagoStudios.Hermes.Logging
 {

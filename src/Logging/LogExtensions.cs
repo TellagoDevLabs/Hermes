@@ -1,4 +1,5 @@
 ﻿using System;
+using TellagoStudios.Hermes.Logging.Model;
 
 namespace TellagoStudios.Hermes.Logging
 {

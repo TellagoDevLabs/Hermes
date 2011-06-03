@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Logging.Model;
 
 namespace TellagoStudios.Hermes.Logging
 {

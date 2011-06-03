@@ -6,8 +6,10 @@ using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using Microsoft.ApplicationServer.Http;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Logging;
+using LogEntry = TellagoStudios.Hermes.Logging.Facade.LogEntry;
 
-namespace TellagoStudios.Hermes.Logging
+namespace TellagoStudios.Hermes.RestService.Resources
 {
     [ServiceContract]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
@@ -21,7 +23,7 @@ namespace TellagoStudios.Hermes.Logging
         }
 
         [WebGet(UriTemplate = "{id}")]
-        public HttpResponseMessage<Facade.LogEntry> Get(Identity id)
+        public HttpResponseMessage<LogEntry> Get(Identity id)
         {
             return Process(() => _logService.Get(id).ToFacade());
         }
@@ -34,7 +36,7 @@ namespace TellagoStudios.Hermes.Logging
         }
 
         [WebGet(UriTemplate = "?skip={skip}&limit={limit}&query={query}")]
-        public HttpResponseMessage<Facade.LogEntry[]> GetAll(string query, int skip, int limit)
+        public HttpResponseMessage<LogEntry[]> GetAll(string query, int skip, int limit)
         {
             // set valid values of opional parameters
             var validatedSkip = skip > 0 ? skip : new int?();
@@ -46,7 +48,7 @@ namespace TellagoStudios.Hermes.Logging
 
         #region Private members
 
-        private Facade.LogEntry[] Find(string query, int? skip, int? limit)
+        private LogEntry[] Find(string query, int? skip, int? limit)
         {
             if (skip.HasValue && skip.Value < 0) throw new ArgumentOutOfRangeException("skip");
             if (limit.HasValue && limit.Value <= 0) throw new ArgumentOutOfRangeException("limit");

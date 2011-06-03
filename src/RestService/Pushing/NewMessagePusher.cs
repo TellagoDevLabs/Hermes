@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Events;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.Business.Service;
-using TellagoStudios.Hermes.Logging;
 
 namespace TellagoStudios.Hermes.RestService.Pushing
 {
@@ -54,16 +52,6 @@ namespace TellagoStudios.Hermes.RestService.Pushing
                     RetryService.Add(new Retry(message, subscription));
                 }
             }
-        }
-
-        public Type Type
-        {
-            get { return typeof(NewMessageEvent); }
-        }
-
-        public void Handle(object @event)
-        {
-            Handle((NewMessageEvent)@event);
         }
     }
 }

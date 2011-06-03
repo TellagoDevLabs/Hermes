@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using TellagoStudios.Hermes.Logging;
+using TellagoStudios.Hermes.Logging.Model;
 
 namespace DataAccess.Tests.Repository
 {

@@ -2,6 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Logging.Model;
 
 namespace TellagoStudios.Hermes.Logging.Tests
 {

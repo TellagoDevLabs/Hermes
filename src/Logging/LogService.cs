@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Logging.Model;
 
 namespace TellagoStudios.Hermes.Logging
 {
