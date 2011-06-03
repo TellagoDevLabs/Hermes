@@ -3,9 +3,9 @@ using TellagoStudios.Hermes.Business.Model;
 
 namespace TellagoStudios.Hermes.Business.Queries
 {
-    public interface IQueryChildGroups
+    public interface ITopicsByGroup
     {
-        bool HasChilds(Group group);
-        IEnumerable<Group> GetChilds(Group @group);
+        bool HasTopics(Group @group);
+        IEnumerable<Topic> GetTopics(Group @group);
     }
 }

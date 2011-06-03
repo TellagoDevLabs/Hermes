@@ -14,13 +14,19 @@ namespace TellagoStudios.Hermes.Business.Groups
     {
         private readonly IQueryEntityById queryEntityById;
         private readonly ICudOperations<Group> cudOperations;
-        private readonly IQueryChildGroups queryChildGroups;
+        private readonly IChildGroupsOfGroup childGroupsOfGroup;
+        private readonly ITopicsByGroup topicsByGroup;
 
-        public DeleteGroupCommand(IQueryEntityById queryEntityById, ICudOperations<Group> cudOperations, IQueryChildGroups queryChildGroups)
+        public DeleteGroupCommand(
+                IQueryEntityById queryEntityById, 
+                ICudOperations<Group> cudOperations, 
+                IChildGroupsOfGroup childGroupsOfGroup, 
+                ITopicsByGroup topicsByGroup)
         {
             this.queryEntityById = queryEntityById;
             this.cudOperations = cudOperations;
-            this.queryChildGroups = queryChildGroups;
+            this.childGroupsOfGroup = childGroupsOfGroup;
+            this.topicsByGroup = topicsByGroup;
         }
 
         public void Execute(Group group)
@@ -33,9 +39,13 @@ namespace TellagoStudios.Hermes.Business.Groups
             {
                 throw new EntityNotFoundException(typeof (Group), group.Id.Value);
             }
-            if(queryChildGroups.HasChilds(group))
+            if(childGroupsOfGroup.HasChilds(group))
             {
-                throw new ValidationException(Messages.GroupContainsChildGroups);
+                throw new ValidationException(string.Format(Messages.GroupContainsChildGroups, group.Id));
+            }
+            if (topicsByGroup.HasTopics(group))
+            {
+                throw new ValidationException(string.Format(Messages.GroupContainsChildTopics, group.Id));
             }
             cudOperations.MakeTransient(group);
         }

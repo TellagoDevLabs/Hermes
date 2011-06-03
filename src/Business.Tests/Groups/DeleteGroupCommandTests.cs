@@ -15,12 +15,14 @@ namespace Business.Tests.Groups
     {
         public DeleteGroupCommand CreateCommand(IQueryEntityById queryEntityById = null, 
                                                 ICudOperations<Group> cudGroup = null, 
-                                                IQueryChildGroups queryChildGroups = null)
+                                                IChildGroupsOfGroup childGroupsOfGroup = null, 
+                                                ITopicsByGroup queryTopicsByGroup = null) 
         {
             return new DeleteGroupCommand(
                                 queryEntityById ?? Mock.Of<IQueryEntityById>(), 
                                 cudGroup ?? Mock.Of<ICudOperations<Group>>(),
-                                queryChildGroups ?? Mock.Of<IQueryChildGroups>());    
+                                childGroupsOfGroup ?? Mock.Of<IChildGroupsOfGroup>(),
+                                queryTopicsByGroup ?? Mock.Of<ITopicsByGroup>());    
         }
 
         [Test]
@@ -45,11 +47,26 @@ namespace Business.Tests.Groups
         public void WhenGroupHasChildGroups_ThenThrow()
         {
             var command = CreateCommand(queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true),
-                                        queryChildGroups: Mock.Of<IQueryChildGroups>(qg => qg.HasChilds(It.IsAny<Group>()) == true));
+                                        childGroupsOfGroup: Mock.Of<IChildGroupsOfGroup>(qg => qg.HasChilds(It.IsAny<Group>()) == true));
 
-            command.Executing(c => c.Execute(new Group { Id = new Identity("4de7e38617b6c420a45a84c4") }))
+            var @group = new Group { Id = new Identity("4de7e38617b6c420a45a84c4") };
+
+            command.Executing(c => c.Execute(@group))
                 .Throws<ValidationException>()
-                .And.Exception.Message.Should().Be.EqualTo(Messages.GroupContainsChildGroups);
+                .And.Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupContainsChildGroups, group.Id));
+        }
+
+        [Test]
+        public void WhenGroupHasChildTopics_ThenThrow()
+        {
+            var command = CreateCommand(queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true),
+                                        queryTopicsByGroup: Mock.Of<ITopicsByGroup>(qg => qg.HasTopics(It.IsAny<Group>()) == true));
+
+            var @group = new Group { Id = new Identity("4de7e38617b6c420a45a84c4") };
+
+            command.Executing(c => c.Execute(@group))
+                .Throws<ValidationException>()
+                .And.Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupContainsChildTopics, group.Id));
         }
 
         [Test]
