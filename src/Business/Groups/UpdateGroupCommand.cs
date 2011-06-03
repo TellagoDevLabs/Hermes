@@ -1,16 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Queries;
 
 namespace TellagoStudios.Hermes.Business.Groups
 {
-    public interface IUpdateGroupCommand
-    {
-        void Execute(Group group);
-    }
-
     public class UpdateGroupCommand : ChangeGroupCommandBase, IUpdateGroupCommand
     {
         private readonly IEntityById entityById;

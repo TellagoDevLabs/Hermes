@@ -3,7 +3,7 @@ using TellagoStudios.Hermes.Business.Model;
 
 namespace TellagoStudios.Hermes.Business.Queries
 {
-    public interface IGroupAcenstry
+    public interface IQueryGroupAncestors
     {
         IEnumerable<Group> Execute(Group group);
     }

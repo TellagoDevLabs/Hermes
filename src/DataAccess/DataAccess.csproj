@@ -72,6 +72,7 @@
     <Compile Include="Queries\CudOperations.cs" />
     <Compile Include="Queries\EntityById.cs" />
     <Compile Include="Queries\ExistGroupByGroupName.cs" />
+    <Compile Include="Queries\QueryGroupAncestry.cs" />
     <Compile Include="Queries\TopicsByGroup.cs" />
   </ItemGroup>
   <ItemGroup>

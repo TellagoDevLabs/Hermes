@@ -1,15 +1,9 @@
-using System;
-using TellagoStudios.Hermes.Business.Exceptions;
+﻿using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Queries;
 
 namespace TellagoStudios.Hermes.Business.Groups
 {
-    public interface IDeleteGroupCommand
-    {
-        void Execute(Group group);
-    }
-
     public class DeleteGroupCommand : IDeleteGroupCommand
     {
         private readonly IEntityById entityById;
@@ -18,10 +12,10 @@ namespace TellagoStudios.Hermes.Business.Groups
         private readonly ITopicsByGroup topicsByGroup;
 
         public DeleteGroupCommand(
-                IEntityById entityById, 
-                ICudOperations<Group> cudOperations, 
-                IChildGroupsOfGroup childGroupsOfGroup, 
-                ITopicsByGroup topicsByGroup)
+            IEntityById entityById, 
+            ICudOperations<Group> cudOperations, 
+            IChildGroupsOfGroup childGroupsOfGroup, 
+            ITopicsByGroup topicsByGroup)
         {
             this.entityById = entityById;
             this.cudOperations = cudOperations;
