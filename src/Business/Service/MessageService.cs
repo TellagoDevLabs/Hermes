@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TellagoStudios.Hermes.Business.Extensions;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
 using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.Business.Validator;
 using TellagoStudios.Hermes.Business.Events;
