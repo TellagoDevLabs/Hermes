@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Repository;
-using TellagoStudios.Hermes.DataAccess.MongoDB;
+using TellagoStudios.Hermes.Logging;
 
 namespace DataAccess.Tests.Repository
 {

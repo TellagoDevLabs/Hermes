@@ -6,6 +6,7 @@ using TellagoStudios.Hermes.Business.Events;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.Business.Service;
+using TellagoStudios.Hermes.Logging;
 
 namespace TellagoStudios.Hermes.RestService.Pushing
 {
@@ -13,7 +14,7 @@ namespace TellagoStudios.Hermes.RestService.Pushing
     {
         public ISubscriptionService SubscriptionService { get; set; }
         public IMessageRepository Repository { get; set; }
-        public ILogService LogService { get; set; }
+
         public IRetryService RetryService { get; set; }
 
         public void Handle(NewMessageEvent @event)
@@ -47,11 +48,22 @@ namespace TellagoStudios.Hermes.RestService.Pushing
                 }
                 catch (Exception ex)
                 {
-                    LogService.LogError(
-                        string.Format(Business.Messages.ErrorPushingCallback, message.Id, subscription.Id), ex);
+                    System.Diagnostics.Trace.TraceError(
+                        string.Format(Business.Messages.ErrorPushingCallback, message.Id, subscription.Id) +
+                        "\r\n" + ex);
                     RetryService.Add(new Retry(message, subscription));
                 }
             }
+        }
+
+        public Type Type
+        {
+            get { return typeof(NewMessageEvent); }
+        }
+
+        public void Handle(object @event)
+        {
+            Handle((NewMessageEvent)@event);
         }
     }
 }

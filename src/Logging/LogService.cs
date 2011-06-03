@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
-using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Repository;
+using System.Diagnostics;
 using TellagoStudios.Hermes.Business;
-using TellagoStudios.Hermes.Business.Service;
+using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.Business.Service
+namespace TellagoStudios.Hermes.Logging
 {
     public class LogService : ILogService
     {

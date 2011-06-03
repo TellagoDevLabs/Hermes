@@ -16,7 +16,6 @@ namespace TellagoStudios.Hermes.Business.Service
         public IGroupService GroupService { get; set; }
         public ITopicService TopicService { get; set; }
         public ISubscriptionService SubscriptionService { get; set; }
-        public ILogService LogService  { get; set; }
         public IEventAggregator EventAggregator { get; set; }
         
         public Message Create(Message message)

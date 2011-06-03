@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4A5D3818-5B3A-41FE-AD1C-5BCAC14BDBA7}</ProjectGuid>
+    <ProjectGuid>{FA0F84FC-7E29-481E-A180-3760E44BA661}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TellagoStudios.Hermes.DataAccess</RootNamespace>
-    <AssemblyName>TellagoStudios.Hermes.DataAccess</AssemblyName>
+    <RootNamespace>TellagoStudios.Hermes.Logging.Tests</RootNamespace>
+    <AssemblyName>TellagoStudios.Hermes.Logging.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,11 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson">
-      <HintPath>..\..\lib\Mongo\MongoDB.Bson.dll</HintPath>
+    <Reference Include="Moq">
+      <HintPath>..\..\lib\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver">
-      <HintPath>..\..\lib\Mongo\MongoDB.Driver.dll</HintPath>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,29 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="Messages.cs" />
-    <Compile Include="MongoDB\IdentityGenerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MongoDB\IdentitySerializer.cs" />
-    <Compile Include="MongoDB\MongoDbBsonExtensions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MongoDB\MongoDbDriverExtensions.cs" />
-    <Compile Include="MongoDB\MongoDbRepository.cs" />
-    <Compile Include="MongoDB\MongoDbConstants.cs" />
-    <Compile Include="MongoDB\MongoDbMessageRepository.cs" />
-    <Compile Include="MongoDB\MongoDbRetryRepository.cs" />
-    <Compile Include="MongoDB\MongoDbSubscriptionRepository.cs" />
-    <Compile Include="MongoDB\MongoDbGroupRepository.cs" />
-    <Compile Include="MongoDB\MongoDbTopicRepository.cs" />
+    <Compile Include="LogServiceFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">
       <Project>{804039D3-A911-43CC-A75F-85E544C71629}</Project>
       <Name>Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logging\Logging.csproj">
+      <Project>{1B0C415F-4C30-45A0-8996-00886A14BF56}</Project>
+      <Name>Logging</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -79,8 +67,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="BeforeBuild">
-    <Exec Condition="Exists('$(ProjectDir)packages.config')"
-            Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
-  </Target>
 </Project>

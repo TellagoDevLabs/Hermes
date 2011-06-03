@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using TellagoStudios.Hermes.Business.Model;
-using System.Collections.Generic;
 
-namespace TellagoStudios.Hermes.Business.Repository
+namespace TellagoStudios.Hermes.Logging
 {
     public interface ILogRepository
     {
