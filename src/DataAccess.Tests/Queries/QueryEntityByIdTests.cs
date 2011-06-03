@@ -15,7 +15,7 @@ namespace DataAccess.Tests.Queries
         [Test]
         public void WhenIdExist_ThenReturnsTrue()
         {
-            var existEntityById = new QueryEntityById(connectionString);
+            var existEntityById = new EntityById(connectionString);
             var document = new Group { Name = "Foo" };
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups)
                                 .Insert(document);
@@ -29,7 +29,7 @@ namespace DataAccess.Tests.Queries
         [Test]
         public void WhenEntityExist_ThenGetReturnsEntity()
         {
-            var existEntityById = new QueryEntityById(connectionString);
+            var existEntityById = new EntityById(connectionString);
             var document = new Group { Name = "Foo" };
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups)
                                 .Insert(document);
@@ -42,7 +42,7 @@ namespace DataAccess.Tests.Queries
         [Test]
         public void WhenDoesNotIdExist_ThenReturnsFalse()
         {
-            var existEntityById = new QueryEntityById(connectionString);
+            var existEntityById = new EntityById(connectionString);
             var document = new Group { Name = "Foo" };
 
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups)

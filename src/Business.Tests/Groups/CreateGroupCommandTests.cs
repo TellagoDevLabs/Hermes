@@ -34,7 +34,7 @@ namespace Business.Tests.Groups
         [Test]
         public void WhenParentIdDoesNotExist_ThenThrowException()
         {
-            var groupCommand = CreateCreateGroupCommand(queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == false));
+            var groupCommand = CreateCreateGroupCommand(entityById: Mock.Of<IEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == false));
 
             var @group = new Group { Name = "test", ParentId  = new Identity(Guid.NewGuid())};
             groupCommand.Executing(gc => gc.Execute(@group))
@@ -57,11 +57,11 @@ namespace Business.Tests.Groups
 
         private static ICreateGroupCommand CreateCreateGroupCommand(
             IExistGroupByGroupName existGroupByGroupName = null, 
-            IQueryEntityById queryEntityById = null,
+            IEntityById entityById = null,
             ICudOperations<Group> cudGroup = null)
         {
             return new CreateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>(),
-                                        queryEntityById ?? Mock.Of<IQueryEntityById>(),
+                                        entityById ?? Mock.Of<IEntityById>(),
                                         cudGroup ?? Mock.Of<ICudOperations<Group>>());
         }
     }

@@ -95,6 +95,7 @@
     <Compile Include="Queries\ICudOperations.cs" />
     <Compile Include="Queries\IEntityById.cs" />
     <Compile Include="Queries\IExistGroupByGroupName.cs" />
+    <Compile Include="Queries\IGroupAcenstry.cs" />
     <Compile Include="Queries\ITopicsByGroup.cs" />
     <Compile Include="Repository\ISubscriptionQueries.cs" />
     <Compile Include="Repository\ITopicQueries.cs" />

@@ -27,7 +27,7 @@ namespace Business.Tests.Groups
         [Test]
         public void WhenParentIdDoesNotExist_ThenThrowException()
         {
-            var groupCommand = CreateUpdateGroupCommand(queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == false));
+            var groupCommand = CreateUpdateGroupCommand(entityById: Mock.Of<IEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == false));
 
             var @group = new Group { Name = "test", ParentId = new Identity(Guid.NewGuid()) };
             groupCommand.Executing(gc => gc.Execute(@group))
@@ -40,7 +40,7 @@ namespace Business.Tests.Groups
         public void WhenParentHasTheSameId_ThenThrowException()
         {
             var groupCommand = CreateUpdateGroupCommand(
-                            queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true
+                            entityById: Mock.Of<IEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true
                                                                             && q.Get<Group>(new Identity("4de7e38617b6c420a45a84c4")) == new Group()));
 
             var @group = new Group
@@ -67,12 +67,12 @@ namespace Business.Tests.Groups
                 ParentId = new Identity("4fffffff17b6c420a45a84c4")
             };
 
-            var queryEntityById = Mock.Of<IQueryEntityById>(q => 
+            var queryEntityById = Mock.Of<IEntityById>(q => 
                             q.Exist<Group>(It.IsAny<Identity>()) == true
                          && q.Get<Group>(new Identity("4fffffff17b6c420a45a84c4")) == new Group { ParentId = new Identity("4de7e38617b6c420a45a84c4") }
                          && q.Get<Group>(new Identity("4de7e38617b6c420a45a84c4")) == @group);
 
-            var groupCommand = CreateUpdateGroupCommand(queryEntityById: queryEntityById);
+            var groupCommand = CreateUpdateGroupCommand(entityById: queryEntityById);
 
             
 
@@ -96,11 +96,11 @@ namespace Business.Tests.Groups
 
         private static IUpdateGroupCommand CreateUpdateGroupCommand(
             IExistGroupByGroupName existGroupByGroupName = null,
-            IQueryEntityById queryEntityById = null,
+            IEntityById entityById = null,
             ICudOperations<Group> cudGroup = null)
         {
             return new UpdateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>(),
-                                        queryEntityById ?? Mock.Of<IQueryEntityById>(),
+                                        entityById ?? Mock.Of<IEntityById>(),
                                         cudGroup ?? Mock.Of<ICudOperations<Group>>());
         }
     }

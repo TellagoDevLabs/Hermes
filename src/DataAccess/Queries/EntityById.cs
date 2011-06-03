@@ -6,9 +6,9 @@ using TellagoStudios.Hermes.DataAccess.MongoDB;
 
 namespace TellagoStudios.Hermes.DataAccess.Queries
 {
-    public class QueryEntityById : MongoDbRepository, IQueryEntityById
+    public class EntityById : MongoDbRepository, IEntityById
     {
-        public QueryEntityById(string connectionString) : base(connectionString)
+        public EntityById(string connectionString) : base(connectionString)
         {}
 
         public bool Exist<TCollection>(Identity id)

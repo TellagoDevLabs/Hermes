@@ -6,6 +6,7 @@ using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Business.Queries;
 using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.RestService;
 using TellagoStudios.Hermes.RestService.Extensions;
@@ -25,6 +26,7 @@ namespace RestService.Tests
         private Mock<ICreateGroupCommand> mockedCreateCommand;
         private Mock<IUpdateGroupCommand> mockedUpdateCommand;
         private Mock<IDeleteGroupCommand> mockedDeleteCommand;
+        private Mock<IEntityById> mockedEntityById;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
@@ -33,8 +35,10 @@ namespace RestService.Tests
             mockedCreateCommand = new Mock<ICreateGroupCommand>();
             mockedUpdateCommand = new Mock<IUpdateGroupCommand>();
             mockedDeleteCommand = new Mock<IDeleteGroupCommand>();
+            mockedEntityById = new Mock<IEntityById>();
             builder.RegisterInstance(new GroupsResource(
                 mockedService.Object,
+                mockedEntityById.Object,
                 mockedCreateCommand.Object,
                 mockedUpdateCommand.Object,
                 mockedDeleteCommand.Object));
@@ -57,11 +61,9 @@ namespace RestService.Tests
                                 ParentId = parent.Id
                             };
 
-            mockedService.Setup(r => r.Get(group.Id.Value)).Returns(group);
+            mockedEntityById.Setup(r => r.Get<Group>(group.Id.Value)).Returns(group);
 
             var result = client.ExecuteGet<F.Group>("/" + group.Id);
-
-            mockedService.Verify(r => r.Get(group.Id.Value));
 
             Assert.AreEqual(group.Description, result.Description);
             Assert.AreEqual(group.Id, result.Id.ToModel());
@@ -75,11 +77,9 @@ namespace RestService.Tests
         public void Validates_a_get_with_an_invalid_id()
         {
             var id = M.Identity.Random();
-            mockedService.Setup(r => r.Get(It.IsAny<M.Identity>())).Returns((M.Group)null);
+            mockedEntityById.Setup(r => r.Get<Group>(It.IsAny<M.Identity>())).Returns((M.Group)null);
 
             var result = client.ExecuteGet<F.Group>("/" + id, HttpStatusCode.NotFound);
-
-            mockedService.Verify(r => r.Get(id));
 
             Assert.IsNull(result);
         }
