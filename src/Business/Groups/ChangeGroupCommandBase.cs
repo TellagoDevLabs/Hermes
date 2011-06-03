@@ -4,7 +4,7 @@ using TellagoStudios.Hermes.Business.Queries;
 
 namespace TellagoStudios.Hermes.Business.Groups
 {
-    public class ChangeGroupCommandBase : ICreateGroupCommand
+    public class ChangeGroupCommandBase
     {
         private readonly IExistGroupByGroupName existGroupByGroupName;
         private readonly IQueryEntityById queryEntityById;

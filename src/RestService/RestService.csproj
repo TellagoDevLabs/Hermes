@@ -98,6 +98,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Extensions\LogExtensions.cs" />
+    <Compile Include="Modules\CommandsModule.cs" />
+    <Compile Include="Modules\QueriesModule.cs" />
     <Compile Include="Resources\LogResource.cs" />
     <Compile Include="Extensions\MessageExtensions.cs" />
     <Compile Include="Resources\MessageResource.cs" />

@@ -8,7 +8,7 @@ namespace TellagoStudios.Hermes.Business.Groups
         void Execute(Group group);
     }
 
-    public class CreateGroupCommand : ChangeGroupCommandBase
+    public class CreateGroupCommand : ChangeGroupCommandBase, ICreateGroupCommand
     {
         private readonly ICudOperations<Group> cudOperations;
 
