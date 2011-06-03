@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.Business.Validator;
@@ -25,9 +26,8 @@ namespace TellagoStudios.Hermes.Business.Service
             Validator.ValidateBeforeCreate(message);
             var result = Repository.Create(message);
 
-            // Push message to subscribers (callback)
-            EventAggregator.Raise(new NewMessageEvent() { Message = result });
-            //Task.Factory.StartNew(() => PushToSubscribers(result), TaskCreationOptions.None);
+            EventAggregator.Raise(new NewMessageEvent { Message = result });
+
             return result;
         }
 

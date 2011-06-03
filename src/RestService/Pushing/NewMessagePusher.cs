@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Events;
 using TellagoStudios.Hermes.Business.Model;
@@ -17,8 +18,21 @@ namespace TellagoStudios.Hermes.RestService.Pushing
 
         public void Handle(NewMessageEvent @event)
         {
-            var message = @event.Message;
+            Task.Factory.StartNew(() => Push(@event.Message), TaskCreationOptions.None);
+        }
 
+        public Type Type
+        {
+            get { return typeof(NewMessageEvent); }
+        }
+
+        public void Handle(object @event)
+        {
+            Handle((NewMessageEvent)@event);
+        }
+
+        private void Push(Message message)
+        {
             var subscriptions = SubscriptionService.GetByTopicAndTopicsGroups(message.TopicId);
 
             var filteredSubscriptions = subscriptions
@@ -33,20 +47,11 @@ namespace TellagoStudios.Hermes.RestService.Pushing
                 }
                 catch (Exception ex)
                 {
-                    LogService.LogError(string.Format(Business.Messages.ErrorPushingCallback, message.Id, subscription.Id), ex);
+                    LogService.LogError(
+                        string.Format(Business.Messages.ErrorPushingCallback, message.Id, subscription.Id), ex);
                     RetryService.Add(new Retry(message, subscription));
                 }
             }
-        }
-
-        public Type Type
-        {
-            get { return typeof(NewMessageEvent); }
-        }
-
-        public void Handle(object @event)
-        {
-            Handle((NewMessageEvent)@event);
         }
     }
 }
