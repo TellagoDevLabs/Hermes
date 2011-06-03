@@ -31,60 +31,6 @@ namespace Business.Tests.Validators
             };
         }
 
-        [Test]
-        public void WillNotUpdateIfIdIsNotInDatabase()
-        {
-            var group = CreateWith(FakeId(Identity.Random()));
-            Assert.Throws<EntityNotFoundException>(() => _validator.ValidateBeforeUpdate(group));
-        }
-
-        [Test]
-        public void WillNotUpdateIfNameIsNull()
-        {
-            var group = CreateWith(ValidId(), Name(null));
-            var exception = Assert.Throws<ValidationException>(() => _validator.ValidateBeforeUpdate(group));
-            CollectionAssert.Contains(exception.Messages.ToList(), Messages.NameMustBeNotNull);
-        }
-
-        [Test]
-        public void WillNotUpdateIfNameIsEmpty()
-        {
-            var group = CreateWith(ValidId(), Name(""));
-            var exception = Assert.Throws<ValidationException>(() => _validator.ValidateBeforeUpdate(group));
-            CollectionAssert.Contains(exception.Messages.ToList(), Messages.NameMustBeNotNull);
-        }
-
-        [Test]
-        public void WillNotUpdateIfNameIsWhitespace()
-        {
-            var group = CreateWith(ValidId(), Name("    "));
-            var exception = Assert.Throws<ValidationException>(() => _validator.ValidateBeforeUpdate(group));
-            CollectionAssert.Contains(exception.Messages.ToList(), Messages.NameMustBeNotNull);
-        }
-
-        [Test]
-        public void WillNotUpdateIfNameIsNotUnique()
-        {
-            var group = CreateWith(ValidId(), Name("Common Name"), NonUniqueName);
-            var exception = Assert.Throws<ValidationException>(() => _validator.ValidateBeforeUpdate(group));
-            CollectionAssert.Contains(exception.Messages.ToList(), string.Format(Messages.GroupNameMustBeUnique, group.Name));
-        }
-
-        [Test]
-        public void WillNotUpdateIfThereIsACircularReference()
-        {
-            var group = CreateWith(ValidId(), Name("Common Name"), AncestryCycle);
-            var exception = Assert.Throws<ValidationException>(() => _validator.ValidateBeforeUpdate(group));
-            CollectionAssert.Contains(exception.Messages.ToList(), string.Format(Messages.GroupCircleReference, group.Id));
-        }
-
-        [Test]
-        public void WillUpdateIfEverythingIsOk()
-        {
-            var group = CreateWith(ValidId(), Name("Just Fine"));
-            Assert.DoesNotThrow(() => _validator.ValidateBeforeUpdate(group));
-        }
-
         public Group CreateWith(params Action<Group>[] builders)
         {
             var group = new Group();

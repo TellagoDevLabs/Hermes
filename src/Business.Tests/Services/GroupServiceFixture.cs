@@ -59,42 +59,7 @@ namespace Business.Tests.Services
             service.Delete(groupId);
         }
 
-        [Test]
-        [ExpectedException(typeof(ValidationException))]
-        public void Should_throw_an_exception_when_updating_a_group_with_a_loop()
-        {
-            var group1 = new Group
-            {
-                Id = Identity.Random(),
-                Name = "parent name",
-                Description = "parent description"
-            };
-
-            var group2 = new Group
-            {
-                Id = Identity.Random(),
-                Name = "name",
-                Description = "description",
-                ParentId = group1.Id
-            };
-
-            var group3 = new Group
-            {
-                Id = Identity.Random(),
-                Name = "name",
-                Description = "description",
-                ParentId = group2.Id
-            };
-
-            group1.ParentId = group3.Id;
-
-            mockedRepository.Setup(r => r.ExistsById(group1.Id.Value)).Returns(true);
-            mockedRepository.Setup(r => r.Get(group1.Id.Value)).Returns(group1);
-            mockedRepository.Setup(r => r.Get(group2.Id.Value)).Returns(group2);
-            mockedRepository.Setup(r => r.Get(group3.Id.Value)).Returns(group3);
-
-            var result = service.Update(group1);
-        }
+        
 
         [Test]
         public void Should_delete_a_group()
@@ -108,33 +73,6 @@ namespace Business.Tests.Services
             service.Delete(groupId);
 
             mockedRepository.Verify(r => r.Delete(groupId));
-        }
-
-        [Test]
-        public void Should_update_a_group()
-        {
-            var parent = new Group
-                             {
-                                 Id = Identity.Random(),
-                                 Name = "parent name",
-                                 Description = "parent description"
-                             };
-            var group = new Group
-                            {
-                                Id = Identity.Random(),
-                                Name = "name",
-                                Description = "description",
-                                ParentId = parent.Id
-                            };
-
-            mockedRepository.Setup(r => r.ExistsById(group.Id.Value)).Returns(true);
-            mockedRepository.Setup(r => r.ExistsByQuery(It.Is<string>(s=>!string.IsNullOrWhiteSpace(s)))).Returns(false);
-            mockedRepository.Setup(r => r.Get(parent.Id.Value)).Returns(parent);
-            mockedRepository.Setup(r => r.Update(group)).Returns(group);
-            
-            var result = service.Update(group);
-            
-            mockedRepository.Verify(r => r.Update(group));
         }
 
         [Test]

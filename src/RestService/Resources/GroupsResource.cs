@@ -4,6 +4,7 @@ using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Net.Http;
 using Microsoft.ApplicationServer.Http;
+using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.RestService.Extensions;
@@ -15,10 +16,14 @@ namespace TellagoStudios.Hermes.RestService.Resources
     public class GroupsResource : Resource
     {
         private readonly IGroupService _groupService;
+        private readonly ICreateGroupCommand createGroupCommand;
+        private readonly IUpdateGroupCommand updateGroupCommand;
 
-        public GroupsResource(IGroupService groupService)
+        public GroupsResource(IGroupService groupService, ICreateGroupCommand createGroupCommand, IUpdateGroupCommand updateGroupCommand)
         {
             _groupService = groupService;
+            this.createGroupCommand = createGroupCommand;
+            this.updateGroupCommand = updateGroupCommand;
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
@@ -27,8 +32,8 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return  Process(() =>
                                {
                                    var instance = topic.ToModel();
-                                   var result = _groupService.Create(instance);
-                                   return result.ToFacade();
+                                   createGroupCommand.Execute(instance);
+                                   return instance.ToFacade();
                                });
         }
 
@@ -44,8 +49,8 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return Process(() =>
                                {
                                    var instance = group.ToModel();
-                                   var result = _groupService.Update(instance);
-                                   return result.ToFacade();
+                                   updateGroupCommand.Execute(instance);
+                                   return instance.ToFacade();
                                });
         }
 

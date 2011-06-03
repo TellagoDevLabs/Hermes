@@ -3,6 +3,8 @@ using Moq;
 using NUnit.Framework;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business;
+using TellagoStudios.Hermes.Business.Groups;
+using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.RestService;
 using TellagoStudios.Hermes.RestService.Extensions;
@@ -19,12 +21,16 @@ namespace RestService.Tests
     public class GroupsFixture : ResourceBaseFixture
     {
         private Mock<IGroupService> mockedService;
+        private Mock<ICreateGroupCommand> mockedCreateCommand;
+        private Mock<IUpdateGroupCommand> mockedUpdateCommand;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
             // Create a mocked repository for topics.
             mockedService = new Mock<IGroupService>(MockBehavior.Loose);
-            builder.RegisterInstance(new GroupsResource(mockedService.Object));
+            mockedCreateCommand = new Mock<ICreateGroupCommand>();
+            mockedUpdateCommand = new Mock<IUpdateGroupCommand>();
+            builder.RegisterInstance(new GroupsResource(mockedService.Object, mockedCreateCommand.Object, mockedUpdateCommand.Object));
         }
 
         protected override Type GetServiceType()
@@ -144,6 +150,7 @@ namespace RestService.Tests
         [Test]
         public void Should_post_a_topic_group()
         {
+            //TODO fix
             var groupPost = new F.GroupPost()
             {
                 Description = "description",
@@ -162,14 +169,15 @@ namespace RestService.Tests
             };
 
 
-            mockedService.Setup(r => r.Create(It.IsAny<M.Group>())).Returns(group);
+            mockedCreateCommand.Setup(r => r.Execute(It.IsAny<M.Group>()))
+                .Callback<M.Group>(g => g.Id = new Identity("4de7e38617b6c420a45a84c4"));
 
             var result = client.ExecutePost<F.GroupPost, F.Group>("", groupPost);
 
-            mockedService.Verify(r => r.Create(It.Is<M.Group>(t => t != null)));
-            mockedService.Verify(r => r.Create(It.Is<M.Group>(t => t.Description == groupPost.Description)));
-            mockedService.Verify(r => r.Create(It.Is<M.Group>(t => t.Name == groupPost.Name)));
-            mockedService.Verify(r => r.Create(It.Is<M.Group>(t => t.ParentId == groupPost.ParentId.ToModel())));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPost.Description)));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPost.Name)));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPost.ParentId.ToModel())));
 
             Assert.AreEqual(group.Description, result.Description);
             Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Parent, result.Parent.rel);
@@ -188,16 +196,16 @@ namespace RestService.Tests
                 ParentId = F.Identity.Random()
             };
 
-            mockedService.Setup(r => r.Create(It.IsAny<M.Group>())).Throws(new ValidationException("foo"));
+            mockedCreateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())).Throws(new ValidationException("foo"));
 
             var result = client.ExecutePost<F.GroupPost, F.Group>("", groupPost, HttpStatusCode.BadRequest);
 
             Assert.IsNull(result);
 
-            mockedService.Verify(r => r.Create(It.Is<M.Group>(t => t != null)));
-            mockedService.Verify(r => r.Create(It.Is<M.Group>(t => t.Description == groupPost.Description)));
-            mockedService.Verify(r => r.Create(It.Is<M.Group>(t => t.Name == groupPost.Name)));
-            mockedService.Verify(r => r.Create(It.Is<M.Group>(t => t.ParentId == groupPost.ParentId.ToModel())));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPost.Description)));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPost.Name)));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPost.ParentId.ToModel())));
         }
 
         [Test]
@@ -221,14 +229,14 @@ namespace RestService.Tests
             };
 
 
-            mockedService.Setup(r => r.Update(It.IsAny<M.Group>())).Returns(group);
+            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>()));//.Returns(group);
 
             var result = client.ExecutePut<F.GroupPut, F.Group>("", groupPut);
 
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t != null)));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.Description == groupPut.Description)));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.Name == groupPut.Name)));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPut.Description)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPut.Name)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
 
             Assert.AreEqual(group.Description, result.Description);
             Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Parent, result.Parent.rel);
@@ -248,17 +256,17 @@ namespace RestService.Tests
                 ParentId = F.Identity.Random()
             };
 
-            mockedService.Setup(r => r.Update(It.IsAny<M.Group>())).Throws(new ValidationException("foo"));
+            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())).Throws(new ValidationException("foo"));
 
             var result = client.ExecutePut<F.GroupPut, F.Group>("", groupPut, HttpStatusCode.BadRequest);
 
             Assert.IsNull(result);
 
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t != null)));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.Id == groupPut.Id.ToModel())));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.Description == groupPut.Description)));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.Name == groupPut.Name)));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Id == groupPut.Id.ToModel())));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPut.Description)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPut.Name)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
         }
 
         [Test]
@@ -272,17 +280,17 @@ namespace RestService.Tests
                 ParentId = F.Identity.Random()
             };
 
-            mockedService.Setup(r => r.Update(It.IsAny<M.Group>())).Throws<EntityNotFoundException>();
+            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())).Throws<EntityNotFoundException>();
 
             var result = client.ExecutePut<F.GroupPut, F.Group>("", groupPut, HttpStatusCode.NotFound);
 
             Assert.IsNull(result);
 
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t != null)));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.Id == groupPut.Id.ToModel())));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.Description == groupPut.Description)));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.Name == groupPut.Name)));
-            mockedService.Verify(r => r.Update(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Id == groupPut.Id.ToModel())));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPut.Description)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPut.Name)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
         }
         [Test]
         public void Should_delete_a_group()

@@ -39,7 +39,9 @@ namespace Business.Tests.Groups
         [Test]
         public void WhenParentHasTheSameId_ThenThrowException()
         {
-            var groupCommand = CreateUpdateGroupCommand(queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true));
+            var groupCommand = CreateUpdateGroupCommand(
+                            queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true
+                                                                            && q.Get<Group>(new Identity("4de7e38617b6c420a45a84c4")) == new Group()));
 
             var @group = new Group
                              {
@@ -58,14 +60,21 @@ namespace Business.Tests.Groups
         [Test]
         public void WhenParentHasParentWithTheSameId_ThenThrowException()
         {
-            var groupCommand = CreateUpdateGroupCommand(queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true));
-
             var @group = new Group
             {
                 Name = "test",
                 Id = new Identity("4de7e38617b6c420a45a84c4"),
-                ParentId = new Identity("4de7e38617b6c420a45a84c4")
+                ParentId = new Identity("4fffffff17b6c420a45a84c4")
             };
+
+            var queryEntityById = Mock.Of<IQueryEntityById>(q => 
+                            q.Exist<Group>(It.IsAny<Identity>()) == true
+                         && q.Get<Group>(new Identity("4fffffff17b6c420a45a84c4")) == new Group { ParentId = new Identity("4de7e38617b6c420a45a84c4") }
+                         && q.Get<Group>(new Identity("4de7e38617b6c420a45a84c4")) == @group);
+
+            var groupCommand = CreateUpdateGroupCommand(queryEntityById: queryEntityById);
+
+            
 
             groupCommand.Executing(gc => gc.Execute(@group))
                                     .Throws<ValidationException>()
@@ -78,7 +87,7 @@ namespace Business.Tests.Groups
         {
             var stubCudOperations = new StubCudOperations<Group>();
             var groupCommand = CreateUpdateGroupCommand(cudGroup: stubCudOperations);
-            var @group = new Group { Name = "test" };
+            var @group = new Group { Id=new Identity("4de7e38617b6c420a45a84c4"), Name = "test" };
             groupCommand.Execute(@group);
 
             stubCudOperations.Updates.Should().Contain(@group);
