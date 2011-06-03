@@ -13,13 +13,13 @@ namespace TellagoStudios.Hermes.Business.Groups
 
     public class UpdateGroupCommand : ChangeGroupCommandBase, IUpdateGroupCommand
     {
-        private readonly IQueryEntityById queryEntityById;
+        private readonly IEntityById entityById;
         private readonly ICudOperations<Group> cudOperations;
 
-        public UpdateGroupCommand(IExistGroupByGroupName existGroupByGroupName, IQueryEntityById queryEntityById, ICudOperations<Group> cudOperations) 
-            : base(existGroupByGroupName, queryEntityById)
+        public UpdateGroupCommand(IExistGroupByGroupName existGroupByGroupName, IEntityById entityById, ICudOperations<Group> cudOperations) 
+            : base(existGroupByGroupName, entityById)
         {
-            this.queryEntityById = queryEntityById;
+            this.entityById = entityById;
             this.cudOperations = cudOperations;
         }
 
@@ -37,7 +37,7 @@ namespace TellagoStudios.Hermes.Business.Groups
             while (currentParentId.HasValue)
             {
                 if(!parentsId.Add(currentParentId.Value)) break;
-                currentParentId = queryEntityById.Get<Group>(currentParentId.Value).ParentId;
+                currentParentId = entityById.Get<Group>(currentParentId.Value).ParentId;
             }
 
             if (parentsId.Contains(group.Id.Value))

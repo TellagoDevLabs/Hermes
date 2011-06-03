@@ -14,9 +14,9 @@ namespace TellagoStudios.Hermes.Business.Groups
 
         public CreateGroupCommand(
             IExistGroupByGroupName existGroupByGroupName, 
-            IQueryEntityById queryEntityById, 
+            IEntityById entityById, 
             ICudOperations<Group> cudOperations)
-            : base(existGroupByGroupName, queryEntityById)
+            : base(existGroupByGroupName, entityById)
         {
             this.cudOperations = cudOperations;
         }

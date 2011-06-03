@@ -12,18 +12,18 @@ namespace TellagoStudios.Hermes.Business.Groups
 
     public class DeleteGroupCommand : IDeleteGroupCommand
     {
-        private readonly IQueryEntityById queryEntityById;
+        private readonly IEntityById entityById;
         private readonly ICudOperations<Group> cudOperations;
         private readonly IChildGroupsOfGroup childGroupsOfGroup;
         private readonly ITopicsByGroup topicsByGroup;
 
         public DeleteGroupCommand(
-                IQueryEntityById queryEntityById, 
+                IEntityById entityById, 
                 ICudOperations<Group> cudOperations, 
                 IChildGroupsOfGroup childGroupsOfGroup, 
                 ITopicsByGroup topicsByGroup)
         {
-            this.queryEntityById = queryEntityById;
+            this.entityById = entityById;
             this.cudOperations = cudOperations;
             this.childGroupsOfGroup = childGroupsOfGroup;
             this.topicsByGroup = topicsByGroup;
@@ -35,7 +35,7 @@ namespace TellagoStudios.Hermes.Business.Groups
             {
                 throw new ValidationException(Messages.IdMustNotBeNull);
             }
-            if (!queryEntityById.Exist<Group>(group.Id.Value))
+            if (!entityById.Exist<Group>(group.Id.Value))
             {
                 throw new EntityNotFoundException(typeof (Group), group.Id.Value);
             }
