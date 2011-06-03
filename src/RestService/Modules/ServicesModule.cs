@@ -11,15 +11,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
         {
             base.Load(builder);
             
-            builder.RegisterType<GroupService>()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope()
-                .OnActivated(c =>
-                {
-                    c.Instance.Repository = c.Context.Resolve<IGroupRepository>();
-                    //c.Instance.Validator = c.Context.Resolve<GroupValidator>();
-                });
-
             builder.RegisterType<LogService>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope()
@@ -35,7 +26,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 {
                     c.Instance.Repository = c.Context.Resolve<IMessageRepository>();
                     c.Instance.Validator = c.Context.Resolve<MessageValidator>();
-                    c.Instance.GroupService = c.Context.Resolve<IGroupService>();
                     c.Instance.LogService = c.Context.Resolve<ILogService>();
                     c.Instance.RetryService = c.Context.Resolve<IRetryService>();
                     c.Instance.TopicService = c.Context.Resolve<ITopicService>();
@@ -59,7 +49,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 {
                     c.Instance.Repository = c.Context.Resolve<ISubscriptionRepository>();
                     c.Instance.Validator = c.Context.Resolve<SubscriptionValidator>();
-                    c.Instance.GroupService = c.Context.Resolve<IGroupService>();
                     c.Instance.TopicService = c.Context.Resolve<ITopicService>();
                 });
 

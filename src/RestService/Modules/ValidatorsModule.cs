@@ -17,7 +17,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 .InstancePerLifetimeScope()
                 .OnActivated(c =>
                 {
-                    c.Instance.GroupService = c.Context.Resolve<IGroupService>();
                     c.Instance.TopicService = c.Context.Resolve<ITopicService>();
                     c.Instance.SubscriptionService = c.Context.Resolve<ISubscriptionService>();
                 });
@@ -27,7 +26,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 .InstancePerLifetimeScope()
                 .OnActivated(c =>
                 {
-                    c.Instance.GroupService = c.Context.Resolve<IGroupService>();
                     c.Instance.TopicService = c.Context.Resolve<ITopicService>();
                     c.Instance.Repository = c.Context.Resolve<ISubscriptionRepository>();
                 });
@@ -37,7 +35,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 .InstancePerLifetimeScope()
                 .OnActivated(c =>
                 {
-                    c.Instance.GroupService = c.Context.Resolve<IGroupService>();
                     c.Instance.TopicRepository = c.Context.Resolve<ITopicRepository>();
                 });
 

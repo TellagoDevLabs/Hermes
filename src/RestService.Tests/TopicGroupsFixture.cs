@@ -22,23 +22,23 @@ namespace RestService.Tests
     [TestFixture]
     public class GroupsFixture : ResourceBaseFixture
     {
-        private Mock<IGroupService> mockedService;
         private Mock<ICreateGroupCommand> mockedCreateCommand;
         private Mock<IUpdateGroupCommand> mockedUpdateCommand;
         private Mock<IDeleteGroupCommand> mockedDeleteCommand;
         private Mock<IEntityById> mockedEntityById;
+        private Mock<IGenericJsonPagedQuery> mockedGenericJsonQuery;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
             // Create a mocked repository for topics.
-            mockedService = new Mock<IGroupService>(MockBehavior.Loose);
             mockedCreateCommand = new Mock<ICreateGroupCommand>();
             mockedUpdateCommand = new Mock<IUpdateGroupCommand>();
             mockedDeleteCommand = new Mock<IDeleteGroupCommand>();
             mockedEntityById = new Mock<IEntityById>();
+            mockedGenericJsonQuery = new Mock<IGenericJsonPagedQuery>();
             builder.RegisterInstance(new GroupsResource(
-                mockedService.Object,
                 mockedEntityById.Object,
+                mockedGenericJsonQuery.Object,
                 mockedCreateCommand.Object,
                 mockedUpdateCommand.Object,
                 mockedDeleteCommand.Object));
@@ -103,11 +103,11 @@ namespace RestService.Tests
                                 ParentId = parent.Id
                                 }
                              };
-            mockedService.Setup(r => r.Find(null, null, null)).Returns(groups);
+            mockedGenericJsonQuery.Setup(r => r.Execute<Group>(null, null, null)).Returns(groups);
 
             var result = client.ExecuteGet<F.Group[]>("");
 
-            mockedService.Verify(r => r.Find(null, null, null));
+            mockedGenericJsonQuery.Verify(r => r.Execute<Group>(null, null, null));
 
             Assert.IsNotNull(groups);
             Assert.AreEqual(groups.Length, result.Length);
@@ -121,11 +121,11 @@ namespace RestService.Tests
             int? skip = null;
             int? limited = null;
 
-            mockedService.Setup(r => r.Find(query, skip, limited)).Returns(new M.Group[0]);
+            mockedGenericJsonQuery.Setup(r => r.Execute<Group>(query, skip, limited)).Returns(new M.Group[0]);
 
             var result = client.ExecuteGet<F.Group[]>("?query=" + query);
 
-            mockedService.Verify(r => r.Find(query, skip, limited));
+            mockedGenericJsonQuery.Verify(r => r.Execute<Group>(query, skip, limited));
         }
 
         [Test]
@@ -134,11 +134,11 @@ namespace RestService.Tests
             string query = null;
             int? skip = 2;
             int? limited = 10;
-            mockedService.Setup(r => r.Find(query, skip, limited)).Returns(new M.Group[0]);
+            mockedGenericJsonQuery.Setup(r => r.Execute<Group>(query, skip, limited)).Returns(new M.Group[0]);
 
             var result = client.ExecuteGet<F.Group[]>("?skip=" + skip.ToString() + "&limit=" + limited.ToString());
 
-            mockedService.Verify(r => r.Find(query, skip, limited));
+            mockedGenericJsonQuery.Verify(r => r.Execute<Group>(query, skip, limited));
         }
 
         [Test]
@@ -147,11 +147,11 @@ namespace RestService.Tests
             string query = "foo query";
             int? skip = 2;
             int? limited = 10;
-            mockedService.Setup(r => r.Find(query, skip, limited)).Returns(new M.Group[0]);
+            mockedGenericJsonQuery.Setup(r => r.Execute<Group>(query, skip, limited)).Returns(new M.Group[0]);
 
             var result = client.ExecuteGet<F.Group[]>("?query=" + query + "&skip=" + skip.ToString() + "&limit=" + limited.ToString());
 
-            mockedService.Verify(r => r.Find(query, skip, limited));
+            mockedGenericJsonQuery.Verify(r => r.Execute<Group>(query, skip, limited));
         }
 
         [Test]

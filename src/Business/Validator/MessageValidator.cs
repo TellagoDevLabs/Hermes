@@ -9,7 +9,6 @@ namespace TellagoStudios.Hermes.Business.Validator
     public class MessageValidator
     {
         public ITopicService TopicService { get; set; }
-        public IGroupService GroupService { get; set; }
         public ISubscriptionService SubscriptionService { get; set; }
 
         public void ValidateSubsriptionExists(Identity id)

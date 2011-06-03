@@ -10,7 +10,6 @@ namespace TellagoStudios.Hermes.Business.Validator
     public class TopicValidator
     {
         public ITopicRepository TopicRepository { get; set; }
-        public IGroupService GroupService { get; set; }
 
         public void ValidateBeforeCreate(Topic instance)
         {

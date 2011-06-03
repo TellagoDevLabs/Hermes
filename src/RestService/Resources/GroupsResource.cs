@@ -16,20 +16,20 @@ namespace TellagoStudios.Hermes.RestService.Resources
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
     public class GroupsResource : Resource
     {
-        private readonly IGroupService groupService;
         private readonly IEntityById entityById;
+        private readonly IGenericJsonPagedQuery genericJsonPagedQuery;
         private readonly ICreateGroupCommand createGroupCommand;
         private readonly IUpdateGroupCommand updateGroupCommand;
         private readonly IDeleteGroupCommand deleteGroupCommand;
 
-        public GroupsResource(IGroupService groupService, 
-            IEntityById entityById,
+        public GroupsResource(IEntityById entityById,
+            IGenericJsonPagedQuery genericJsonPagedQuery,
             ICreateGroupCommand createGroupCommand, 
             IUpdateGroupCommand updateGroupCommand,
             IDeleteGroupCommand deleteGroupCommand)
         {
-            this.groupService = groupService;
             this.entityById = entityById;
+            this.genericJsonPagedQuery = genericJsonPagedQuery;
             this.createGroupCommand = createGroupCommand;
             this.updateGroupCommand = updateGroupCommand;
             this.deleteGroupCommand = deleteGroupCommand;
@@ -82,7 +82,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
         #region Private members
         private Facade.Group[] Find(string query, int? skip, int? limit)
         {
-            var result = groupService.Find(query, skip, limit);
+            var result = genericJsonPagedQuery.Execute<Group>(query, skip, limit);
             return result.Select(item => item.ToFacade()).ToArray();
         }
         #endregion

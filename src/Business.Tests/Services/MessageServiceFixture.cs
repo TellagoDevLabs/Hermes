@@ -16,14 +16,12 @@ namespace Business.Tests.Services
         private MessageService service;
         private Mock<IMessageRepository> mockedRepository;
         private Mock<ITopicService> mockedTopicService;
-        private Mock<IGroupService> mockedGroupService;
         private Mock<ISubscriptionService> mockedSubscriptionService;
 
         [TestFixtureSetUp]
         public void SetUpFixture()
         {
             mockedTopicService = new Mock<ITopicService>(MockBehavior.Loose);
-            mockedGroupService = new Mock<IGroupService>(MockBehavior.Loose);
             mockedRepository = new Mock<IMessageRepository>(MockBehavior.Loose);
             mockedSubscriptionService = new Mock<ISubscriptionService>(MockBehavior.Loose);
 
@@ -33,11 +31,9 @@ namespace Business.Tests.Services
                 Validator = new MessageValidator
                 {
                     TopicService = mockedTopicService.Object, 
-                    GroupService = mockedGroupService.Object, 
                     SubscriptionService = mockedSubscriptionService.Object
                 },
                 TopicService = mockedTopicService.Object,
-                GroupService = mockedGroupService.Object,
                 SubscriptionService = mockedSubscriptionService.Object
             };
         }

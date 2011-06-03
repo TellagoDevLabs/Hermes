@@ -13,7 +13,6 @@ namespace Business.Tests.Validators
     public class MessageValidatorFixture
     {
         private Mock<ITopicService> topicService;
-        private Mock<IGroupService> groupService;
         private Mock<ISubscriptionService> subscriptionService;
         private MessageValidator validator;
 
@@ -21,13 +20,11 @@ namespace Business.Tests.Validators
         public void FixtureSetUp()
         {
             topicService = new Mock<ITopicService>(MockBehavior.Loose);
-            groupService = new Mock<IGroupService>(MockBehavior.Loose);
             subscriptionService = new Mock<ISubscriptionService>(MockBehavior.Loose);
 
             validator = new MessageValidator
             {
                 TopicService = topicService.Object,
-                GroupService = groupService.Object,
                 SubscriptionService = subscriptionService.Object
             };
         }

@@ -11,7 +11,6 @@ namespace TellagoStudios.Hermes.Business.Validator
     {
         public ISubscriptionRepository Repository { get; set; }
         public ITopicService TopicService { get; set; }
-        public IGroupService GroupService { get; set; }
 
         public void ValidateBeforeGetByTopic(Identity topicId)
         {

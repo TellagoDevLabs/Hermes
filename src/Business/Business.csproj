@@ -108,7 +108,6 @@
     <Compile Include="Repository\ISubscriptionRepository.cs" />
     <Compile Include="Repository\ITopicRepository.cs" />
     <Compile Include="ResourceLocation.cs" />
-    <Compile Include="Service\IGroupService.cs" />
     <Compile Include="Repository\IGroupQueries.cs" />
     <Compile Include="Service\ILogService.cs" />
     <Compile Include="Service\IMessageService.cs" />
@@ -119,7 +118,6 @@
     <Compile Include="Service\MessageService.cs" />
     <Compile Include="Service\RetryService.cs" />
     <Compile Include="Service\SubscriptionService.cs" />
-    <Compile Include="Service\GroupService.cs" />
     <Compile Include="Service\TopicService.cs" />
     <Compile Include="Validator\MessageValidator.cs" />
     <Compile Include="Validator\SubscriptionValidator.cs" />

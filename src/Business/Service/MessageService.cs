@@ -14,7 +14,6 @@ namespace TellagoStudios.Hermes.Business.Service
     {
         public IMessageRepository Repository { get; set; }
         public MessageValidator Validator { get; set; }
-        public IGroupService GroupService { get; set; }
         public ITopicService TopicService { get; set; }
         public ISubscriptionService SubscriptionService { get; set; }
         public IRetryService RetryService { get; set; }

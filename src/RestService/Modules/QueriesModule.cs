@@ -1,6 +1,8 @@
 using System.Configuration;
 using Autofac;
+using TellagoStudios.Hermes.Business.Queries;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
+using TellagoStudios.Hermes.DataAccess.Queries;
 
 namespace TellagoStudios.Hermes.RestService.Modules
 {
@@ -15,7 +17,10 @@ namespace TellagoStudios.Hermes.RestService.Modules
                     "A connection string names \"db.connectionString\" is missing at configuration file.");
             }
 
-            base.Load(builder);
+            builder.RegisterGeneric(typeof (CudOperations<>))
+                    .As(typeof (ICudOperations<>))
+                    .WithParameter("connectionString", cs.ConnectionString);
+
             builder.RegisterAssemblyTypes(typeof (MongoDbRepository).Assembly)
                 .Where( t =>  t.Namespace.StartsWith("TellagoStudios.Hermes.DataAccess.Queries") && !t.IsAbstract && !t.IsInterface)
                 .WithParameter("connectionString", cs.ConnectionString)

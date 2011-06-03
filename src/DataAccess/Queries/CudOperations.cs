@@ -6,7 +6,8 @@ using TellagoStudios.Hermes.DataAccess.MongoDB;
 
 namespace TellagoStudios.Hermes.DataAccess.Queries
 {
-    public class CudOperations<TDocument> : MongoDbRepository , ICudOperations<TDocument> where TDocument : DocumentBase
+    public class CudOperations<TDocument> : MongoDbRepository,
+        ICudOperations<TDocument> where TDocument : DocumentBase
     {
         private readonly MongoCollection<TDocument> collection;
 
