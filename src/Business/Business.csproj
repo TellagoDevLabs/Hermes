@@ -91,6 +91,7 @@
     <Compile Include="Model\TargetKind.cs" />
     <Compile Include="Model\Topic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\IQueryChildGroups.cs" />
     <Compile Include="Queries\ICudOperations.cs" />
     <Compile Include="Queries\IQueryEntityById.cs" />
     <Compile Include="Queries\IExistGroupByGroupName.cs" />

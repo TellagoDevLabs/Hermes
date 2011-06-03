@@ -13,11 +13,14 @@ namespace Business.Tests.Groups
     [TestFixture]
     public class DeleteGroupCommandTests 
     {
-        public DeleteGroupCommand CreateCommand(IQueryEntityById queryEntityById = null, ICudOperations<Group> cudGroup = null)
+        public DeleteGroupCommand CreateCommand(IQueryEntityById queryEntityById = null, 
+                                                ICudOperations<Group> cudGroup = null, 
+                                                IQueryChildGroups queryChildGroups = null)
         {
             return new DeleteGroupCommand(
                                 queryEntityById ?? Mock.Of<IQueryEntityById>(), 
-                                cudGroup ?? Mock.Of<ICudOperations<Group>>());    
+                                cudGroup ?? Mock.Of<ICudOperations<Group>>(),
+                                queryChildGroups ?? Mock.Of<IQueryChildGroups>());    
         }
 
         [Test]
@@ -36,6 +39,17 @@ namespace Business.Tests.Groups
 
             command.Executing(c => c.Execute(new Group {Id = new Identity("4de7e38617b6c420a45a84c4")}))
                 .Throws<EntityNotFoundException>();
+        }
+
+        [Test]
+        public void WhenGroupHasChildGroups_ThenThrow()
+        {
+            var command = CreateCommand(queryEntityById: Mock.Of<IQueryEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true),
+                                        queryChildGroups: Mock.Of<IQueryChildGroups>(qg => qg.HasChilds(It.IsAny<Group>()) == true));
+
+            command.Executing(c => c.Execute(new Group { Id = new Identity("4de7e38617b6c420a45a84c4") }))
+                .Throws<ValidationException>()
+                .And.Exception.Message.Should().Be.EqualTo(Messages.GroupContainsChildGroups);
         }
 
         [Test]
