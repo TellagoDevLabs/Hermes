@@ -1,11 +1,9 @@
 ﻿using System;
 using Moq;
 using NUnit.Framework;
-using TellagoStudios.Hermes.Business.Service;
-using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.Business.Model;
 
-namespace Business.Tests.Services
+namespace TellagoStudios.Hermes.Logging.Tests
 {
     [TestFixture]
     public class LogServiceFixture

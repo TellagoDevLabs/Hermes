@@ -66,7 +66,6 @@
     <Compile Include="Events\NewMessageEvent.cs" />
     <Compile Include="Exceptions\EntityNotFoundException.cs" />
     <Compile Include="Exceptions\ValidationException.cs" />
-    <Compile Include="Extensions\LogServiceExtensions.cs" />
     <Compile Include="Extensions\ModelExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsGenericExtensions.cs" />
@@ -77,8 +76,6 @@
     <Compile Include="Model\CallbackKind.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\Identity.cs" />
-    <Compile Include="Model\LogEntry.cs" />
-    <Compile Include="Model\LogEntryType.cs" />
     <Compile Include="Model\Message.cs" />
     <Compile Include="Model\MessageKey.cs" />
     <Compile Include="Model\Retry.cs" />
@@ -89,18 +86,15 @@
     <Compile Include="Repository\ISubscriptionQueries.cs" />
     <Compile Include="Repository\ITopicQueries.cs" />
     <Compile Include="Repository\IGroupRepository.cs" />
-    <Compile Include="Repository\ILogRepository.cs" />
     <Compile Include="Repository\IMessageRepository.cs" />
     <Compile Include="Repository\IRetryRepository.cs" />
     <Compile Include="Repository\ISubscriptionRepository.cs" />
     <Compile Include="Repository\ITopicRepository.cs" />
     <Compile Include="Service\IGroupService.cs" />
     <Compile Include="Repository\IGroupQueries.cs" />
-    <Compile Include="Service\ILogService.cs" />
     <Compile Include="Service\IMessageService.cs" />
     <Compile Include="Service\ISubscriptionService.cs" />
     <Compile Include="Service\ITopicService.cs" />
-    <Compile Include="Service\LogService.cs" />
     <Compile Include="Service\MessageService.cs" />
     <Compile Include="Service\SubscriptionService.cs" />
     <Compile Include="Service\GroupService.cs" />

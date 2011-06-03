@@ -9,7 +9,7 @@ namespace TellagoStudios.Hermes.Client
         void DeleteTopic(Identity topicId);
         Topic[] GetTopicsByGroup(Identity groupId);
         
-        void CreateGroup(GroupPost groupPost);        
+        void CreateGroup(GroupPost groupPost);
         void UpdateGroup(GroupPut groupPut);
         void DeleteGroup(Identity groupId);
         Group[] GetGroups();

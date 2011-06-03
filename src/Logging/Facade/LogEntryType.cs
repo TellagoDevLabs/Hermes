@@ -1,4 +1,4 @@
-﻿namespace TellagoStudios.Hermes.Business.Model
+﻿namespace TellagoStudios.Hermes.Logging.Facade
 {
     public enum LogEntryType
     {

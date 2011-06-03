@@ -58,7 +58,6 @@
     <Compile Include="MongoDB\MongoDbDriverExtensions.cs" />
     <Compile Include="MongoDB\MongoDbRepository.cs" />
     <Compile Include="MongoDB\MongoDbConstants.cs" />
-    <Compile Include="MongoDB\MongoDbLogRepository.cs" />
     <Compile Include="MongoDB\MongoDbMessageRepository.cs" />
     <Compile Include="MongoDB\MongoDbRetryRepository.cs" />
     <Compile Include="MongoDB\MongoDbSubscriptionRepository.cs" />

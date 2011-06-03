@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C092B1FE-42FB-404B-AE80-A12C54BB9B7F}</ProjectGuid>
+    <ProjectGuid>{1B0C415F-4C30-45A0-8996-00886A14BF56}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataAccess.Tests</RootNamespace>
-    <AssemblyName>DataAccess.Tests</AssemblyName>
+    <RootNamespace>TellagoStudios.Hermes.Logging</RootNamespace>
+    <AssemblyName>TellagoStudios.Hermes.Logging</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,18 +31,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.ApplicationServer.Http">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.ApplicationServer.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Net.Http">
+      <HintPath>..\..\Lib\WCF Web API Preview 4\Microsoft.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>..\..\lib\Mongo\MongoDB.Bson.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Driver">
       <HintPath>..\..\lib\Mongo\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.5.7.10213, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,36 +54,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Facade\Identity.cs" />
+    <Compile Include="Facade\LogEntry.cs" />
+    <Compile Include="Facade\LogEntryType.cs" />
+    <Compile Include="IdentityExtensions.cs" />
+    <Compile Include="IdentityGenerator.cs" />
+    <Compile Include="IdentitySerializer.cs" />
+    <Compile Include="ILogRepository.cs" />
+    <Compile Include="ILogService.cs" />
+    <Compile Include="LogEntry.cs" />
+    <Compile Include="LogEntryType.cs" />
+    <Compile Include="LogExtensions.cs" />
+    <Compile Include="LogResource.cs" />
+    <Compile Include="LogService.cs" />
+    <Compile Include="LogServiceExtensions.cs" />
+    <Compile Include="Messages.cs" />
+    <Compile Include="MongoDbBsonExtensions.cs" />
+    <Compile Include="MongoDbDriverExtensions.cs" />
+    <Compile Include="MongoDbLogRepository.cs" />
+    <Compile Include="MongoDbRepository.cs" />
+    <Compile Include="MongoTraceListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\MongoDbGroupFixture.cs" />
-    <Compile Include="Repository\ExtensionsTest.cs" />
-    <Compile Include="Repository\MongoDbBaseFixture.cs" />
-    <Compile Include="Repository\MongoDbLogRepositoryFixture.cs" />
-    <Compile Include="Repository\MongoDbMessageFixture.cs" />
-    <Compile Include="Repository\MongoDbSubscriptionFixture.cs" />
-    <Compile Include="Repository\MongoDbTopicRepositoryFixture.cs" />
-    <Compile Include="Repository\Utils.cs" />
+    <Compile Include="Resource.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">
       <Project>{804039D3-A911-43CC-A75F-85E544C71629}</Project>
       <Name>Business</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
-      <Project>{4A5D3818-5B3A-41FE-AD1C-5BCAC14BDBA7}</Project>
-      <Name>DataAccess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logging\Logging.csproj">
-      <Project>{1B0C415F-4C30-45A0-8996-00886A14BF56}</Project>
-      <Name>Logging</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="mongod_32.exe" />
-    <EmbeddedResource Include="mongod_64.exe" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Processor\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

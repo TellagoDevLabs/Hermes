@@ -1,7 +1,6 @@
 ﻿using System;
-using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.RestService.Extensions
+namespace TellagoStudios.Hermes.Logging
 {
     public static class LogExtensions
     {

@@ -1,6 +1,7 @@
 using System.Configuration;
 using Autofac;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
+using TellagoStudios.Hermes.Logging;
 
 namespace TellagoStudios.Hermes.RestService.Modules
 {

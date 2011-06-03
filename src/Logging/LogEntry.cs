@@ -1,6 +1,7 @@
 ﻿using System;
+using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.Business.Model
+namespace TellagoStudios.Hermes.Logging
 {
     public class LogEntry
     {

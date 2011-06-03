@@ -3,6 +3,7 @@ using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.Business.Validator;
 using TellagoStudios.Hermes.Business.Events;
+using TellagoStudios.Hermes.Logging;
 using TellagoStudios.Hermes.RestService.Pushing;
 
 namespace TellagoStudios.Hermes.RestService.Modules
@@ -38,7 +39,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                     c.Instance.Repository = c.Context.Resolve<IMessageRepository>();
                     c.Instance.Validator = c.Context.Resolve<MessageValidator>();
                     c.Instance.GroupService = c.Context.Resolve<IGroupService>();
-                    c.Instance.LogService = c.Context.Resolve<ILogService>();
                     c.Instance.TopicService = c.Context.Resolve<ITopicService>();
                     c.Instance.SubscriptionService = c.Context.Resolve<ISubscriptionService>();
                     c.Instance.EventAggregator = c.Context.Resolve<IEventAggregator>();
@@ -50,7 +50,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 .OnActivated(c =>
                 {
                     c.Instance.Repository = c.Context.Resolve<IRetryRepository>();
-                    c.Instance.LogService = c.Context.Resolve<ILogService>();
                 });
 
             builder.RegisterType<SubscriptionService>()

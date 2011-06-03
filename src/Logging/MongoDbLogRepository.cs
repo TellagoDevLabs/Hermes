@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Linq;
-using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using System.Collections.Generic;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
-using TellagoStudios.Hermes.Business.Repository;
+using TellagoStudios.Hermes.Business;
+using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.DataAccess.MongoDB
+namespace TellagoStudios.Hermes.Logging
 {
     public class MongoDbLogRepository : MongoDbRepository, ILogRepository
     {
@@ -23,7 +20,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
                     .SetAutoIndexId(true)
                     .SetCapped(true)
                     .SetMaxSize(1000000);
-
+                
                 var creationResult = DB.CreateCollection(Constants.Collections.Log, optionsBuilder);
                 if (!creationResult.Ok)
                     throw new Exception(creationResult.ErrorMessage);
@@ -44,7 +41,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
 
         public LogEntry Get(Identity id)
         {
-            var entry = _logCollection.FindById(id);
+            var entry = MongoDbDriverExtensions.FindById<LogEntry>(_logCollection, id);
             return entry;
         }
         

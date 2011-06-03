@@ -5,14 +5,12 @@ using System.Threading.Tasks;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Repository;
-using TellagoStudios.Hermes.Business.Service;
 
 namespace TellagoStudios.Hermes.RestService.Pushing
 {
     public class RetryService : IRetryService
     {
         public IRetryRepository Repository { get; set; }
-        public ILogService LogService { get; set; }
 
         public bool IsRunning { get; private set; } 
 
@@ -68,7 +66,9 @@ namespace TellagoStudios.Hermes.RestService.Pushing
                     }
                     catch (Exception ex)
                     {
-                        LogService.LogError(string.Format(Business.Messages.ErrorPushingCallback, retry.Message.Id, retry.Subscription.Id), ex);
+                        System.Diagnostics.Trace.TraceError(
+                            string.Format(Business.Messages.ErrorPushingCallback, retry.Message.Id, retry.Subscription.Id) +
+                            "\r\n" + ex);
                         HandleRetryLogic(retry);
                     }
                 }
