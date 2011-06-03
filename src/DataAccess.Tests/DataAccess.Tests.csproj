@@ -61,7 +61,6 @@
     <Compile Include="Repository\MongoDbGroupFixture.cs" />
     <Compile Include="Repository\ExtensionsTest.cs" />
     <Compile Include="Repository\MongoDbBaseFixture.cs" />
-    <Compile Include="Repository\MongoDbLogRepositoryFixture.cs" />
     <Compile Include="Repository\MongoDbMessageFixture.cs" />
     <Compile Include="Repository\MongoDbSubscriptionFixture.cs" />
     <Compile Include="Repository\MongoDbTopicRepositoryFixture.cs" />
@@ -75,10 +74,6 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
       <Project>{4A5D3818-5B3A-41FE-AD1C-5BCAC14BDBA7}</Project>
       <Name>DataAccess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logging\Logging.csproj">
-      <Project>{1B0C415F-4C30-45A0-8996-00886A14BF56}</Project>
-      <Name>Logging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +95,6 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Exec Condition="Exists('$(ProjectDir)packages.config')"
-            Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)packages.config')" Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
   </Target>
 </Project>

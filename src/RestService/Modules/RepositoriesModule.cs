@@ -1,7 +1,6 @@
 using System.Configuration;
 using Autofac;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
-using TellagoStudios.Hermes.Logging;
 
 namespace TellagoStudios.Hermes.RestService.Modules
 {
@@ -28,11 +27,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 .WithParameter("connectionString", cs.ConnectionString);
 
             builder.RegisterType<MongoDbTopicRepository>()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope()
-                .WithParameter("connectionString", cs.ConnectionString);
-
-            builder.RegisterType<MongoDbLogRepository>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope()
                 .WithParameter("connectionString", cs.ConnectionString);

@@ -6,7 +6,6 @@ using System.Web.Routing;
 using Autofac;
 using Microsoft.ApplicationServer.Http.Activation;
 using Microsoft.ApplicationServer.Http.Description;
-using TellagoStudios.Hermes.Logging;
 using TellagoStudios.Hermes.RestService.Pushing;
 using TellagoStudios.Hermes.RestService.Resources;
 using TellagoStudios.Hermes.Business.Events;
@@ -50,7 +49,6 @@ namespace TellagoStudios.Hermes.RestService
             RouteTable.Routes.MapServiceRoute<MessageResource>(Constants.Routes.Messages, config);
             RouteTable.Routes.MapServiceRoute<GroupsResource>(Constants.Routes.Groups, config);
             RouteTable.Routes.MapServiceRoute<SubscriptionResource>(Constants.Routes.Subscriptions, config);
-            RouteTable.Routes.MapServiceRoute<LogResource>(Constants.Routes.Log, config);
 
             #endregion
 
@@ -68,8 +66,6 @@ namespace TellagoStudios.Hermes.RestService
 
             #endregion
 
-            System.Diagnostics.Trace.Listeners.Clear();
-            System.Diagnostics.Trace.Listeners.Add(new MongoTraceListener(container.Resolve<ILogService>()));
         }
 
         void Application_Start(object sender, EventArgs e)

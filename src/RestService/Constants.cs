@@ -24,7 +24,6 @@
             public const string Groups = "groups";
             public const string Subscriptions = "subscriptions";
             public const string Retries = "retries";
-            public const string Log = "log";
         }
 
         public static class Relationships

@@ -3,7 +3,6 @@ using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.Business.Validator;
 using TellagoStudios.Hermes.Business.Events;
-using TellagoStudios.Hermes.Logging;
 using TellagoStudios.Hermes.RestService.Pushing;
 
 namespace TellagoStudios.Hermes.RestService.Modules
@@ -21,14 +20,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 {
                     c.Instance.Repository = c.Context.Resolve<IGroupRepository>();
                     c.Instance.Validator = c.Context.Resolve<GroupValidator>();
-                });
-
-            builder.RegisterType<LogService>()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope()
-                .OnActivated(c =>
-                {
-                    c.Instance.Repository = c.Context.Resolve<ILogRepository>();
                 });
 
             builder.RegisterType<MessageService>()
