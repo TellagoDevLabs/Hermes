@@ -42,7 +42,6 @@
     <Compile Include="Utils.cs" />
     <Compile Include="Util\StubCudOperations.cs" />
     <Compile Include="Validators\MessageValidatorFixture.cs" />
-    <Compile Include="Validators\GroupValidatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MongoDB.Bson">

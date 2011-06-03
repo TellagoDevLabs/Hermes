@@ -12,15 +12,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
             base.Load(builder);
             #region Validators
 
-            builder.RegisterType<GroupValidator>()
-                .AsSelf()
-                .InstancePerLifetimeScope()
-                .OnActivated(c =>
-                {
-                    c.Instance.Repository = c.Context.Resolve<IGroupRepository>();
-                    c.Instance.TopicService = c.Context.Resolve<ITopicService>();
-                });
-
             builder.RegisterType<MessageValidator>()
                 .AsSelf()
                 .InstancePerLifetimeScope()

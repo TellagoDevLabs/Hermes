@@ -17,7 +17,7 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 .OnActivated(c =>
                 {
                     c.Instance.Repository = c.Context.Resolve<IGroupRepository>();
-                    c.Instance.Validator = c.Context.Resolve<GroupValidator>();
+                    //c.Instance.Validator = c.Context.Resolve<GroupValidator>();
                 });
 
             builder.RegisterType<LogService>()

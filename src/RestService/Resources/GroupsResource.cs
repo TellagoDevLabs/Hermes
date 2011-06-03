@@ -18,12 +18,17 @@ namespace TellagoStudios.Hermes.RestService.Resources
         private readonly IGroupService _groupService;
         private readonly ICreateGroupCommand createGroupCommand;
         private readonly IUpdateGroupCommand updateGroupCommand;
+        private readonly IDeleteGroupCommand deleteGroupCommand;
 
-        public GroupsResource(IGroupService groupService, ICreateGroupCommand createGroupCommand, IUpdateGroupCommand updateGroupCommand)
+        public GroupsResource(IGroupService groupService, 
+            ICreateGroupCommand createGroupCommand, 
+            IUpdateGroupCommand updateGroupCommand,
+            IDeleteGroupCommand deleteGroupCommand)
         {
             _groupService = groupService;
             this.createGroupCommand = createGroupCommand;
             this.updateGroupCommand = updateGroupCommand;
+            this.deleteGroupCommand = deleteGroupCommand;
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
@@ -57,7 +62,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
         [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
         public HttpResponseMessage Delete(Identity id)
         {
-            return Process(()=>_groupService.Delete(id));
+            return Process(() => deleteGroupCommand.Execute(new Group { Id = id }));
         }
 
         [WebGet(UriTemplate = "?query={query}&skip={skip}&limit={limit}")]

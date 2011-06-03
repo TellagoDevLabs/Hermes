@@ -24,6 +24,7 @@ namespace RestService.Tests
         private Mock<IGroupService> mockedService;
         private Mock<ICreateGroupCommand> mockedCreateCommand;
         private Mock<IUpdateGroupCommand> mockedUpdateCommand;
+        private Mock<IDeleteGroupCommand> mockedDeleteCommand;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
@@ -31,7 +32,12 @@ namespace RestService.Tests
             mockedService = new Mock<IGroupService>(MockBehavior.Loose);
             mockedCreateCommand = new Mock<ICreateGroupCommand>();
             mockedUpdateCommand = new Mock<IUpdateGroupCommand>();
-            builder.RegisterInstance(new GroupsResource(mockedService.Object, mockedCreateCommand.Object, mockedUpdateCommand.Object));
+            mockedDeleteCommand = new Mock<IDeleteGroupCommand>();
+            builder.RegisterInstance(new GroupsResource(
+                mockedService.Object,
+                mockedCreateCommand.Object,
+                mockedUpdateCommand.Object,
+                mockedDeleteCommand.Object));
         }
 
         protected override Type GetServiceType()
@@ -289,12 +295,9 @@ namespace RestService.Tests
         public void Should_delete_a_group()
         {
             var id = M.Identity.Random();
-
-            mockedService.Setup(s => s.Exists(id)).Returns(true);
-
             client.ExecuteDelete("/" + id);
 
-            mockedService.Verify(r => r.Delete(id));
+            mockedDeleteCommand.Verify(r => r.Execute(It.Is<Group>(g => g.Id == id)));
         }
     }
 }

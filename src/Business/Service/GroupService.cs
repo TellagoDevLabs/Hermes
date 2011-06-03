@@ -8,17 +8,10 @@ namespace TellagoStudios.Hermes.Business.Service
     public class GroupService : IGroupService
     {
         public IGroupRepository Repository { get; set; }
-        public GroupValidator Validator { get; set; }
 
         public Group Get(Identity id)
         {
             return Repository.Get(id);
-        }
-
-        public void Delete(Identity id)
-        {
-            Validator.ValidateBeforeDelete(id);
-            Repository.Delete(id);
         }
 
         public IEnumerable<Group> Find(string query, int? skip, int? limit)

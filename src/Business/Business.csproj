@@ -120,7 +120,6 @@
     <Compile Include="Service\TopicService.cs" />
     <Compile Include="Validator\MessageValidator.cs" />
     <Compile Include="Validator\SubscriptionValidator.cs" />
-    <Compile Include="Validator\GroupValidator.cs" />
     <Compile Include="Validator\TopicValidator.cs" />
   </ItemGroup>
   <ItemGroup>
