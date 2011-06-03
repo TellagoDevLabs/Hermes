@@ -14,7 +14,7 @@ namespace DataAccess.Tests.Queries
         [Test]
         public void InsertingShouldWork()
         {
-            var cudGroup = new CUDGroups(connectionString);
+            var cudGroup = new CudOperations<Group>(connectionString);
             var document = new Group{Name = "Test", Description = "Abcd"};
             cudGroup.MakePersistent(document);
 
@@ -27,7 +27,7 @@ namespace DataAccess.Tests.Queries
         [Test]
         public void DeleteShouldWork()
         {
-            var cudGroup = new CUDGroups(connectionString);
+            var cudGroup = new CudOperations<Group>(connectionString);
 
             var document = new Group { Name = "Test", Description = "Abcd" };
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups).Insert(document);
@@ -43,7 +43,7 @@ namespace DataAccess.Tests.Queries
         [Test]
         public void UpdateShouldWork()
         {
-            var cudGroup = new CUDGroups(connectionString);
+            var cudGroup = new CudOperations<Group>(connectionString);
 
             var document = new Group { Name = "Test", Description = "Abcd" };
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups).Insert(document);

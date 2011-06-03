@@ -96,6 +96,7 @@
     <Compile Include="Queries\ICudOperations.cs" />
     <Compile Include="Queries\IEntityById.cs" />
     <Compile Include="Queries\IExistGroupByGroupName.cs" />
+    <Compile Include="Queries\IGenericJsonPagedQuery.cs" />
     <Compile Include="Queries\IQueryGroupAncestors.cs" />
     <Compile Include="Queries\ITopicsByGroup.cs" />
     <Compile Include="Repository\ISubscriptionQueries.cs" />

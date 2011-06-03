@@ -76,13 +76,14 @@ namespace TellagoStudios.Hermes.Business.Service
 
         public IEnumerable<Subscription> GetByTopicAndTopicsGroups(Identity topicId)
         {
-            var topic = TopicService.Get(topicId);
-            var subscriptions = Repository.ForTopic(topicId).ToList();
+            //var topic = TopicService.Get(topicId);
+            //var subscriptions = Repository.ForTopic(topicId).ToList();
 
-            var groups = GroupService.GetAncestry(topic.GroupId);
-            subscriptions.AddRange(groups.SelectMany(g => Repository.ForGroup(g.Id.Value)));
+            //var groups = GroupService.GetAncestry(topic.GroupId);
+            //subscriptions.AddRange(groups.SelectMany(g => Repository.ForGroup(g.Id.Value)));
 
-            return subscriptions.Distinct(new SubscriptionComparer());
+            //return subscriptions.Distinct(new SubscriptionComparer());
+            yield break;
         }
 
         class SubscriptionComparer : IEqualityComparer<Subscription>

@@ -63,10 +63,10 @@ namespace TellagoStudios.Hermes.Business.Validator
             var errors = new List<string>();
 
             // groupId is valid
-            if (!GroupService.Exists(groupId))
-            {
-                errors.Add(string.Format(Messages.EntityNotFound, typeof(Group).Name, groupId));
-            }
+            //if (!GroupService.Exists(groupId))
+            //{
+            //    errors.Add(string.Format(Messages.EntityNotFound, typeof(Group).Name, groupId));
+            //}
 
             // Any error?
             if (errors.Count > 0) throw new ValidationException(errors);

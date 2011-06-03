@@ -6,41 +6,28 @@ using TellagoStudios.Hermes.DataAccess.MongoDB;
 
 namespace TellagoStudios.Hermes.DataAccess.Queries
 {
-    public abstract class CudOperations<T> : MongoDbRepository , ICudOperations<T> where T : DocumentBase
+    public class CudOperations<TDocument> : MongoDbRepository , ICudOperations<TDocument> where TDocument : DocumentBase
     {
-        private readonly MongoCollection<T> collection;
+        private readonly MongoCollection<TDocument> collection;
 
-        protected CudOperations(string connectionString) : base(connectionString)
+        public CudOperations(string connectionString) : base(connectionString)
         {
-            collection = DB.GetCollection<T>(CollectionName);
+            collection = DB.GetCollection<TDocument>(MongoDbConstants.GetCollectionNameForType<TDocument>());
         }
 
-        protected abstract string CollectionName { get; }
-
-        public void MakePersistent(T document)
+        public void MakePersistent(TDocument document)
         {
             collection.Save(document);
         }
 
-        public void MakeTransient(T document)
+        public void MakeTransient(TDocument document)
         {
             if (document.Id != null) collection.Remove(document.Id.Value);
         }
 
-        public void Update(T document)
+        public void Update(TDocument document)
         {
             collection.Save(document);
-        }
-    }
-
-    public class CUDGroups : CudOperations<Group>
-    {
-        public CUDGroups(string connectionString) : base(connectionString)
-        {}
-
-        protected override string CollectionName
-        {
-            get { return MongoDbConstants.Collections.Groups; }
         }
     }
 }

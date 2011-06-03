@@ -48,11 +48,12 @@ namespace TellagoStudios.Hermes.Business.Validator
                         }
                         break;
                     case TargetKind.Group:
-                        if (!GroupService.Exists(instance.TargetId.Value))
-                        {
-                            errors.Add(string.Format(Messages.EntityNotFound, typeof (Group).Name,
-                                                     instance.TargetId));
-                        }
+                        //TODO
+                        //if (!GroupService.Exists(instance.TargetId.Value))
+                        //{
+                        //    errors.Add(string.Format(Messages.EntityNotFound, typeof (Group).Name,
+                        //                             instance.TargetId));
+                        //}
                         break;
                     default:
                         errors.Add(string.Format(Messages.TargetKindUnknown, instance.TargetKind));

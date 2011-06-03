@@ -29,11 +29,11 @@ namespace TellagoStudios.Hermes.Business.Validator
                 errors.Add(string.Format(Messages.TopicNameMustBeUnique, instance.Name));
             }
 
-            // Group is valid
-            if (!GroupService.Exists(instance.GroupId))
-            {
-                errors.Add(string.Format(Messages.EntityNotFound, typeof(Group).Name, instance.GroupId));
-            }
+            // Group is valid TODO
+            //if (!GroupService.Exists(instance.GroupId))
+            //{
+            //    errors.Add(string.Format(Messages.EntityNotFound, typeof(Group).Name, instance.GroupId));
+            //}
 
             // Any error?
             if (errors.Count > 0) throw new ValidationException(errors);

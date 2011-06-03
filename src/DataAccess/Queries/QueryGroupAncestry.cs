@@ -9,9 +9,9 @@ using TellagoStudios.Hermes.DataAccess.MongoDB;
 
 namespace TellagoStudios.Hermes.DataAccess.Queries
 {
-    public class QueryGroupAncestry : MongoDB.MongoDbRepository, IQueryGroupAncestors
+    public class QueryGroupAncestry : MongoDbRepository, IQueryGroupAncestors
     {
-        private MongoCollection<Group> groupCollection;
+        private readonly MongoCollection<Group> groupCollection;
 
         public QueryGroupAncestry(string connectionString) : base(connectionString)
         {
@@ -21,6 +21,11 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
         public IEnumerable<Group> Execute(Group group)
         {
             return GetEnumeration(group).ToArray();
+        }
+
+        public IEnumerable<Group> Execute(Identity groupId)
+        {
+            return Execute(groupCollection.FindById(groupId));
         }
 
         private IEnumerable<Group> GetEnumeration(Group @group)

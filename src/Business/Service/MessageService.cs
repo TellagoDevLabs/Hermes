@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TellagoStudios.Hermes.Business.Extensions;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Business.Queries;
 using TellagoStudios.Hermes.Business.Repository;
 using TellagoStudios.Hermes.Business.Validator;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace TellagoStudios.Hermes.Business.Service
         public ISubscriptionService SubscriptionService { get; set; }
         public IRetryService RetryService { get; set; }
         public ILogService LogService  { get; set; }
-
+        
         public Message Create(Message message)
         {
             Guard.Instance.ArgumentNotNull(()=>message, message);
@@ -98,14 +99,15 @@ namespace TellagoStudios.Hermes.Business.Service
 
         private void AddTopicIdsFromGroup(List<Identity> topicIds, Identity groupId)
         {
-            var topics = TopicService.GetTopicIdsInGroup(groupId);
-            topicIds.AddRange(topics);
+            //TODO
+            //var topics = TopicService.GetTopicIdsInGroup(groupId);
+            //topicIds.AddRange(topics);
             
-            var group = GroupService.Get(groupId);
-            if (group != null && group.ParentId.HasValue)
-            {
-                AddTopicIdsFromGroup(topicIds, group.ParentId.Value);
-            }
+            //var group = GroupService.Get(groupId);
+            //if (group != null && group.ParentId.HasValue)
+            //{
+            //    AddTopicIdsFromGroup(topicIds, group.ParentId.Value);
+            //}
         }
 
         private void PushToSubscribers(Message message)

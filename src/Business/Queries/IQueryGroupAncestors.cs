@@ -6,5 +6,6 @@ namespace TellagoStudios.Hermes.Business.Queries
     public interface IQueryGroupAncestors
     {
         IEnumerable<Group> Execute(Group group);
+        IEnumerable<Group> Execute(Identity groupId);
     }
 }
