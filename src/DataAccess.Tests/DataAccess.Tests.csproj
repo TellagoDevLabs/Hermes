@@ -58,6 +58,7 @@
     <Compile Include="Queries\CudGroupsTests.cs" />
     <Compile Include="Queries\QueryEntityByIdTests.cs" />
     <Compile Include="Queries\ExistGroupByGroupNameTests.cs" />
+    <Compile Include="Queries\TopicsByGroup.cs" />
     <Compile Include="Repository\MongoDbGroupFixture.cs" />
     <Compile Include="Repository\ExtensionsTest.cs" />
     <Compile Include="Repository\MongoDbBaseFixture.cs" />
