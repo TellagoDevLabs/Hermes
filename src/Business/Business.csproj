@@ -69,6 +69,7 @@
     <Compile Include="Factory.cs" />
     <Compile Include="Groups\ChangeGroupCommandBase.cs" />
     <Compile Include="Groups\ICreateGroupCommand.cs" />
+    <Compile Include="Groups\IDeleteGroupCommand.cs" />
     <Compile Include="Groups\IUpdateGroupCommand.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="Messages.Designer.cs">

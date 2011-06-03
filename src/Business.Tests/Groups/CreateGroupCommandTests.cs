@@ -51,7 +51,7 @@ namespace Business.Tests.Groups
             var @group = new Group { Name = "test"};
             groupCommand.Execute(@group);
 
-            stubCudOperations.Entities.Should().Contain(@group);
+            stubCudOperations.Documents.Should().Contain(@group);
 
         }
 

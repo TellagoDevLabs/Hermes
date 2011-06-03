@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Queries;
 
@@ -7,24 +8,24 @@ namespace Business.Tests.Util
 {
     public class StubCudOperations<T> : ICudOperations<T> where T : DocumentBase
     {
-        public StubCudOperations()
+        public StubCudOperations(params T[] entities)
         {
-            Entities = new HashSet<T>();
+            Documents = new HashSet<T>(entities);
             Updates = new HashSet<T>();
         }
 
-        public HashSet<T> Entities { get; set; }
+        public HashSet<T> Documents { get; set; }
 
         public HashSet<T> Updates { get; set; }
 
         public void MakePersistent(T document)
         {
-            Entities.Add(document);
+            Documents.Add(document);
         }
 
         public void MakeTransient(T document)
         {
-            Entities.Remove(document);
+            Documents.Remove(Documents.FirstOrDefault(e => e.Id == document.Id));
         }
 
         public void Update(T document)
