@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\ChildGroupsOfGroupTests.cs" />
     <Compile Include="Queries\CudGroupsTests.cs" />
     <Compile Include="Queries\QueryEntityByIdTests.cs" />
     <Compile Include="Queries\ExistGroupByGroupNameTests.cs" />
