@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Moq;
 using NUnit.Framework;
+using SharpTestsEx;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Groups;
@@ -159,31 +160,23 @@ namespace RestService.Tests
             };
 
             var parent = new M.Group { Id = groupPost.ParentId.ToModel() };
-            var group = new M.Group()
-            {
-                Description = groupPost.Description,
-                Id = M.Identity.Random(),
-                Name = groupPost.Name,
-                ParentId = parent.Id
-
-            };
-
-
+            
             mockedCreateCommand.Setup(r => r.Execute(It.IsAny<M.Group>()))
                 .Callback<M.Group>(g => g.Id = new Identity("4de7e38617b6c420a45a84c4"));
 
             var result = client.ExecutePost<F.GroupPost, F.Group>("", groupPost);
 
-            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
-            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPost.Description)));
-            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPost.Name)));
-            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPost.ParentId.ToModel())));
-
-            Assert.AreEqual(group.Description, result.Description);
-            Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Parent, result.Parent.rel);
-            Assert.AreEqual(ResourceLocation.OfGroup(parent.Id.Value), result.Parent.href);
-            Assert.AreEqual(group.Id, result.Id.ToModel());
-            Assert.AreEqual(group.Name, result.Name);
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(g => g.Satisfy(gr => gr != null 
+                                                                                    && gr.Description == groupPost.Description
+                                                                                    && gr.Name == groupPost.Name
+                                                                                    && gr.ParentId == groupPost.ParentId.ToModel()))));
+            
+            //TODO: There are two things here: 1-Test asser many things. 2-Http speaking, a POST request should not be respondend with any content but a location in the header.
+            //Assert.AreEqual(group.Description, result.Description);
+            //Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Parent, result.Parent.rel);
+            //Assert.AreEqual(ResourceLocation.OfGroup(parent.Id.Value), result.Parent.href);
+            //Assert.AreEqual(group.Id, result.Id.ToModel());
+            //Assert.AreEqual(group.Name, result.Name);
         }
 
         [Test]
