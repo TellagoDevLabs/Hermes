@@ -39,6 +39,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\MessageServiceFixture.cs" />
     <Compile Include="Services\GroupServiceFixture.cs" />
+    <Compile Include="Topics\UpdateTopicCommandTests.cs" />
+    <Compile Include="Topics\CreateTopicCommandTests.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Util\StubCudOperations.cs" />
     <Compile Include="Validators\MessageValidatorFixture.cs" />

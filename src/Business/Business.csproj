@@ -116,6 +116,10 @@
     <Compile Include="Service\MessageService.cs" />
     <Compile Include="Service\SubscriptionService.cs" />
     <Compile Include="Service\TopicService.cs" />
+    <Compile Include="Topics\Commands\UpdateTopicCommand.cs" />
+    <Compile Include="Topics\Commands\CreateTopicCommand.cs" />
+    <Compile Include="Topics\Commands\Interfaces.cs" />
+    <Compile Include="Topics\Queries\IExistsTopicByName.cs" />
     <Compile Include="Validator\MessageValidator.cs" />
     <Compile Include="Validator\SubscriptionValidator.cs" />
     <Compile Include="Validator\TopicValidator.cs" />
@@ -123,6 +127,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -132,7 +137,6 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Exec Condition="Exists('$(ProjectDir)packages.config')"
-            Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)packages.config')" Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
   </Target>
 </Project>

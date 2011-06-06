@@ -17,7 +17,7 @@ namespace TellagoStudios.Hermes.Business.Groups
 
         public virtual void Execute(Group group)
         {
-            if (group.Name == null) throw new ValidationException(Messages.NameMustBeNotNull);
+            if (string.IsNullOrWhiteSpace(group.Name)) throw new ValidationException(Messages.NameMustBeNotNull);
             if (existGroupByGroupName.Execute(group.Name, group.Id)) throw new ValidationException(Messages.GroupNameMustBeUnique);
             if (group.ParentId.HasValue && !entityById.Exist<Group>(group.ParentId.Value)) throw new ValidationException(Messages.EntityNotFound);
         }

@@ -1,11 +1,7 @@
-﻿
-using System;
-
-namespace TellagoStudios.Hermes.Business.Model
+﻿namespace TellagoStudios.Hermes.Business.Model
 {
-    public class Topic 
+    public class Topic : DocumentBase
     {
-        public Identity? Id { get; set; }
         public Identity GroupId { get; set; } 
         public string Name { get; set; }
         public string Description { get; set; }

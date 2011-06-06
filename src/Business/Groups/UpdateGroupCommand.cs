@@ -19,7 +19,11 @@ namespace TellagoStudios.Hermes.Business.Groups
 
         public override void Execute(Group group)
         {
+            if (!group.Id.HasValue) throw new ValidationException(Messages.IdMustNotBeNull);
+            if (!entityById.Exist<Group>(group.Id.Value)) throw new EntityNotFoundException(typeof(Group), group.Id.Value);
+
             base.Execute(group);
+
             ValidateCircleReferences(group);
             cudOperations.Update(group);
         }
