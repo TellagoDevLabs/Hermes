@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
 
 namespace TellagoStudios.Hermes.DataAccess.Queries
@@ -17,16 +17,17 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
             topicsCollection = DB.GetCollection<Topic>(MongoDbConstants.Collections.Topics);
         }
 
-        public bool HasTopics(Group group)
+        public bool HasTopics(Identity id)
         {
-            if(!group.Id.HasValue ) throw new InvalidOperationException("Group without id.");
-            return topicsCollection.Exists(QueryGetByGroup(group.Id.Value));
+            return topicsCollection.Exists(QueryGetByGroup(id));
         }
 
-        public IEnumerable<Topic> GetTopics(Group group)
+        public IEnumerable<Topic> GetTopics(Identity id, int? skip = null, int? limit = null) 
         {
-            if (!group.Id.HasValue) throw new InvalidOperationException("Group without id.");
-            return topicsCollection.Find(QueryGetByGroup(group.Id.Value));
+            var cursor =  topicsCollection.Find(QueryGetByGroup(id));
+            if (skip.HasValue) cursor.SetSkip(skip.Value);
+            if (limit.HasValue) cursor.SetSkip(limit.Value);
+            return cursor;
         }
 
         private static QueryDocument QueryGetByGroup(Identity groupId)

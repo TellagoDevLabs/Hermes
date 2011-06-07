@@ -1,31 +1,34 @@
 ﻿using System.Collections.Generic;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 
 namespace TellagoStudios.Hermes.Business.Groups
 {
-    public class UpdateGroupCommand : ChangeGroupCommandBase, IUpdateGroupCommand
+    public class UpdateGroupCommand : IUpdateGroupCommand
     {
         private readonly IEntityById entityById;
-        private readonly ICudOperations<Group> cudOperations;
+        private readonly IRepository<Group> repository;
+        private readonly IExistGroupByGroupName existGroupByGroupName;
 
-        public UpdateGroupCommand(IExistGroupByGroupName existGroupByGroupName, IEntityById entityById, ICudOperations<Group> cudOperations) 
-            : base(existGroupByGroupName, entityById)
+        public UpdateGroupCommand(IExistGroupByGroupName existGroupByGroupName, IEntityById entityById, IRepository<Group> repository) 
         {
+            this.existGroupByGroupName = existGroupByGroupName;
             this.entityById = entityById;
-            this.cudOperations = cudOperations;
+            this.repository = repository;
         }
 
-        public override void Execute(Group group)
+        public void Execute(Group group)
         {
             if (!group.Id.HasValue) throw new ValidationException(Messages.IdMustNotBeNull);
             if (!entityById.Exist<Group>(group.Id.Value)) throw new EntityNotFoundException(typeof(Group), group.Id.Value);
-
-            base.Execute(group);
+            if (string.IsNullOrWhiteSpace(group.Name)) throw new ValidationException(Messages.NameMustBeNotNull);
+            if (existGroupByGroupName.Execute(group.Name, group.Id)) throw new ValidationException(Messages.GroupNameMustBeUnique);
+            if (group.ParentId.HasValue && !entityById.Exist<Group>(group.ParentId.Value)) throw new ValidationException(Messages.EntityNotFound);
 
             ValidateCircleReferences(group);
-            cudOperations.Update(group);
+            repository.Update(group);
         }
 
         private void ValidateCircleReferences(Group group)

@@ -7,7 +7,8 @@ using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 
 namespace Business.Tests.Groups
 {
@@ -90,24 +91,24 @@ namespace Business.Tests.Groups
         public void WhenEverythingIsOK_ThenUpdateTheGroup()
         {
             var id = Identity.Random();
-            var stubCudOperations = new StubCudOperations<Group>();
+            var stubRepository = new StubRepository<Group>();
             var groupCommand = CreateUpdateGroupCommand(entityById: Mock.Of<IEntityById>(q => q.Exist<Group>(id)),
-            cudGroup: stubCudOperations);
+            cudGroup: stubRepository);
             var @group = new Group { Id=id, Name = "test" };
             groupCommand.Execute(@group);
 
-            stubCudOperations.Updates.Should().Contain(@group);
+            stubRepository.Updates.Should().Contain(@group);
 
         }
 
         private static IUpdateGroupCommand CreateUpdateGroupCommand(
             IExistGroupByGroupName existGroupByGroupName = null,
             IEntityById entityById = null,
-            ICudOperations<Group> cudGroup = null)
+            IRepository<Group> cudGroup = null)
         {
             return new UpdateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>(),
                                         entityById ?? Mock.Of<IEntityById>(),
-                                        cudGroup ?? Mock.Of<ICudOperations<Group>>());
+                                        cudGroup ?? Mock.Of<IRepository<Group>>());
         }
     }
 }

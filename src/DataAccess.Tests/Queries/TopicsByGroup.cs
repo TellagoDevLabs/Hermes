@@ -21,10 +21,10 @@ namespace DataAccess.Tests.Queries
             topicsCollection.RemoveAll();
             groupsCollection.RemoveAll();
 
-            groupWithTopics = new Group{Name = "With topics"};
+            groupWithTopics = new Group { Id = Identity.Random(12), Name = "With topics" };
             groupsCollection.Insert(groupWithTopics);
 
-            groupWithoutTopics = new Group { Name = "With topics" };
+            groupWithoutTopics = new Group { Id = Identity.Random(12), Name = "With topics" };
             groupsCollection.Insert(groupWithoutTopics);
 
             var topic = new Topic {Name = "Topic 1", GroupId = groupWithTopics.Id.Value};
@@ -36,14 +36,14 @@ namespace DataAccess.Tests.Queries
         public void WhenGroupHasTopic_HasTopicReturnsTrue()
         {
             var query = new TopicsByGroup(connectionString);
-            query.HasTopics(groupWithTopics).Should().Be.True();
+            query.HasTopics(groupWithTopics.Id.Value).Should().Be.True();
         }
 
         [Test]
         public void WhenGroupHasTopic_HasTopicReturnsFalse()
         {
             var query = new TopicsByGroup(connectionString);
-            query.HasTopics(groupWithoutTopics).Should().Be.False();
+            query.HasTopics(groupWithoutTopics.Id.Value).Should().Be.False();
         }
         
     }

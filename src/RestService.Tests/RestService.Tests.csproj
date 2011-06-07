@@ -94,7 +94,7 @@
     <Compile Include="SubscriptionExtensionsTest.cs" />
     <Compile Include="TopicExtensionsTest.cs" />
     <Compile Include="TopicGroupExtensionsTest.cs" />
-    <Compile Include="TopicGroupsFixture.cs" />
+    <Compile Include="GroupsFixture.cs" />
     <Compile Include="TopicsFixture.cs" />
   </ItemGroup>
   <ItemGroup>

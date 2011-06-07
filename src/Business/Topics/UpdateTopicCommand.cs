@@ -1,8 +1,7 @@
 ﻿using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
-using TellagoStudios.Hermes.Business.Topics;
-using TellagoStudios.Hermes.Business.Topics.Queries;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 
 namespace TellagoStudios.Hermes.Business.Topics
 {
@@ -10,16 +9,16 @@ namespace TellagoStudios.Hermes.Business.Topics
     {
         private readonly IEntityById entityById;
         private readonly IExistsTopicByName existsTopicByName;
-        private readonly ICudOperations<Topic> cudOperations;
+        private readonly IRepository<Topic> repository;
 
         public UpdateTopicCommand(
             IExistsTopicByName existsTopicByName, 
             IEntityById entityById,
-            ICudOperations<Topic> cudOperations)
+            IRepository<Topic> repository)
         {
             this.entityById = entityById;
             this.existsTopicByName = existsTopicByName;
-            this.cudOperations = cudOperations;
+            this.repository = repository;
         }
 
         public virtual void Execute(Topic topic)
@@ -30,7 +29,7 @@ namespace TellagoStudios.Hermes.Business.Topics
             if (existsTopicByName.Execute(topic.Name, topic.Id)) throw new ValidationException(Messages.TopicNameMustBeUnique, topic.Name);
             if (!entityById.Exist<Group>(topic.GroupId)) throw new ValidationException(Messages.EntityNotFound, typeof(Group).Name, topic.GroupId);
 
-            cudOperations.Update(topic);
+            repository.Update(topic);
         }
     }
 }

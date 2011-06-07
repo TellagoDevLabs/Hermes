@@ -1,25 +1,33 @@
-﻿using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+﻿using TellagoStudios.Hermes.Business.Exceptions;
+using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 
 namespace TellagoStudios.Hermes.Business.Groups
 {
-    public class CreateGroupCommand : ChangeGroupCommandBase, ICreateGroupCommand
+    public class CreateGroupCommand :  ICreateGroupCommand
     {
-        private readonly ICudOperations<Group> cudOperations;
+        private readonly IRepository<Group> repository;
+        private readonly IExistGroupByGroupName existGroupByGroupName;
+        private readonly IEntityById entityById;
 
         public CreateGroupCommand(
             IExistGroupByGroupName existGroupByGroupName, 
             IEntityById entityById, 
-            ICudOperations<Group> cudOperations)
-            : base(existGroupByGroupName, entityById)
+            IRepository<Group> repository)
         {
-            this.cudOperations = cudOperations;
+            this.existGroupByGroupName = existGroupByGroupName;
+            this.entityById = entityById;
+            this.repository = repository;
         }
 
-        public override void Execute(Group group)
+        public void Execute(Group group)
         {
-            base.Execute(group);
-            cudOperations.MakePersistent(group);
+            if (string.IsNullOrWhiteSpace(group.Name)) throw new ValidationException(Messages.NameMustBeNotNull);
+            if (existGroupByGroupName.Execute(group.Name)) throw new ValidationException(Messages.GroupNameMustBeUnique);
+            if (group.ParentId.HasValue && !entityById.Exist<Group>(group.ParentId.Value)) throw new ValidationException(Messages.EntityNotFound);
+
+            repository.MakePersistent(group);
         }
     }
 }

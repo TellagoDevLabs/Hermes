@@ -56,14 +56,14 @@ namespace Business.Tests.Services
             var message = new Message
                               {
                                   Payload = new byte[] {1, 2, 3, 4, 5},
-                                  TopicId = Identity.Random(),
+                                  TopicId = Identity.Random(12),
                                   Headers = headers,
                                   PromotedProperties = promotedProperties,
                                   UtcReceivedOn = DateTime.UtcNow
                               };
 
             var response = Clone(message);
-            response.Id = Identity.Random();
+            response.Id = Identity.Random(12);
 
             mockedTopicService.Setup(ts => ts.Exists(message.TopicId))
                 .Returns(true);

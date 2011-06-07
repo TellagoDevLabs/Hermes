@@ -6,8 +6,7 @@ using System.Net.Http;
 using Microsoft.ApplicationServer.Http;
 using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
-using TellagoStudios.Hermes.Business.Service;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.RestService.Extensions;
 
 namespace TellagoStudios.Hermes.RestService.Resources
@@ -66,7 +65,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
         [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
         public HttpResponseMessage Delete(Identity id)
         {
-            return Process(() => deleteGroupCommand.Execute(new Group { Id = id }));
+            return Process(() => deleteGroupCommand.Execute(id));
         }
 
         [WebGet(UriTemplate = "?query={query}&skip={skip}&limit={limit}")]

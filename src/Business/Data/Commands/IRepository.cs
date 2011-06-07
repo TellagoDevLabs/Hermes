@@ -1,12 +1,12 @@
 using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.Business.Queries
+namespace TellagoStudios.Hermes.Business.Data.Commads
 {
-    public interface ICudOperations<T>
+    public interface IRepository<T>
         where T : DocumentBase
     {
         void MakePersistent(T document);
-        void MakeTransient(T document);
+        void MakeTransient(Identity id);
         void Update(T document);
     }
 }

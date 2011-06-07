@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TellagoStudios.Hermes.Business.Queries
+namespace TellagoStudios.Hermes.Business.Data.Queries
 {
     public interface IGenericJsonPagedQuery
     {

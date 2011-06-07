@@ -1,15 +1,13 @@
-using System;
 using Business.Tests.Util;
 using Moq;
 using NUnit.Framework;
 using SharpTestsEx;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Exceptions;
-using TellagoStudios.Hermes.Business.Groups;
-using TellagoStudios.Hermes.Business.Topics;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
-using TellagoStudios.Hermes.Business.Topics.Queries;
+using TellagoStudios.Hermes.Business.Topics;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 
 namespace Business.Tests.Topics
 {
@@ -85,27 +83,27 @@ namespace Business.Tests.Topics
         [Test]
         public void WhenEverythingIsOK_ThenInsertTheTopic()
         {
-            var stubCudOperations = new StubCudOperations<Topic>();
+            var stubRepository = new StubRepository<Topic>();
             var id = Identity.Random();
             var name = "Test";
             var groupId = Identity.Random();
             var command = CreateUpdateTopicCommand(entityById: Mock.Of<IEntityById>(q => q.Exist<Topic>(id) && q.Exist<Group>(groupId)),
-                existsTopicByName: Mock.Of<IExistsTopicByName>(q => q.Execute(name, id)==false), cudTopic: stubCudOperations);
+                existsTopicByName: Mock.Of<IExistsTopicByName>(q => q.Execute(name, id)==false), cudTopic: stubRepository);
             var topic = new Topic { Id = id, Name = name, GroupId = groupId};
 
             command.Execute(topic);
 
-            stubCudOperations.Updates.Should().Contain(topic);
+            stubRepository.Updates.Should().Contain(topic);
         }
 
         private static IUpdateTopicCommand CreateUpdateTopicCommand(
             IExistsTopicByName existsTopicByName = null, 
             IEntityById entityById = null,
-            ICudOperations<Topic> cudTopic = null)
+            IRepository<Topic> cudTopic = null)
         {
             return new UpdateTopicCommand(existsTopicByName ?? Mock.Of<IExistsTopicByName>(),
                                         entityById ?? Mock.Of<IEntityById>(),
-                                        cudTopic ?? Mock.Of<ICudOperations<Topic>>());
+                                        cudTopic ?? Mock.Of<IRepository<Topic>>());
         }
     }
 }

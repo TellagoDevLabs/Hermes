@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.Business.Queries
+namespace TellagoStudios.Hermes.Business.Data.Queries
 {
     public interface IQueryGroupAncestors
     {
-        IEnumerable<Group> Execute(Group group);
         IEnumerable<Group> Execute(Identity groupId);
     }
 }

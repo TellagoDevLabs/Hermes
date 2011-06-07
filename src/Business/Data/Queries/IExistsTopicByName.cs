@@ -1,6 +1,6 @@
 using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.Business.Topics.Queries
+namespace TellagoStudios.Hermes.Business.Data.Queries
 {
     public interface IExistsTopicByName
     {

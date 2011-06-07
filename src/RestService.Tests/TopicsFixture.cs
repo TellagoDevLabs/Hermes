@@ -1,11 +1,10 @@
 ﻿using Autofac;
 using Moq;
 using NUnit.Framework;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Exceptions;
-using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Service;
-using TellagoStudios.Hermes.RestService;
+using TellagoStudios.Hermes.Business.Topics;
 using TellagoStudios.Hermes.RestService.Extensions;
 using TellagoStudios.Hermes.RestService.Resources;
 using M = TellagoStudios.Hermes.Business.Model;
@@ -19,13 +18,29 @@ namespace RestService.Tests
     [TestFixture]
     public class TopicsFixture : ResourceBaseFixture
     {
-        private Mock<ITopicService> mockedService;
+        private Mock<ICreateTopicCommand> mockedCreateCommand;
+        private Mock<IUpdateTopicCommand> mockedUpdateCommand;
+        private Mock<IDeleteTopicCommand> mockedDeleteCommand;
+        private Mock<IEntityById> mockedEntityById;
+        private Mock<IGenericJsonPagedQuery> mockedGenericJsonQuery;
+        private Mock<ITopicsByGroup> mockedTopicsByGroup;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
             // Create a mocked repository for topics.
-            mockedService = new Mock<ITopicService>(MockBehavior.Loose);
-            builder.RegisterInstance(new TopicsResource(mockedService.Object));
+            mockedCreateCommand = new Mock<ICreateTopicCommand>();
+            mockedUpdateCommand = new Mock<IUpdateTopicCommand>();
+            mockedDeleteCommand = new Mock<IDeleteTopicCommand>();
+            mockedEntityById = new Mock<IEntityById>();
+            mockedTopicsByGroup = new Mock<ITopicsByGroup>();
+            mockedGenericJsonQuery = new Mock<IGenericJsonPagedQuery>();
+            builder.RegisterInstance(new TopicsResource(
+                mockedEntityById.Object,
+                mockedGenericJsonQuery.Object,
+                mockedCreateCommand.Object,
+                mockedUpdateCommand.Object,
+                mockedDeleteCommand.Object,
+                mockedTopicsByGroup.Object));
         }
 
         protected override Type GetServiceType()
@@ -44,11 +59,9 @@ namespace RestService.Tests
                                 Id = Identity.Random(),
                                 Name = "test"
                             };
-            mockedService.Setup(r => r.Get(topic.Id.Value)).Returns(topic);
+            mockedEntityById.Setup(r => r.Get<Topic>(topic.Id.Value)).Returns(topic);
 
             var result = client.ExecuteGet<F.Topic>("/" + topic.Id);
-            
-            mockedService.Verify(r => r.Get(topic.Id.Value));
 
             Assert.AreEqual(topic.Description, result.Description);
             Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Group, result.Group.rel);
@@ -61,11 +74,9 @@ namespace RestService.Tests
        public void Validates_a_get_with_an_invalid_id()
         {
             var id = Identity.Random();
-            mockedService.Setup(r => r.Get(It.IsAny<Identity>())).Throws<EntityNotFoundException>();
+            mockedEntityById.Setup(r => r.Get<Topic>(It.IsAny<Identity>())).Throws<EntityNotFoundException>();
 
             var result = client.ExecuteGet<F.Topic>("/" + id, HttpStatusCode.NotFound);
-
-            mockedService.Verify(r => r.Get(id));
 
             Assert.IsNull(result);
         }
@@ -89,11 +100,10 @@ namespace RestService.Tests
                                 Name = "test 2"
                                 }
                              };
-            mockedService.Setup(r => r.Find(null, null, null)).Returns(topics);
+
+            mockedGenericJsonQuery.Setup(r => r.Execute<Topic>(null, null, null)).Returns(topics);
 
             var result = client.ExecuteGet<F.Topic[]>("");
-
-            mockedService.Verify(r => r.Find(null, null, null));
 
             Assert.IsNotNull(topics);
             Assert.AreEqual(topics.Length, result.Length);
@@ -107,11 +117,11 @@ namespace RestService.Tests
             int? skip = null;
             int? limited = null;
 
-            mockedService.Setup(r => r.Find(query, skip, limited)).Returns(new M.Topic[0]);
+            mockedGenericJsonQuery.Setup(r => r.Execute<Topic>(query, skip, limited)).Returns(new M.Topic[0]);
 
             var result = client.ExecuteGet<F.Topic[]>("?query=" + query);
 
-            mockedService.Verify(r => r.Find(query, skip, limited));
+            mockedGenericJsonQuery.Verify(r => r.Execute<Topic>(query, skip, limited));
         }
 
         [Test]
@@ -120,11 +130,11 @@ namespace RestService.Tests
             string query = null;
             int? skip = 2;
             int? limited = 10;
-            mockedService.Setup(r => r.Find(query, skip, limited)).Returns(new M.Topic[0]);
+            mockedGenericJsonQuery.Setup(r => r.Execute<Topic>(query, skip, limited)).Returns(new M.Topic[0]);
 
             var result = client.ExecuteGet<F.Topic[]>("?skip=" + skip.ToString() + "&limit=" + limited.ToString());
 
-            mockedService.Verify(r => r.Find(query, skip, limited));
+            mockedGenericJsonQuery.Verify(r => r.Execute<Topic>(query, skip, limited));
         }
         
         [Test]
@@ -133,47 +143,31 @@ namespace RestService.Tests
             string query = "foo query";
             int? skip = 2;
             int? limited = 10;
-            mockedService.Setup(r => r.Find(query, skip, limited)).Returns(new M.Topic[0]);
+            mockedGenericJsonQuery.Setup(r => r.Execute<Topic>(query, skip, limited)).Returns(new M.Topic[0]);
 
             var result = client.ExecuteGet<F.Topic[]>("?query=" + query + "&skip=" + skip.ToString() + "&limit=" + limited.ToString());
 
-            mockedService.Verify(r => r.Find(query, skip, limited));
+            mockedGenericJsonQuery.Verify(r => r.Execute<Topic>(query, skip, limited));
         }
 
         [Test]
         public void Should_post_a_topic()
         {
-            var topicPost = new F.TopicPost()
+           var topicPost = new F.TopicPost()
             {
                 Description = "description",
                 GroupId = F.Identity.Random(),
                 Name = "test"
             };
 
-            var group = new M.Group { Id = M.Identity.Random() };
-            var topic = new M.Topic()
-            {
-                Description = topicPost.Description,
-                GroupId = group.Id.Value,
-                Id = Identity.Random(),
-                Name = topicPost.Name
-            };
+           mockedCreateCommand.Setup(r => r.Execute(It.IsAny<M.Topic>())).Callback<M.Topic>(t => t.Id = Identity.Random());
 
+            client.ExecutePost("", topicPost);
 
-            mockedService.Setup(r => r.Create(It.IsAny<M.Topic>())).Returns(topic);
-
-            var result = client.ExecutePost<F.TopicPost, F.Topic>("", topicPost);
-
-            mockedService.Verify(r => r.Create(It.Is<M.Topic>(t => t!=null)));
-            mockedService.Verify(r => r.Create(It.Is<M.Topic>(t => t.Description == topicPost.Description)));
-            mockedService.Verify(r => r.Create(It.Is<M.Topic>(t => t.Name == topicPost.Name)));
-            mockedService.Verify(r => r.Create(It.Is<M.Topic>(t => t.GroupId == topicPost.GroupId.ToModel())));
-
-            Assert.AreEqual(topic.Description, result.Description);
-            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Group, result.Group.rel);
-            Assert.AreEqual(ResourceLocation.OfGroup(topic.GroupId), result.Group.href);
-            Assert.AreEqual(topic.Id, result.Id.ToModel());
-            Assert.AreEqual(topic.Name, result.Name);
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t != null)));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.Description == topicPost.Description)));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.Name == topicPost.Name)));
+            mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.GroupId == topicPost.GroupId.ToModel())));
         }
 
         [Test]
@@ -197,20 +191,14 @@ namespace RestService.Tests
             };
 
 
-            mockedService.Setup(r => r.Update(It.IsAny<M.Topic>())).Returns(topic);
+            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Topic>()));
 
-            var result = client.ExecutePut<F.TopicPut, F.Topic>("", topicPut);
+            client.ExecutePut("", topicPut);
 
-            mockedService.Verify(r => r.Update(It.Is<M.Topic>(t => t != null)));
-            mockedService.Verify(r => r.Update(It.Is<M.Topic>(t => t.Description == topicPut.Description)));
-            mockedService.Verify(r => r.Update(It.Is<M.Topic>(t => t.Name == topicPut.Name)));
-            mockedService.Verify(r => r.Update(It.Is<M.Topic>(t => t.GroupId == topicPut.GroupId.ToModel())));
-
-            Assert.AreEqual(topic.Description, result.Description);
-            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Group, result.Group.rel);
-            Assert.AreEqual(ResourceLocation.OfGroup(topic.GroupId), result.Group.href);
-            Assert.AreEqual(topic.Id, result.Id.ToModel());
-            Assert.AreEqual(topic.Name, result.Name);
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t != null)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.Description == topicPut.Description)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.Name == topicPut.Name)));
+            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.GroupId == topicPut.GroupId.ToModel())));
         }
 
         [Test]
@@ -220,7 +208,7 @@ namespace RestService.Tests
 
             client.ExecuteDelete("/" + topicId);
 
-            mockedService.Verify(r => r.Delete(topicId));
+            mockedDeleteCommand.Verify(r => r.Execute(topicId));
         }
     }
 }

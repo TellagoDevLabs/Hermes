@@ -25,7 +25,7 @@ namespace DataAccess.Tests.Queries
         public void WhenThereIsAGroupWithSameNameAndId_ThenReturnsFalse()
         {
             var existGroupByGroupName = new ExistGroupByGroupName(connectionString);
-            var document = new Group {Name = "Foo"};
+            var document = new Group { Id = Identity.Random(12), Name = "Foo" };
             groupsCollection.Insert(document);
 
             existGroupByGroupName.Execute("Foo", document.Id).Should().Be.False();
@@ -35,7 +35,7 @@ namespace DataAccess.Tests.Queries
         public void WhenThereIsAGroupWithSameNameAndDifferentId_ThenReturnsTrue()
         {
             var existGroupByGroupName = new ExistGroupByGroupName(connectionString);
-            var document = new Group { Name = "Foo" };
+            var document = new Group {Id = Identity.Random(12), Name = "Foo" };
             groupsCollection.Insert(document);
             existGroupByGroupName.Execute("Foo", new Identity("4de7e38617b6c420a45a84c4")).Should().Be.True();
         }
@@ -44,7 +44,7 @@ namespace DataAccess.Tests.Queries
         public void WhenThereIsAGroupWithSameNameAndIdNull_ThenReturnsTrue()
         {
             var existGroupByGroupName = new ExistGroupByGroupName(connectionString);
-            var document = new Group { Name = "Foo" };
+            var document = new Group { Id = Identity.Random(12),  Name = "Foo" };
             groupsCollection.Insert(document);
             existGroupByGroupName.Execute("Foo", null).Should().Be.True();
         }
@@ -53,7 +53,7 @@ namespace DataAccess.Tests.Queries
         public void WhenThereNotIsAGroupWithGivenName_ThenReturnsFalse()
         {
             var existGroupByGroupName = new ExistGroupByGroupName(connectionString);
-            groupsCollection.Insert(new Group { Name = "Foo" });
+            groupsCollection.Insert(new Group { Id = Identity.Random(12), Name = "Foo" });
             existGroupByGroupName.Execute("Bar").Should().Be.False();
         }
     }

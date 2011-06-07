@@ -3,12 +3,9 @@ using Moq;
 using NUnit.Framework;
 using SharpTestsEx;
 using TellagoStudios.Hermes.Business.Exceptions;
-using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
-using TellagoStudios.Hermes.Business.Service;
-using TellagoStudios.Hermes.RestService;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.RestService.Extensions;
 using TellagoStudios.Hermes.RestService.Resources;
 using M = TellagoStudios.Hermes.Business.Model;
@@ -294,10 +291,10 @@ namespace RestService.Tests
         [Test]
         public void Should_delete_a_group()
         {
-            var id = M.Identity.Random();
+            var id = M.Identity.Random(12);
             client.ExecuteDelete("/" + id);
 
-            mockedDeleteCommand.Verify(r => r.Execute(It.Is<Group>(g => g.Id == id)));
+            mockedDeleteCommand.Verify(r => r.Execute(id));
         }
     }
 }

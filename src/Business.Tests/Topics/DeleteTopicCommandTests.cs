@@ -5,9 +5,9 @@ using SharpTestsEx;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Topics;
-using TellagoStudios.Hermes.Business.Topics.Commands;
 
 namespace Business.Tests.Topics
 {
@@ -15,20 +15,11 @@ namespace Business.Tests.Topics
     public class DeleteTopicCommandTests 
     {
         public IDeleteTopicCommand CreateCommand(IEntityById queryEntityById = null, 
-                                                ICudOperations<Topic> cud = null) 
+                                                IRepository<Topic> cud = null) 
         {
             return new DeleteTopicCommand(
                                 queryEntityById ?? Mock.Of<IEntityById>(), 
-                                cud ?? Mock.Of<ICudOperations<Topic>>());    
-        }
-
-        [Test]
-        public void WhenIdIsNull_ThenThrowIdMustNotBeNull()
-        {
-            var command = CreateCommand();
-            command.Executing(c => c.Execute(new Topic {Id = null}))
-                .Throws<ValidationException>()
-                .And.Exception.Message.Should().Be.EqualTo(Messages.IdMustNotBeNull);
+                                cud ?? Mock.Of<IRepository<Topic>>());    
         }
 
         [Test]
@@ -37,7 +28,7 @@ namespace Business.Tests.Topics
             var id = Identity.Random();
             var command = CreateCommand(Mock.Of<IEntityById>(q => q.Exist<Topic>(id) == false));
 
-            command.Executing(c => c.Execute(new Topic {Id = id}))
+            command.Executing(c => c.Execute(id))
                 .Throws<EntityNotFoundException>();
         }
 
@@ -45,11 +36,11 @@ namespace Business.Tests.Topics
         public void WhenTopicExists_ThenDelete()
         {
             var id = Identity.Random();
-            var repository = new StubCudOperations<Topic>(new Topic { Id = id });
+            var repository = new StubRepository<Topic>(new Topic { Id = id });
             var command = CreateCommand(Mock.Of<IEntityById>(q => q.Exist<Topic>(id)==true),
                                         repository);
               
-            command.Execute(new Topic { Id = id });
+            command.Execute(id);
                 
             repository.Documents.Should().Be.Empty();
         }

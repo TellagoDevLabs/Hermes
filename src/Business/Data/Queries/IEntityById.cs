@@ -1,6 +1,6 @@
 ﻿using TellagoStudios.Hermes.Business.Model;
 
-namespace TellagoStudios.Hermes.Business.Queries
+namespace TellagoStudios.Hermes.Business.Data.Queries
 {
     public interface IEntityById
     {

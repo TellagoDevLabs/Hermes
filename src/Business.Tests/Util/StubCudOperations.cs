@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Commads;
 
 namespace Business.Tests.Util
 {
-    public class StubCudOperations<T> : ICudOperations<T> where T : DocumentBase
+    public class StubRepository<T> : IRepository<T> where T : DocumentBase
     {
-        public StubCudOperations(params T[] entities)
+        public StubRepository(params T[] entities)
         {
             Documents = new HashSet<T>(entities);
             Updates = new HashSet<T>();
@@ -23,9 +23,9 @@ namespace Business.Tests.Util
             Documents.Add(document);
         }
 
-        public void MakeTransient(T document)
+        public void MakeTransient(Identity id)
         {
-            Documents.Remove(Documents.FirstOrDefault(e => e.Id == document.Id));
+            Documents.Remove(Documents.FirstOrDefault(e => e.Id == id));
         }
 
         public void Update(T document)

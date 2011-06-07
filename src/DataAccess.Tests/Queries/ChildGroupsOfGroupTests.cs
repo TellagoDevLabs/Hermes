@@ -19,10 +19,10 @@ namespace DataAccess.Tests.Queries
             var collection = mongoDb.GetCollection(MongoDbConstants.Collections.Groups);
             collection.RemoveAll();
 
-            withChilds = new Group{Name = "With childs"};
+            withChilds = new Group{Id = Identity.Random(12), Name = "With childs"};
             collection.Insert(withChilds);
 
-            withoutChilds = new Group { Name = "Without childs" , ParentId = withChilds.Id};
+            withoutChilds = new Group { Id = Identity.Random(12), Name = "Without childs", ParentId = withChilds.Id };
             collection.Insert(withoutChilds);
         }
 
@@ -30,14 +30,14 @@ namespace DataAccess.Tests.Queries
         public void WhenGroupHasChilds_ThenHasChildsREturnsTrue()
         {
             var query = new ChildGroupsOfGroup(base.connectionString);
-            query.HasChilds(withChilds).Should().Be.True();
+            query.HasChilds(withChilds.Id.Value).Should().Be.True();
         }
 
         [Test]
         public void WhenGroupHasNotChilds_ThenHasChildsREturnsFalse()
         {
             var query = new ChildGroupsOfGroup(base.connectionString);
-            query.HasChilds(withoutChilds).Should().Be.False();
+            query.HasChilds(withoutChilds.Id.Value).Should().Be.False();
         }
     }
 }

@@ -1,47 +1,44 @@
 ﻿using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 
 namespace TellagoStudios.Hermes.Business.Groups
 {
     public class DeleteGroupCommand : IDeleteGroupCommand
     {
         private readonly IEntityById entityById;
-        private readonly ICudOperations<Group> cudOperations;
+        private readonly IRepository<Group> repository;
         private readonly IChildGroupsOfGroup childGroupsOfGroup;
         private readonly ITopicsByGroup topicsByGroup;
 
         public DeleteGroupCommand(
             IEntityById entityById, 
-            ICudOperations<Group> cudOperations, 
+            IRepository<Group> repository, 
             IChildGroupsOfGroup childGroupsOfGroup, 
             ITopicsByGroup topicsByGroup)
         {
             this.entityById = entityById;
-            this.cudOperations = cudOperations;
+            this.repository = repository;
             this.childGroupsOfGroup = childGroupsOfGroup;
             this.topicsByGroup = topicsByGroup;
         }
 
-        public void Execute(Group group)
+        public void Execute(Identity id)
         {
-            if(!group.Id.HasValue)
+            if (!entityById.Exist<Group>(id))
             {
-                throw new ValidationException(Messages.IdMustNotBeNull);
+                throw new EntityNotFoundException(typeof (Group), id);
             }
-            if (!entityById.Exist<Group>(group.Id.Value))
+            if(childGroupsOfGroup.HasChilds(id))
             {
-                throw new EntityNotFoundException(typeof (Group), group.Id.Value);
+                throw new ValidationException(string.Format(Messages.GroupContainsChildGroups, id));
             }
-            if(childGroupsOfGroup.HasChilds(group))
+            if (topicsByGroup.HasTopics(id))
             {
-                throw new ValidationException(string.Format(Messages.GroupContainsChildGroups, group.Id));
+                throw new ValidationException(string.Format(Messages.GroupContainsChildTopics, id));
             }
-            if (topicsByGroup.HasTopics(group))
-            {
-                throw new ValidationException(string.Format(Messages.GroupContainsChildTopics, group.Id));
-            }
-            cudOperations.MakeTransient(group);
+            repository.MakeTransient(id);
         }
     }
 }

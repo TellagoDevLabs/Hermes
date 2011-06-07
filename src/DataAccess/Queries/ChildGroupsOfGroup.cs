@@ -1,14 +1,13 @@
-using System;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
 
 namespace TellagoStudios.Hermes.DataAccess.Queries
 {
-    public class ChildGroupsOfGroup :  MongoDB.MongoDbRepository, IChildGroupsOfGroup
+    public class ChildGroupsOfGroup :  MongoDbRepository, IChildGroupsOfGroup
     {
         private MongoCollection<Group> groupCollection;
 
@@ -18,14 +17,14 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
             groupCollection = DB.GetCollection<Group>(MongoDbConstants.Collections.Groups);
         }
 
-        public bool HasChilds(Group group)
+        public bool HasChilds(Identity id)
         {
-            return groupCollection.Exists(BuildQuery(group.Id.Value));
+            return groupCollection.Exists(BuildQuery(id));
         }
 
-        public IEnumerable<Group> GetChilds(Group group)
+        public IEnumerable<Group> GetChilds(Identity id)
         {
-            return groupCollection.Find(BuildQuery(group.Id.Value));
+            return groupCollection.Find(BuildQuery(id));
         }
 
         public QueryDocument BuildQuery(Identity groupId)

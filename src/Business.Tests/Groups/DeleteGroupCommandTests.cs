@@ -6,7 +6,8 @@ using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 
 namespace Business.Tests.Groups
 {
@@ -14,24 +15,15 @@ namespace Business.Tests.Groups
     public class DeleteGroupCommandTests 
     {
         public DeleteGroupCommand CreateCommand(IEntityById queryEntityById = null, 
-                                                ICudOperations<Group> cudGroup = null, 
+                                                IRepository<Group> cudGroup = null, 
                                                 IChildGroupsOfGroup childGroupsOfGroup = null, 
                                                 ITopicsByGroup queryTopicsByGroup = null) 
         {
             return new DeleteGroupCommand(
                                 queryEntityById ?? Mock.Of<IEntityById>(), 
-                                cudGroup ?? Mock.Of<ICudOperations<Group>>(),
+                                cudGroup ?? Mock.Of<IRepository<Group>>(),
                                 childGroupsOfGroup ?? Mock.Of<IChildGroupsOfGroup>(),
                                 queryTopicsByGroup ?? Mock.Of<ITopicsByGroup>());    
-        }
-
-        [Test]
-        public void WhenIdIsNull_ThenThrowIdMustNotBeNull()
-        {
-            var command = CreateCommand();
-            command.Executing(c => c.Execute(new Group {Id = null}))
-                .Throws<ValidationException>()
-                .And.Exception.Message.Should().Be.EqualTo(Messages.IdMustNotBeNull);
         }
 
         [Test]
@@ -39,7 +31,7 @@ namespace Business.Tests.Groups
         {
             var command = CreateCommand(Mock.Of<IEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == false));
 
-            command.Executing(c => c.Execute(new Group {Id = new Identity("4de7e38617b6c420a45a84c4")}))
+            command.Executing(c => c.Execute(Identity.Random(12)))
                 .Throws<EntityNotFoundException>();
         }
 
@@ -47,36 +39,36 @@ namespace Business.Tests.Groups
         public void WhenGroupHasChildGroups_ThenThrow()
         {
             var command = CreateCommand(queryEntityById: Mock.Of<IEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true),
-                                        childGroupsOfGroup: Mock.Of<IChildGroupsOfGroup>(qg => qg.HasChilds(It.IsAny<Group>()) == true));
+                                        childGroupsOfGroup: Mock.Of<IChildGroupsOfGroup>(qg => qg.HasChilds(It.IsAny<Identity>()) == true));
+            var groupId = Identity.Random(12);
 
-            var @group = new Group { Id = new Identity("4de7e38617b6c420a45a84c4") };
-
-            command.Executing(c => c.Execute(@group))
+            command.Executing(c => c.Execute(groupId))
                 .Throws<ValidationException>()
-                .And.Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupContainsChildGroups, group.Id));
+                .And.Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupContainsChildGroups, groupId));
         }
 
         [Test]
         public void WhenGroupHasChildTopics_ThenThrow()
         {
             var command = CreateCommand(queryEntityById: Mock.Of<IEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true),
-                                        queryTopicsByGroup: Mock.Of<ITopicsByGroup>(qg => qg.HasTopics(It.IsAny<Group>()) == true));
+                                        queryTopicsByGroup: Mock.Of<ITopicsByGroup>(qg => qg.HasTopics(It.IsAny<Identity>()) == true));
 
-            var @group = new Group { Id = new Identity("4de7e38617b6c420a45a84c4") };
+            var groupId = Identity.Random(12);
 
-            command.Executing(c => c.Execute(@group))
+            command.Executing(c => c.Execute(groupId))
                 .Throws<ValidationException>()
-                .And.Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupContainsChildTopics, group.Id));
+                .And.Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupContainsChildTopics, groupId));
         }
 
         [Test]
         public void WhenGroupExists_ThenDelete()
         {
-            var repository = new StubCudOperations<Group>(new Group { Id = new Identity("4de7e38617b6c420a45a84c4") });
+            var groupId = Identity.Random(12);
+            var repository = new StubRepository<Group>(new Group { Id = groupId});
             var command = CreateCommand(Mock.Of<IEntityById>(q => q.Exist<Group>(It.IsAny<Identity>()) == true),
                                         repository);
               
-            command.Execute(new Group { Id = new Identity("4de7e38617b6c420a45a84c4") });
+            command.Execute(groupId);
                 
             repository.Documents.Should().Be.Empty();
         }

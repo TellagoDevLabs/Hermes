@@ -5,11 +5,10 @@ using NUnit.Framework;
 using SharpTestsEx;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Exceptions;
-using TellagoStudios.Hermes.Business.Groups;
-using TellagoStudios.Hermes.Business.Topics;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
-using TellagoStudios.Hermes.Business.Topics.Queries;
+using TellagoStudios.Hermes.Business.Topics;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 
 namespace Business.Tests.Topics
 {
@@ -53,24 +52,24 @@ namespace Business.Tests.Topics
         {
             var name = "Test";
             var groupId = Identity.Random();
-            var stubCudOperations = new StubCudOperations<Topic>();
+            var stubRepository = new StubRepository<Topic>();
             var command = CreateCreateTopicCommand(entityById: Mock.Of<IEntityById>(q => q.Exist<Group>(groupId)),
-                                    cudTopic: stubCudOperations);
+                                    cudTopic: stubRepository);
             var topic = new Topic { Name = name, GroupId = groupId};
             command.Execute(topic);
 
-            stubCudOperations.Documents.Should().Contain(topic);
+            stubRepository.Documents.Should().Contain(topic);
 
         }
 
         private static ICreateTopicCommand CreateCreateTopicCommand(
             IExistsTopicByName existsTopicByName = null, 
             IEntityById entityById = null,
-            ICudOperations<Topic> cudTopic = null)
+            IRepository<Topic> cudTopic = null)
         {
             return new CreateTopicCommand(existsTopicByName ?? Mock.Of<IExistsTopicByName>(),
                                         entityById ?? Mock.Of<IEntityById>(),
-                                        cudTopic ?? Mock.Of<ICudOperations<Topic>>());
+                                        cudTopic ?? Mock.Of<IRepository<Topic>>());
         }
     }
 }

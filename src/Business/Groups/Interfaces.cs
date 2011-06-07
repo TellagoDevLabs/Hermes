@@ -14,6 +14,6 @@ namespace TellagoStudios.Hermes.Business.Groups
 
     public interface IDeleteGroupCommand
     {
-        void Execute(Group group);
+        void Execute(Identity identity);
     }
 }

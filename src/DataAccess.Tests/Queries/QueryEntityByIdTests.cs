@@ -3,7 +3,6 @@ using DataAccess.Tests.Repository;
 using NUnit.Framework;
 using SharpTestsEx;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
 using TellagoStudios.Hermes.DataAccess.Queries;
 

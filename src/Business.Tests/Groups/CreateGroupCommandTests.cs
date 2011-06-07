@@ -7,7 +7,8 @@ using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Commads;
+using TellagoStudios.Hermes.Business.Data.Queries;
 
 namespace Business.Tests.Groups
 {
@@ -46,23 +47,23 @@ namespace Business.Tests.Groups
         [Test]
         public void WhenEverythingIsOK_ThenInsertTheGroup()
         {
-            var stubCudOperations = new StubCudOperations<Group>();
-            var groupCommand = CreateCreateGroupCommand(cudGroup: stubCudOperations);
+            var stubRepository = new StubRepository<Group>();
+            var groupCommand = CreateCreateGroupCommand(cudGroup: stubRepository);
             var @group = new Group { Name = "test"};
             groupCommand.Execute(@group);
 
-            stubCudOperations.Documents.Should().Contain(@group);
+            stubRepository.Documents.Should().Contain(@group);
 
         }
 
         private static ICreateGroupCommand CreateCreateGroupCommand(
             IExistGroupByGroupName existGroupByGroupName = null, 
             IEntityById entityById = null,
-            ICudOperations<Group> cudGroup = null)
+            IRepository<Group> cudGroup = null)
         {
             return new CreateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>(),
                                         entityById ?? Mock.Of<IEntityById>(),
-                                        cudGroup ?? Mock.Of<ICudOperations<Group>>());
+                                        cudGroup ?? Mock.Of<IRepository<Group>>());
         }
     }
 }

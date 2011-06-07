@@ -14,6 +14,6 @@ namespace TellagoStudios.Hermes.Business.Topics
 
     public interface IDeleteTopicCommand
     {
-        void Execute(Topic topic);
+        void Execute(Identity identity);
     }
 }

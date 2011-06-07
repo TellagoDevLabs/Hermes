@@ -76,7 +76,6 @@
     <Compile Include="Extensions\SystemCollectionsExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsGenericExtensions.cs" />
     <Compile Include="Factory.cs" />
-    <Compile Include="Groups\ChangeGroupCommandBase.cs" />
     <Compile Include="Groups\CreateGroupCommand.cs" />
     <Compile Include="Groups\DeleteGroupCommand.cs" />
     <Compile Include="Groups\Interfaces.cs" />
@@ -95,13 +94,13 @@
     <Compile Include="Model\TargetKind.cs" />
     <Compile Include="Model\Topic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Queries\IChildGroupsOfGroup.cs" />
-    <Compile Include="Queries\ICudOperations.cs" />
-    <Compile Include="Queries\IEntityById.cs" />
-    <Compile Include="Queries\IExistGroupByGroupName.cs" />
-    <Compile Include="Queries\IGenericJsonPagedQuery.cs" />
-    <Compile Include="Queries\IQueryGroupAncestors.cs" />
-    <Compile Include="Queries\ITopicsByGroup.cs" />
+    <Compile Include="Data\Queries\IChildGroupsOfGroup.cs" />
+    <Compile Include="Data\Commands\IRepository.cs" />
+    <Compile Include="Data\Queries\IEntityById.cs" />
+    <Compile Include="Data\Queries\IExistGroupByGroupName.cs" />
+    <Compile Include="Data\Queries\IGenericJsonPagedQuery.cs" />
+    <Compile Include="Data\Queries\IQueryGroupAncestors.cs" />
+    <Compile Include="Data\Queries\ITopicsByGroup.cs" />
     <Compile Include="Repository\ISubscriptionQueries.cs" />
     <Compile Include="Repository\ITopicQueries.cs" />
     <Compile Include="Repository\IGroupRepository.cs" />
@@ -116,11 +115,11 @@
     <Compile Include="Service\MessageService.cs" />
     <Compile Include="Service\SubscriptionService.cs" />
     <Compile Include="Service\TopicService.cs" />
-    <Compile Include="Topics\Commands\DeleteTopicCommand.cs" />
-    <Compile Include="Topics\Commands\UpdateTopicCommand.cs" />
-    <Compile Include="Topics\Commands\CreateTopicCommand.cs" />
-    <Compile Include="Topics\Commands\Interfaces.cs" />
-    <Compile Include="Topics\Queries\IExistsTopicByName.cs" />
+    <Compile Include="Topics\DeleteTopicCommand.cs" />
+    <Compile Include="Topics\UpdateTopicCommand.cs" />
+    <Compile Include="Topics\CreateTopicCommand.cs" />
+    <Compile Include="Topics\Interfaces.cs" />
+    <Compile Include="Data\Queries\IExistsTopicByName.cs" />
     <Compile Include="Validator\MessageValidator.cs" />
     <Compile Include="Validator\SubscriptionValidator.cs" />
     <Compile Include="Validator\TopicValidator.cs" />
@@ -128,7 +127,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Model\Topic\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

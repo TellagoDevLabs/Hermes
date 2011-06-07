@@ -1,17 +1,17 @@
 using System;
 using MongoDB.Driver;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Queries;
+using TellagoStudios.Hermes.Business.Data.Commads;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
 
 namespace TellagoStudios.Hermes.DataAccess.Queries
 {
-    public class CudOperations<TDocument> : MongoDbRepository,
-        ICudOperations<TDocument> where TDocument : DocumentBase
+    public class Repository<TDocument> : MongoDbRepository,
+        IRepository<TDocument> where TDocument : DocumentBase
     {
         private readonly MongoCollection<TDocument> collection;
 
-        public CudOperations(string connectionString) : base(connectionString)
+        public Repository(string connectionString) : base(connectionString)
         {
             collection = DB.GetCollection<TDocument>(MongoDbConstants.GetCollectionNameForType<TDocument>());
         }
@@ -21,9 +21,9 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
             collection.Save(document);
         }
 
-        public void MakeTransient(TDocument document)
+        public void MakeTransient(Identity id)
         {
-            if (document.Id != null) collection.Remove(document.Id.Value);
+            collection.Remove(id);
         }
 
         public void Update(TDocument document)
