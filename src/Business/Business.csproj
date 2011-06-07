@@ -84,7 +84,7 @@
     <Compile Include="Messages.cs" />
     <Compile Include="Model\Callback.cs" />
     <Compile Include="Model\CallbackKind.cs" />
-    <Compile Include="Model\DocumentBase.cs" />
+    <Compile Include="Model\EntityBase.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\Identity.cs" />
     <Compile Include="Model\Message.cs" />

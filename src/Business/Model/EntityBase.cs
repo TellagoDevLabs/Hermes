@@ -1,10 +1,10 @@
 ﻿namespace TellagoStudios.Hermes.Business.Model
 {
-    public class DocumentBase
+    public class EntityBase
     {
         public Identity? Id { get; set; }
 
-        private bool Equals(DocumentBase other)
+        private bool Equals(EntityBase other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -15,7 +15,7 @@
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return Equals((DocumentBase) obj);
+            return Equals((EntityBase) obj);
         }
 
         public override int GetHashCode()

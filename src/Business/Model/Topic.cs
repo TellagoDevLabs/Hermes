@@ -1,6 +1,6 @@
 ﻿namespace TellagoStudios.Hermes.Business.Model
 {
-    public class Topic : DocumentBase
+    public class Topic : EntityBase
     {
         public Identity GroupId { get; set; } 
         public string Name { get; set; }

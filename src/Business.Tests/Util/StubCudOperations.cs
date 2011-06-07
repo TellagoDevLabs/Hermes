@@ -6,7 +6,7 @@ using TellagoStudios.Hermes.Business.Data.Commads;
 
 namespace Business.Tests.Util
 {
-    public class StubRepository<T> : IRepository<T> where T : DocumentBase
+    public class StubRepository<T> : IRepository<T> where T : EntityBase
     {
         public StubRepository(params T[] entities)
         {

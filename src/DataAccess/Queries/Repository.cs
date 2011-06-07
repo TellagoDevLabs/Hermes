@@ -7,7 +7,7 @@ using TellagoStudios.Hermes.DataAccess.MongoDB;
 namespace TellagoStudios.Hermes.DataAccess.Queries
 {
     public class Repository<TDocument> : MongoDbRepository,
-        IRepository<TDocument> where TDocument : DocumentBase
+        IRepository<TDocument> where TDocument : EntityBase
     {
         private readonly MongoCollection<TDocument> collection;
 
