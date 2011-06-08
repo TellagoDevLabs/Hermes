@@ -42,7 +42,7 @@ namespace Business.Tests.Topics
               
             command.Execute(id);
                 
-            repository.Documents.Should().Be.Empty();
+            repository.Entities.Should().Be.Empty();
         }
     }
 }

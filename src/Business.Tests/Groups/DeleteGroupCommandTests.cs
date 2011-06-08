@@ -70,7 +70,7 @@ namespace Business.Tests.Groups
               
             command.Execute(groupId);
                 
-            repository.Documents.Should().Be.Empty();
+            repository.Entities.Should().Be.Empty();
         }
     }
 }

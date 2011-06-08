@@ -52,7 +52,7 @@ namespace Business.Tests.Groups
             var @group = new Group { Name = "test"};
             groupCommand.Execute(@group);
 
-            stubRepository.Documents.Should().Contain(@group);
+            stubRepository.Entities.Should().Contain(@group);
 
         }
 

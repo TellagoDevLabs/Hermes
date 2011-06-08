@@ -10,22 +10,22 @@ namespace Business.Tests.Util
     {
         public StubRepository(params T[] entities)
         {
-            Documents = new HashSet<T>(entities);
+            Entities = new HashSet<T>(entities);
             Updates = new HashSet<T>();
         }
 
-        public HashSet<T> Documents { get; set; }
+        public HashSet<T> Entities { get; set; }
 
         public HashSet<T> Updates { get; set; }
 
         public void MakePersistent(T document)
         {
-            Documents.Add(document);
+            Entities.Add(document);
         }
 
         public void MakeTransient(Identity id)
         {
-            Documents.Remove(Documents.FirstOrDefault(e => e.Id == id));
+            Entities.Remove(Entities.FirstOrDefault(e => e.Id == id));
         }
 
         public void Update(T document)
