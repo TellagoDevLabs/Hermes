@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
@@ -22,15 +24,22 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
             return groupCollection.Exists(BuildQuery(id));
         }
 
-        public IEnumerable<Group> GetChilds(Identity id)
+        public IEnumerable<Group> GetChildren(Identity id)
         {
             return groupCollection.Find(BuildQuery(id));
         }
 
-        public QueryDocument BuildQuery(Identity groupId)
+        public IEnumerable<Identity> GetChildrenIds(Identity id)
         {
-            string queryString = string.Format(@"{{""ParentId"" : {0}}}", groupId.ToBsonString());
-            return queryString.ToQueryDocument();
+            var cursor =  groupCollection.Find(BuildQuery(id));
+            cursor.SetFields("_id");
+            return cursor.Select(g => g.Id.Value);
+        }
+
+
+        public IMongoQuery BuildQuery(Identity groupId)
+        {
+           return Query.EQ("ParentId", groupId.ToBson());
         }
     }
 }

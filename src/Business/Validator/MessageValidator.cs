@@ -17,7 +17,7 @@ namespace TellagoStudios.Hermes.Business.Validator
 
             if (!SubscriptionService.ExistsById(id))
             {
-                errors.Add(string.Format(Messages.EntityNotFound, typeof(Subscription).Name, id));
+                errors.Add(string.Format(Texts.EntityNotFound, typeof(Subscription).Name, id));
             }
 
             // Any error?
@@ -31,12 +31,12 @@ namespace TellagoStudios.Hermes.Business.Validator
             // ReceivedOn is not null and it is valid
             if (instance.UtcReceivedOn == default(DateTime))
             {
-                errors.Add(Messages.ReceivedOnMustBeSetted);
+                errors.Add(Texts.ReceivedOnMustBeSetted);
             }
             
             if (!TopicService.Exists(instance.TopicId))
             {
-                errors.Add(string.Format(Messages.EntityNotFound, typeof(Topic).Name, instance.TopicId));
+                errors.Add(string.Format(Texts.EntityNotFound, typeof(Topic).Name, instance.TopicId));
             }
 
             // Any error?
@@ -50,7 +50,7 @@ namespace TellagoStudios.Hermes.Business.Validator
             // TopicId is valid
             if (!TopicService.Exists(key.TopicId))
             {
-                errors.Add(string.Format(Messages.EntityNotFound, typeof(Topic).Name, key.TopicId));
+                errors.Add(string.Format(Texts.EntityNotFound, typeof(Topic).Name, key.TopicId));
             }
 
             // Any error?

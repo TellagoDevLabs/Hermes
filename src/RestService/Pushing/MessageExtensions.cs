@@ -22,7 +22,7 @@ namespace TellagoStudios.Hermes.RestService.Pushing
                     request.PopulateWithMessage(message);
                     break;
                 default:
-                    throw new InvalidOperationException(string.Format(Business.Messages.CallbackKindUnknown, subscription.Callback.Kind));
+                    throw new InvalidOperationException(string.Format(Business.Texts.CallbackKindUnknown, subscription.Callback.Kind));
             }
 
             new HttpClient().Send(request);

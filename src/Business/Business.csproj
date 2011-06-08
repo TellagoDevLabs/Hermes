@@ -66,6 +66,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Commands\IMessageRepository.cs" />
+    <Compile Include="Data\Queries\IMessageKeysByGroup.cs" />
+    <Compile Include="Data\Queries\IMessageKeysByTopic.cs" />
+    <Compile Include="Data\Queries\IMessageByMessageKey.cs" />
+    <Compile Include="Data\Queries\IMessageKeysBySubscription.cs" />
     <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Events\IEventAggregator.cs" />
     <Compile Include="Events\IEventHandler.cs" />
@@ -81,7 +86,9 @@
     <Compile Include="Groups\Interfaces.cs" />
     <Compile Include="Groups\UpdateGroupCommand.cs" />
     <Compile Include="Guard.cs" />
-    <Compile Include="Messages.cs" />
+    <Compile Include="Texts.cs" />
+    <Compile Include="Messages\CreateMessageCommand.cs" />
+    <Compile Include="Messages\Interfaces.cs" />
     <Compile Include="Model\Callback.cs" />
     <Compile Include="Model\CallbackKind.cs" />
     <Compile Include="Model\EntityBase.cs" />

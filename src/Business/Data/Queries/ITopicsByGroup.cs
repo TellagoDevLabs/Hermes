@@ -7,5 +7,6 @@ namespace TellagoStudios.Hermes.Business.Data.Queries
     {
         bool HasTopics(Identity id);
         IEnumerable<Topic> GetTopics(Identity id, int? skip = null, int? limit = null) ;
+        IEnumerable<Identity> GetTopicIds(Identity groupId, int? skip = null, int? limit = null);
     }
 }

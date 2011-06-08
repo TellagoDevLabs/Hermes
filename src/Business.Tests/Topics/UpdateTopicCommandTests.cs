@@ -22,7 +22,7 @@ namespace Business.Tests.Topics
             command.Executing(c => c.Execute(topic))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(string.Format(Messages.IdMustNotBeNull));
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.IdMustNotBeNull));
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace Business.Tests.Topics
             command.Executing(c => c.Execute(topic))
                                     .Throws<EntityNotFoundException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(string.Format(Messages.EntityNotFound, typeof(Topic).Name, id));
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.EntityNotFound, typeof(Topic).Name, id));
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace Business.Tests.Topics
             command.Executing(c => c.Execute(topic))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(string.Format(Messages.NameMustBeNotNull));
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.NameMustBeNotNull));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace Business.Tests.Topics
             command.Executing(c => c.Execute(new Topic {Id = id, Name = name}))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(string.Format(Messages.TopicNameMustBeUnique, name));
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.TopicNameMustBeUnique, name));
         }
         [Test]
         public void WhengGroupIdDoesNotExist_ThenThrowException()
@@ -77,7 +77,7 @@ namespace Business.Tests.Topics
             command.Executing(c => c.Execute(topic))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(string.Format(Messages.EntityNotFound, typeof(Group).Name, groupId));
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.EntityNotFound, typeof(Group).Name, groupId));
         }
 
         [Test]

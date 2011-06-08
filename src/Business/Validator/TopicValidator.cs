@@ -18,14 +18,14 @@ namespace TellagoStudios.Hermes.Business.Validator
             // Name is ot null
             if (string.IsNullOrWhiteSpace(instance.Name))
             {
-                errors.Add(Messages.NameMustBeNotNull);
+                errors.Add(Texts.NameMustBeNotNull);
             }
 
             // Name is unique
             var query = TopicRepository.QueryDuplicatedName(instance);
             if (TopicRepository.ExistsByQuery(query)) 
             {
-                errors.Add(string.Format(Messages.TopicNameMustBeUnique, instance.Name));
+                errors.Add(string.Format(Texts.TopicNameMustBeUnique, instance.Name));
             }
 
             // Group is valid TODO
@@ -54,7 +54,7 @@ namespace TellagoStudios.Hermes.Business.Validator
             // Id is not null and is valid
             if (!instance.Id.HasValue)
             {
-                errors.Add(Messages.IdMustNotBeNull);
+                errors.Add(Texts.IdMustNotBeNull);
             }
             else if (!TopicRepository.ExistsById(instance.Id.Value))
             {
@@ -65,11 +65,11 @@ namespace TellagoStudios.Hermes.Business.Validator
             var query = TopicRepository.QueryDuplicatedName(instance);
             if (string.IsNullOrWhiteSpace(instance.Name))
             {
-                errors.Add(string.Format(Messages.NameMustBeNotNull));
+                errors.Add(string.Format(Texts.NameMustBeNotNull));
             }
             else if (TopicRepository.ExistsByQuery(query))
             {
-                errors.Add(string.Format(Messages.TopicNameMustBeUnique, instance.Name));
+                errors.Add(string.Format(Texts.TopicNameMustBeUnique, instance.Name));
             }
 
             // Any error?

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
@@ -22,19 +24,28 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
             return topicsCollection.Exists(QueryGetByGroup(id));
         }
 
-        public IEnumerable<Topic> GetTopics(Identity id, int? skip = null, int? limit = null) 
+        public IEnumerable<Topic> GetTopics(Identity groupId, int? skip = null, int? limit = null)
         {
-            var cursor =  topicsCollection.Find(QueryGetByGroup(id));
+            var cursor = topicsCollection.Find(QueryGetByGroup(groupId));
             if (skip.HasValue) cursor.SetSkip(skip.Value);
             if (limit.HasValue) cursor.SetSkip(limit.Value);
             return cursor;
         }
 
-        private static QueryDocument QueryGetByGroup(Identity groupId)
+        public IEnumerable<Identity> GetTopicIds(Identity groupId, int? skip = null, int? limit = null)
         {
-            var query = "{\"GroupId\" : " + groupId.ToBsonString() + "}";
-            return query.ToQueryDocument();
+            var cursor = topicsCollection.Find(QueryGetByGroup(groupId));
+            cursor.SetFields("_id");
 
+            if (skip.HasValue) cursor.SetSkip(skip.Value);
+            if (limit.HasValue) cursor.SetSkip(limit.Value);
+
+            return cursor.Select(doc => doc.Id.Value);
+        }
+
+        private static IMongoQuery QueryGetByGroup(Identity groupId)
+        {
+            return Query.EQ("GroupId", groupId.ToBson());
         }
     }
 }

@@ -5,8 +5,9 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using TellagoStudios.Hermes.Business;
+using TellagoStudios.Hermes.Business.Data.Queries;
+using TellagoStudios.Hermes.Business.Messages;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.RestService.Extensions;
 using System.Net.Http;
 using System.Collections.Generic;
@@ -19,11 +20,24 @@ namespace TellagoStudios.Hermes.RestService.Resources
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
     public class MessageResource : Resource
     {
-        private readonly IMessageService messageService;
-        
-        public MessageResource (IMessageService messageService)
+        private readonly IMessageByMessageKey messageByMessageKey;
+        private readonly ICreateMessageCommand createMessageCommand;
+        private readonly IMessageKeysByTopic messageKeysByTopic;
+        private readonly IMessageKeysByGroup messageKeysByGroup;
+        private readonly IMessageKeysBySubscription messageKeysBySubscription;
+
+
+        public MessageResource(IMessageByMessageKey messageByMessageKey, 
+            ICreateMessageCommand createMessageCommand,
+            IMessageKeysByTopic messageKeysByTopic,
+            IMessageKeysByGroup messageKeysByGroup,
+            IMessageKeysBySubscription messageKeysBySubscription)
         {
-            this.messageService = messageService;
+            this.messageByMessageKey = messageByMessageKey;
+            this.createMessageCommand = createMessageCommand;
+            this.messageKeysBySubscription = messageKeysBySubscription;
+            this.messageKeysByTopic = messageKeysByTopic;
+            this.messageKeysByGroup= messageKeysByGroup;
         }
 
         [WebInvoke(UriTemplate = "/topic/{id}", Method = "POST")]
@@ -33,30 +47,22 @@ namespace TellagoStudios.Hermes.RestService.Resources
             {
                 var message = Create(request);
                 message.TopicId = id;
-                message = messageService.Create(message);
+                createMessageCommand.Execute(message);
                 return message.ToLink();
             });
         }
 
-        [WebInvoke(UriTemplate = "/topicgroup/{id}", Method = "POST")]
-        public HttpResponseMessage<Link[]> CreateMessageOnGroup(Identity id, HttpRequestMessage request)
+        [WebGet(UriTemplate = "/subscription/{id}?skip={skip}&limit={limit}")]
+        public HttpResponseMessage<Link[]> GetBySubscription(Identity id, int skip, int limit)
         {
-            return Process(() =>
-            {
-                var message = Create(request);
-                var messages = messageService.CreateByGroup(id, message);
-                return messages
-                    .Select(m => m.ToLink())
-                    .ToArray();
-            });
-        }
+            // set valid values of opional parameters
+            var validatedSkip = skip > 0 ? new int?(skip) : new int?();
+            var validatedLimit = limit > 0 ? new int?(limit) : new int?();
 
-        [WebGet(UriTemplate = "/subscription/{id}")]
-        public HttpResponseMessage<Link[]> GetBySubscription(Identity id)
-        {
-            return Process(() => 
-                messageService.GetMessageKeysBySubscription(id)
-                    .Select(key => key.ToLink()).ToArray()
+            return Process(() => messageKeysBySubscription
+                    .Get(id, validatedSkip, validatedLimit)
+                    .Select(key => key.ToLink())
+                    .ToArray()
             );
         }
 
@@ -66,7 +72,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return Process((response) => 
             {
                 var key = new MessageKey { TopicId = topicId, MessageId = messageId }; 
-                var message = messageService.Get(key);
+                var message = messageByMessageKey.Get(key);
                 if (message == null)
                 {
                     response.StatusCode = HttpStatusCode.NotFound;
@@ -78,28 +84,32 @@ namespace TellagoStudios.Hermes.RestService.Resources
             });
         }
 
-        [WebGet(UriTemplate = "topic/{topicId}")]
-        public HttpResponseMessage<Link[]> GetForTopic(Identity topicId)
+        [WebGet(UriTemplate = "topic/{id}?skip={skip}&limit={limit}")]
+        public HttpResponseMessage<Link[]> GetForTopic(Identity id, int skip, int limit)
         {
-            return Process(() =>
-            {
-                var messageKeys = messageService.GetForTopic(topicId);
-                return messageKeys
-                    .Select(messageKey => messageKey.ToLink())
-                    .ToArray();
-            });
+            // set valid values of opional parameters
+            var validatedSkip = skip > 0 ? new int?(skip) : new int?();
+            var validatedLimit = limit > 0 ? new int?(limit) : new int?();
+
+            return Process(() => messageKeysByTopic
+                    .Get(id, validatedSkip, validatedLimit)
+                    .Select(key => key.ToLink())
+                    .ToArray()
+            );
         }
 
-        [WebGet(UriTemplate = "topicgroup/{groupId}")]
-        public HttpResponseMessage<Link[]> GetForGroup(Identity groupId)
+        [WebGet(UriTemplate = "topicgroup/{id}?skip={skip}&limit={limit}")]
+        public HttpResponseMessage<Link[]> GetForGroup(Identity id, int skip, int limit)
         {
-            return Process(() =>
-            {
-                var messageKeys = messageService.GetForGroup(groupId);
-                return messageKeys
-                    .Select(messageKey => messageKey.ToLink())
-                    .ToArray();
-            });
+            // set valid values of opional parameters
+            var validatedSkip = skip > 0 ? new int?(skip) : new int?();
+            var validatedLimit = limit > 0 ? new int?(limit) : new int?();
+
+            return Process(() => messageKeysByGroup
+                    .Get(id, validatedSkip, validatedLimit)
+                    .Select(key => key.ToLink())
+                    .ToArray()
+            );
         }
 
         #region Private methods

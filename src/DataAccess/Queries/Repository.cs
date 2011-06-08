@@ -6,19 +6,19 @@ using TellagoStudios.Hermes.DataAccess.MongoDB;
 
 namespace TellagoStudios.Hermes.DataAccess.Queries
 {
-    public class Repository<TDocument> : MongoDbRepository,
-        IRepository<TDocument> where TDocument : EntityBase
+    public class Repository<TEntity> : MongoDbRepository,
+        IRepository<TEntity> where TEntity : EntityBase
     {
-        private readonly MongoCollection<TDocument> collection;
+        private readonly MongoCollection<TEntity> collection;
 
         public Repository(string connectionString) : base(connectionString)
         {
-            collection = DB.GetCollection<TDocument>(MongoDbConstants.GetCollectionNameForType<TDocument>());
+            collection = DB.GetCollection<TEntity>(MongoDbConstants.GetCollectionNameForType<TEntity>());
         }
 
-        public void MakePersistent(TDocument document)
+        public void MakePersistent(TEntity entity)
         {
-            collection.Save(document);
+            collection.Save(entity);
         }
 
         public void MakeTransient(Identity id)
@@ -26,9 +26,9 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
             collection.Remove(id);
         }
 
-        public void Update(TDocument document)
+        public void Update(TEntity entity)
         {
-            collection.Save(document);
+            collection.Save(entity);
         }
     }
 }

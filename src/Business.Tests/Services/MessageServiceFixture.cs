@@ -51,7 +51,7 @@ namespace Business.Tests.Services
             promotedProperties.Add("empty", string.Empty);
             promotedProperties.Add("string", "\"single string value\"");
             promotedProperties.Add("integer", "20");
-            promotedProperties.Add("document", "{\"prop\":20}");
+            promotedProperties.Add("entity", "{\"prop\":20}");
 
             var message = new Message
                               {
@@ -146,7 +146,7 @@ namespace Business.Tests.Services
             promotedProperties.Add("empty", string.Empty);
             promotedProperties.Add("string", "\"single string value\"");
             promotedProperties.Add("integer", "20");
-            promotedProperties.Add("document", "{\"prop\":20}");
+            promotedProperties.Add("entity", "{\"prop\":20}");
 
             var message = new Message
             {

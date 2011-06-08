@@ -23,7 +23,10 @@ namespace TellagoStudios.Hermes.Business.Service
             Validator.ValidateBeforeCreate(message);
             var result = Repository.Create(message);
 
-            EventAggregator.Raise(new NewMessageEvent { Message = result });
+            if (EventAggregator != null)
+            {
+                EventAggregator.Raise(new NewMessageEvent {Message = result});
+            }
 
             return result;
         }
@@ -51,7 +54,7 @@ namespace TellagoStudios.Hermes.Business.Service
                     AddTopicIdsFromGroup(topicIds, subscription.TargetId.Value);
                     break;
                 default:
-                    throw new InvalidOperationException(string.Format(Messages.TargetKindUnknown, subscription.TargetKind));
+                    throw new InvalidOperationException(string.Format(Texts.TargetKindUnknown, subscription.TargetKind));
             }
 
             // For each topic in collection, gets each message that matchs the filter and returns message's key

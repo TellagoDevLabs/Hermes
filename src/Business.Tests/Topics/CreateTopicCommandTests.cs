@@ -31,7 +31,7 @@ namespace Business.Tests.Topics
             command.Executing(gc => gc.Execute(new Topic {Name = name}))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(string.Format(Messages.TopicNameMustBeUnique, name));
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.TopicNameMustBeUnique, name));
         }
         [Test]
         public void WhengGroupIdDoesNotExist_ThenThrowException()
@@ -44,7 +44,7 @@ namespace Business.Tests.Topics
             command.Executing(gc => gc.Execute(topic))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(string.Format(Messages.EntityNotFound, typeof(Group).Name, groupId));
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.EntityNotFound, typeof(Group).Name, groupId));
         }
 
         [Test]

@@ -18,9 +18,9 @@ namespace Business.Tests.Util
 
         public HashSet<T> Updates { get; set; }
 
-        public void MakePersistent(T document)
+        public void MakePersistent(T entity)
         {
-            Documents.Add(document);
+            Documents.Add(entity);
         }
 
         public void MakeTransient(Identity id)
@@ -28,9 +28,9 @@ namespace Business.Tests.Util
             Documents.Remove(Documents.FirstOrDefault(e => e.Id == id));
         }
 
-        public void Update(T document)
+        public void Update(T entity)
         {
-            Updates.Add(document);
+            Updates.Add(entity);
         }
     }
 }

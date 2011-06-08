@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using Autofac;
 using Moq;
 using NUnit.Framework;
 using System.Net;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Exceptions;
+using TellagoStudios.Hermes.Business.Messages;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.RestService;
-using System.Collections.Generic;
 using TellagoStudios.Hermes.RestService.Resources;
 
 namespace RestService.Tests
@@ -18,14 +17,26 @@ namespace RestService.Tests
     [TestFixture]
     public class MessageFixture : ResourceBaseFixture
     {
-        private Mock<IMessageService> mockedService;
-
+        private Mock<IMessageByMessageKey> messageByMessageKey;
+        private Mock<ICreateMessageCommand> createMessageCommand;
+        private Mock<IMessageKeysByTopic> messageKeysByTopic;
+        private Mock<IMessageKeysByGroup> messageKeysByGroup;
+        private Mock<IMessageKeysBySubscription> messageKeysBySubscription;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
-            // Create a mocked repository for topics.
-            mockedService = new Mock<IMessageService>(MockBehavior.Loose);
-            builder.RegisterInstance(new MessageResource(mockedService.Object));
+            messageByMessageKey = new Mock<IMessageByMessageKey>();
+            createMessageCommand = new Mock<ICreateMessageCommand> ();
+            messageKeysByTopic = new Mock<IMessageKeysByTopic>();
+            messageKeysByGroup = new Mock<IMessageKeysByGroup>();
+            messageKeysBySubscription = new Mock<IMessageKeysBySubscription>();
+
+            builder.RegisterInstance(new MessageResource(
+                messageByMessageKey.Object,
+                createMessageCommand.Object,
+                messageKeysByTopic.Object,
+                messageKeysByGroup.Object,
+                messageKeysBySubscription.Object));
         }
 
         protected override Type GetServiceType()
@@ -48,7 +59,9 @@ namespace RestService.Tests
             var topicId = Identity.Random();
             var response = new Message {Id = Identity.Random() };
 
-            mockedService.Setup(s => s.Create(It.Is<Message>(m => m != null && m.TopicId == topicId))).Returns(response);
+            createMessageCommand
+                .Setup(s => s.Execute(It.Is<Message>(m => m != null && m.TopicId == topicId)))
+                .Callback<Message>(m => m.Id = Identity.Random()); ;
 
             var httpResponse = client.Post(baseUri+"/topic/" + topicId, content);
 
@@ -75,13 +88,15 @@ namespace RestService.Tests
 
             var key = new MessageKey { MessageId = message.Id.Value, TopicId = message.TopicId };
 
-            mockedService.Setup(r => r.Get(It.Is<MessageKey>(k => k.TopicId == key.TopicId && k.MessageId == key.MessageId))).Returns(message);
+            messageByMessageKey
+                .Setup(r => r.Get(It.Is<MessageKey>(k => k.TopicId == key.TopicId && k.MessageId == key.MessageId)))
+                .Returns(message);
 
             var client = new HttpClient(baseUri);
             var url = baseUri + message.Id.Value.ToString() + "/topic/" + message.TopicId;
             var result = client.Get(url);
 
-            mockedService.Verify(r => r.Get(It.Is<MessageKey>(k => k.TopicId == key.TopicId && k.MessageId == key.MessageId)));
+            messageByMessageKey.Verify(r => r.Get(It.Is<MessageKey>(k => k.TopicId == key.TopicId && k.MessageId == key.MessageId)));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
@@ -92,13 +107,13 @@ namespace RestService.Tests
         [Test]
         public void Validates_a_get_with_invalid_data()
         {
-            mockedService.Setup(s => s.Get(It.IsAny<MessageKey>())).Throws<ValidationException>();
+            messageByMessageKey.Setup(s => s.Get(It.IsAny<MessageKey>())).Throws<ValidationException>();
 
             var client = new HttpClient(baseUri);
             var url = baseUri.ToString() + Identity.Random() + "/topic/" + Identity.Random();
             var result = client.Get(url);
 
-            mockedService.Verify(r => r.Get(It.IsAny<MessageKey>()));
+            messageByMessageKey.Verify(r => r.Get(It.IsAny<MessageKey>()));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
@@ -107,13 +122,13 @@ namespace RestService.Tests
         [Test]
         public void Validates_a_get_of_a_message_that_does_not_exist()
         {
-            mockedService.Setup(s => s.Get(It.IsAny<MessageKey>())).Returns((Message)null);
+            messageByMessageKey.Setup(s => s.Get(It.IsAny<MessageKey>())).Returns((Message)null);
 
             var client = new HttpClient(baseUri);
             var url = baseUri.ToString() + Identity.Random() + "/topic/" + Identity.Random();
             var result = client.Get(url);
 
-            mockedService.Verify(r => r.Get(It.IsAny<MessageKey>()));
+            messageByMessageKey.Verify(r => r.Get(It.IsAny<MessageKey>()));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);

@@ -15,11 +15,11 @@ namespace DataAccess.Tests.Queries
         public void WhenIdExist_ThenReturnsTrue()
         {
             var existEntityById = new EntityById(connectionString);
-            var document = new Group { Name = "Foo" };
+            var entity = new Group { Name = "Foo" };
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups)
-                                .Insert(document);
+                                .Insert(entity);
 
-            existEntityById.Exist<Group>(document.Id.Value)
+            existEntityById.Exist<Group>(entity.Id.Value)
                         .Should().Be.True();
             
         }
@@ -29,11 +29,11 @@ namespace DataAccess.Tests.Queries
         public void WhenEntityExist_ThenGetReturnsEntity()
         {
             var existEntityById = new EntityById(connectionString);
-            var document = new Group { Name = "Foo" };
+            var entity = new Group { Name = "Foo" };
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups)
-                                .Insert(document);
+                                .Insert(entity);
 
-            existEntityById.Get<Group>(document.Id.Value)
+            existEntityById.Get<Group>(entity.Id.Value)
                 .Satisfy(e => e != null && e.Name == "Foo");
 
         }
@@ -42,10 +42,10 @@ namespace DataAccess.Tests.Queries
         public void WhenDoesNotIdExist_ThenReturnsFalse()
         {
             var existEntityById = new EntityById(connectionString);
-            var document = new Group { Name = "Foo" };
+            var entity = new Group { Name = "Foo" };
 
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups)
-                                .Insert(document);
+                                .Insert(entity);
 
             existEntityById.Exist<Group>(new Identity("4de7e38617b6c420a45a84c4"))
                         .Should().Be.False();

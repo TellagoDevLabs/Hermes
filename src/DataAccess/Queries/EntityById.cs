@@ -10,16 +10,16 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
         public EntityById(string connectionString) : base(connectionString)
         {}
 
-        public bool Exist<TDocument>(Identity id)
+        public bool Exist<TEntity>(Identity id)
         {
-            string collectionName = MongoDbConstants.GetCollectionNameForType<TDocument>();
+            string collectionName = MongoDbConstants.GetCollectionNameForType<TEntity>();
             return DB.GetCollection(collectionName).Exists(id);
         }
 
-        public TDocument Get<TDocument>(Identity id) where TDocument : class
+        public TEntity Get<TEntity>(Identity id) where TEntity : class
         {
-            string collectionName = MongoDbConstants.GetCollectionNameForType<TDocument>();
-            return DB.GetCollection<TDocument>(collectionName).FindById(id);
+            string collectionName = MongoDbConstants.GetCollectionNameForType<TEntity>();
+            return DB.GetCollection<TEntity>(collectionName).FindById(id);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
             Debug.Assert(topic != null);
             Debug.Assert(topic.Id.HasValue);
 
-            DB.CreateCollection(topic.MessagesCollectionName, new CollectionOptionsDocument());
+            DB.CreateCollection(MongoDbConstants.GetCollectionNameForMessage(topic.Id.Value), new CollectionOptionsDocument());
             //TODO: Add indexies to message's collection
 
             return topic;
@@ -67,8 +67,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
         {
             _topicsCollection.Remove(id);
 
-            var topic = new Topic { Id = id };
-            DB.DropCollection(topic.MessagesCollectionName);
+            DB.DropCollection(MongoDbConstants.GetCollectionNameForMessage(id));
         }
 
         public IEnumerable<Topic> Find(string query, int? skip, int? limit)

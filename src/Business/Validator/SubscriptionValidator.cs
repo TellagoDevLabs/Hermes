@@ -16,7 +16,7 @@ namespace TellagoStudios.Hermes.Business.Validator
         {
             if (!TopicService.Exists(topicId))
             {
-                throw new ValidationException(string.Format(Messages.EntityNotFound, typeof(Topic).Name, topicId));
+                throw new ValidationException(string.Format(Texts.EntityNotFound, typeof(Topic).Name, topicId));
             }
         }
 
@@ -28,13 +28,13 @@ namespace TellagoStudios.Hermes.Business.Validator
             // Validates filter
             if (instance.Filter != null && !Repository.IsQueryValid(instance.Filter))
             {
-                errors.Add(string.Format(Messages.InvalidFilter, instance.Filter));
+                errors.Add(string.Format(Texts.InvalidFilter, instance.Filter));
             }
 
             // TopicId is valid
             if (!instance.TargetId.HasValue)
             {
-                errors.Add(string.Format(Messages.TargetIdMustNotBeNull));
+                errors.Add(string.Format(Texts.TargetIdMustNotBeNull));
             }
             else
             {
@@ -43,7 +43,7 @@ namespace TellagoStudios.Hermes.Business.Validator
                     case TargetKind.Topic:
                         if (!TopicService.Exists(instance.TargetId.Value))
                         {
-                            errors.Add(string.Format(Messages.EntityNotFound, typeof (Topic).Name, instance.TargetId));
+                            errors.Add(string.Format(Texts.EntityNotFound, typeof (Topic).Name, instance.TargetId));
                         }
                         break;
                     case TargetKind.Group:
@@ -55,7 +55,7 @@ namespace TellagoStudios.Hermes.Business.Validator
                         //}
                         break;
                     default:
-                        errors.Add(string.Format(Messages.TargetKindUnknown, instance.TargetKind));
+                        errors.Add(string.Format(Texts.TargetKindUnknown, instance.TargetKind));
                         break;
                 }
             }
@@ -71,7 +71,7 @@ namespace TellagoStudios.Hermes.Business.Validator
             // Id is not null and is valid
             if (!instance.Id.HasValue)
             {
-                errors.Add(Messages.IdMustNotBeNull);
+                errors.Add(Texts.IdMustNotBeNull);
             }
             else if (!Repository.ExistsById(instance.Id.Value))
             {
@@ -81,7 +81,7 @@ namespace TellagoStudios.Hermes.Business.Validator
             // Validates filter
             if (instance.Filter!=null && !Repository.IsQueryValid(instance.Filter))
             {
-                throw new ValidationException(string.Format(Messages.InvalidFilter, instance.Filter));
+                throw new ValidationException(string.Format(Texts.InvalidFilter, instance.Filter));
             }
 
             // Any error?

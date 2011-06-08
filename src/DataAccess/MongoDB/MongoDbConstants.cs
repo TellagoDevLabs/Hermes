@@ -36,5 +36,10 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
             }
             return collectionName;
         }
+
+        public static string GetCollectionNameForMessage(Identity topicId)
+        {
+            return "msg_" + topicId;
+        }
     }
 }

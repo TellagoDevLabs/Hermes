@@ -34,7 +34,7 @@ namespace DataAccess.Tests.Repository
             promotedProperties.Add("string", "\"single string value\"");
             promotedProperties.Add("integer", "20");
             promotedProperties.Add("array", "[20, \"sam string\"]");
-            promotedProperties.Add("document", "{ \"prop\" : 20 }");
+            promotedProperties.Add("entity", "{ \"prop\" : 20 }");
 
             var message = new Message
                               {
@@ -69,12 +69,13 @@ namespace DataAccess.Tests.Repository
                 new Message { Id = Identity.Random(Utils.MongoObjectId), TopicId = topic.Id.Value },
                 new Message { Id = Identity.Random(Utils.MongoObjectId), TopicId = topic.Id.Value }};
 
-            if (mongoDb.CollectionExists(topic.MessagesCollectionName))
+            var name = MongoDbConstants.GetCollectionNameForMessage(topic.Id.Value);
+            if (mongoDb.CollectionExists(name))
             {
-                mongoDb.DropCollection(topic.MessagesCollectionName);
+                mongoDb.DropCollection(name);
             }
 
-            var col = mongoDb.GetCollection<Message>(topic.MessagesCollectionName);
+            var col = mongoDb.GetCollection<Message>(name);
             Array.ForEach(messages, m => col.Save(m));
 
             #endregion
@@ -114,13 +115,14 @@ namespace DataAccess.Tests.Repository
                 new Message { Id = Identity.Random(Utils.MongoObjectId), TopicId = topicId, Payload = new  byte[] { 1, 2, 3 }, UtcReceivedOn = DateTime.UtcNow }
             };
 
+            var name = MongoDbConstants.GetCollectionNameForMessage(topicId);
             var topic = new Topic { Id = topicId };
-            if (mongoDb.CollectionExists(topic.MessagesCollectionName))
+            if (mongoDb.CollectionExists(name))
             {
-                mongoDb.DropCollection(topic.MessagesCollectionName);
+                mongoDb.DropCollection(name);
             }
 
-            var col = mongoDb.GetCollection<Message>(topic.MessagesCollectionName);
+            var col = mongoDb.GetCollection<Message>(name);
             Array.ForEach(messages, m => col.Save(m));
             
             #endregion
@@ -146,12 +148,13 @@ namespace DataAccess.Tests.Repository
                 new Message { Id = Identity.Random(Utils.MongoObjectId), TopicId = topicId },
                 new Message { Id = Identity.Random(Utils.MongoObjectId), TopicId = topicId }};
 
-            if (mongoDb.CollectionExists(topic.MessagesCollectionName))
+            var name = MongoDbConstants.GetCollectionNameForMessage(topicId);
+            if (mongoDb.CollectionExists(name))
             {
-                mongoDb.DropCollection(topic.MessagesCollectionName);
+                mongoDb.DropCollection(name);
             }
 
-            var col = mongoDb.GetCollection<Message>(topic.MessagesCollectionName);
+            var col = mongoDb.GetCollection<Message>(name);
             Array.ForEach(messages, m => col.Save(m));
 
             #endregion

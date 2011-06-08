@@ -1,6 +1,6 @@
 ﻿namespace TellagoStudios.Hermes.Business
 {
-    public static class Messages
+    public static class Texts
     {
         public const string ArgumentWasEmpty = "Argument was empty.";
         public const string ArgumentWasEmptyOrWhitespace = "Argument was empty or whitespace.";

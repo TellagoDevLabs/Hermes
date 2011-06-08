@@ -65,6 +65,11 @@
     <Compile Include="MongoDB\MongoDbTopicRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\ChildGroupsOfGroup.cs" />
+    <Compile Include="Queries\MessageRepository.cs" />
+    <Compile Include="Queries\MessageKeysByGroup.cs" />
+    <Compile Include="Queries\MessageKeysBySubscription.cs" />
+    <Compile Include="Queries\MessageKeysByTopic.cs" />
+    <Compile Include="Queries\MessageByMessageKey.cs" />
     <Compile Include="Queries\ExistTopicByName.cs" />
     <Compile Include="Queries\Repository.cs" />
     <Compile Include="Queries\EntityById.cs" />

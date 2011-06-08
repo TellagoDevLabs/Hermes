@@ -15,7 +15,7 @@ namespace TellagoStudios.Hermes.Business.Exceptions
         }
 
         public EntityNotFoundException(Type type, Identity id)
-            : base(string.Format(Messages.EntityNotFound, type.Name, id))
+            : base(string.Format(Texts.EntityNotFound, type.Name, id))
         {
         }
     }

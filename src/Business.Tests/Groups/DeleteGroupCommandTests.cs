@@ -44,7 +44,7 @@ namespace Business.Tests.Groups
 
             command.Executing(c => c.Execute(groupId))
                 .Throws<ValidationException>()
-                .And.Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupContainsChildGroups, groupId));
+                .And.Exception.Message.Should().Be.EqualTo(string.Format(Texts.GroupContainsChildGroups, groupId));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Business.Tests.Groups
 
             command.Executing(c => c.Execute(groupId))
                 .Throws<ValidationException>()
-                .And.Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupContainsChildTopics, groupId));
+                .And.Exception.Message.Should().Be.EqualTo(string.Format(Texts.GroupContainsChildTopics, groupId));
         }
 
         [Test]

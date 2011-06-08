@@ -32,11 +32,11 @@ namespace TellagoStudios.Hermes.Business.Groups
             }
             if(childGroupsOfGroup.HasChilds(id))
             {
-                throw new ValidationException(string.Format(Messages.GroupContainsChildGroups, id));
+                throw new ValidationException(string.Format(Texts.GroupContainsChildGroups, id));
             }
             if (topicsByGroup.HasTopics(id))
             {
-                throw new ValidationException(string.Format(Messages.GroupContainsChildTopics, id));
+                throw new ValidationException(string.Format(Texts.GroupContainsChildTopics, id));
             }
             repository.MakeTransient(id);
         }

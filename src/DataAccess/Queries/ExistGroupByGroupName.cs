@@ -1,6 +1,8 @@
+
 using System;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
@@ -16,14 +18,14 @@ namespace TellagoStudios.Hermes.DataAccess.Queries
         public bool Execute(string groupName, Identity? excludeId = null)
         {
             var query = QueryDuplicatedName(groupName, excludeId);
-            return DB.GetCollection(MongoDbConstants.Collections.Groups).Exists(query.ToQueryDocument());
+            return DB.GetCollection(MongoDbConstants.Collections.Groups).Exists(query);
         }
 
-        public string QueryDuplicatedName(string groupName, Identity? excludeId = null)
+        public IMongoQuery QueryDuplicatedName(string groupName, Identity? excludeId = null)
         {
             return excludeId.HasValue ?
-                "{ \"Name\":\"" + groupName + "\", \"_id\" : { $ne : " + excludeId.Value.ToBsonString() + "} }" :
-                "{ \"Name\":\"" + groupName + "\"}";
+                Query.And(Query.EQ("Name", BsonString.Create(groupName)), Query.NE("_id", excludeId.Value.ToBson())) :
+                Query.EQ("Name", BsonString.Create(groupName));
         }
     }
 }

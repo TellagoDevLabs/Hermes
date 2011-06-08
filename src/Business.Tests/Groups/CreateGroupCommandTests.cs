@@ -30,7 +30,7 @@ namespace Business.Tests.Groups
             groupCommand.Executing(gc => gc.Execute(new Group {Name = "test"}))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(Messages.GroupNameMustBeUnique);
+                                    .Exception.Message.Should().Be.EqualTo(Texts.GroupNameMustBeUnique);
         }
         [Test]
         public void WhenParentIdDoesNotExist_ThenThrowException()
@@ -41,7 +41,7 @@ namespace Business.Tests.Groups
             groupCommand.Executing(gc => gc.Execute(@group))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(Messages.EntityNotFound);
+                                    .Exception.Message.Should().Be.EqualTo(Texts.EntityNotFound);
         }
 
         [Test]

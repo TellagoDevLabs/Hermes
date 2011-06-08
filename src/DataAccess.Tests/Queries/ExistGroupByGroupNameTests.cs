@@ -25,18 +25,18 @@ namespace DataAccess.Tests.Queries
         public void WhenThereIsAGroupWithSameNameAndId_ThenReturnsFalse()
         {
             var existGroupByGroupName = new ExistGroupByGroupName(connectionString);
-            var document = new Group { Id = Identity.Random(12), Name = "Foo" };
-            groupsCollection.Insert(document);
+            var entity = new Group { Id = Identity.Random(12), Name = "Foo" };
+            groupsCollection.Insert(entity);
 
-            existGroupByGroupName.Execute("Foo", document.Id).Should().Be.False();
+            existGroupByGroupName.Execute("Foo", entity.Id).Should().Be.False();
         }
 
         [Test]
         public void WhenThereIsAGroupWithSameNameAndDifferentId_ThenReturnsTrue()
         {
             var existGroupByGroupName = new ExistGroupByGroupName(connectionString);
-            var document = new Group {Id = Identity.Random(12), Name = "Foo" };
-            groupsCollection.Insert(document);
+            var entity = new Group {Id = Identity.Random(12), Name = "Foo" };
+            groupsCollection.Insert(entity);
             existGroupByGroupName.Execute("Foo", new Identity("4de7e38617b6c420a45a84c4")).Should().Be.True();
         }
 
@@ -44,8 +44,8 @@ namespace DataAccess.Tests.Queries
         public void WhenThereIsAGroupWithSameNameAndIdNull_ThenReturnsTrue()
         {
             var existGroupByGroupName = new ExistGroupByGroupName(connectionString);
-            var document = new Group { Id = Identity.Random(12),  Name = "Foo" };
-            groupsCollection.Insert(document);
+            var entity = new Group { Id = Identity.Random(12),  Name = "Foo" };
+            groupsCollection.Insert(entity);
             existGroupByGroupName.Execute("Foo", null).Should().Be.True();
         }
 

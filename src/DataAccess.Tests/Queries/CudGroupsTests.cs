@@ -15,11 +15,11 @@ namespace DataAccess.Tests.Queries
         public void InsertingShouldWork()
         {
             var cudGroup = new Repository<Group>(connectionString);
-            var document = new Group{Name = "Test", Description = "Abcd"};
-            cudGroup.MakePersistent(document);
+            var entity = new Group{Name = "Test", Description = "Abcd"};
+            cudGroup.MakePersistent(entity);
 
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups)
-                .FindOneById(document.Id.Value.ToBson())
+                .FindOneById(entity.Id.Value.ToBson())
                 .Should().Not.Be.Null();
         }
 
@@ -29,14 +29,14 @@ namespace DataAccess.Tests.Queries
         {
             var cudGroup = new Repository<Group>(connectionString);
 
-            var document = new Group { Name = "Test", Description = "Abcd" };
-            mongoDb.GetCollection(MongoDbConstants.Collections.Groups).Insert(document);
+            var entity = new Group { Name = "Test", Description = "Abcd" };
+            mongoDb.GetCollection(MongoDbConstants.Collections.Groups).Insert(entity);
 
             //act
-            cudGroup.MakeTransient(document.Id.Value);
+            cudGroup.MakeTransient(entity.Id.Value);
 
             mongoDb.GetCollection(MongoDbConstants.Collections.Groups)
-                .FindOneById(document.Id.Value.ToBson())
+                .FindOneById(entity.Id.Value.ToBson())
                 .Should().Be.Null();
         }
 
@@ -45,15 +45,15 @@ namespace DataAccess.Tests.Queries
         {
             var cudGroup = new Repository<Group>(connectionString);
 
-            var document = new Group { Name = "Test", Description = "Abcd" };
-            mongoDb.GetCollection(MongoDbConstants.Collections.Groups).Insert(document);
+            var entity = new Group { Name = "Test", Description = "Abcd" };
+            mongoDb.GetCollection(MongoDbConstants.Collections.Groups).Insert(entity);
 
-            document.Name = "Tito";
+            entity.Name = "Tito";
             //act
-            cudGroup.Update(document);
+            cudGroup.Update(entity);
 
             mongoDb.GetCollection<Group>(MongoDbConstants.Collections.Groups)
-                .FindOneById(document.Id.Value.ToBson())
+                .FindOneById(entity.Id.Value.ToBson())
                 .Name.Should().Be.EqualTo("Tito");
         }
     }

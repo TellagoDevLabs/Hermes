@@ -67,7 +67,7 @@ namespace TellagoStudios.Hermes.RestService.Pushing
                     catch (Exception ex)
                     {
                         System.Diagnostics.Trace.TraceError(
-                            string.Format(Business.Messages.ErrorPushingCallback, retry.Message.Id, retry.Subscription.Id) +
+                            string.Format(Business.Texts.ErrorPushingCallback, retry.Message.Id, retry.Subscription.Id) +
                             "\r\n" + ex);
                         HandleRetryLogic(retry);
                     }

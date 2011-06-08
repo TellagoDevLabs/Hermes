@@ -81,8 +81,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
 
         private MongoCollection<Message> GetCollection(Identity topicId)
         {
-            var topic = new Topic { Id = topicId };
-            return DB.GetCollection<Message>(topic.MessagesCollectionName, SafeMode.True);
+            return DB.GetCollection<Message>(MongoDbConstants.GetCollectionNameForMessage(topicId), SafeMode.True);
         }
     }
 }

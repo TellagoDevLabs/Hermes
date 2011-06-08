@@ -25,7 +25,7 @@ namespace Business.Tests.Groups
             groupCommand.Executing(gc => gc.Execute(new Group { Name = "test", Id = id }))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(Messages.GroupNameMustBeUnique);
+                                    .Exception.Message.Should().Be.EqualTo(Texts.GroupNameMustBeUnique);
         }
         [Test]
         public void WhenParentIdDoesNotExist_ThenThrowException()
@@ -38,7 +38,7 @@ namespace Business.Tests.Groups
             groupCommand.Executing(gc => gc.Execute(@group))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(Messages.EntityNotFound);
+                                    .Exception.Message.Should().Be.EqualTo(Texts.EntityNotFound);
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace Business.Tests.Groups
             groupCommand.Executing(gc => gc.Execute(@group))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupCircleReference, group.Id));
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.GroupCircleReference, group.Id));
         }
 
 
@@ -84,7 +84,7 @@ namespace Business.Tests.Groups
             groupCommand.Executing(gc => gc.Execute(@group))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(string.Format(Messages.GroupCircleReference, group.Id));
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.GroupCircleReference, group.Id));
         }
 
         [Test]
