@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Queries\IQueryValidator.cs" />
     <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Events\IEventAggregator.cs" />
     <Compile Include="Events\IEventHandler.cs" />
@@ -115,6 +116,8 @@
     <Compile Include="Service\MessageService.cs" />
     <Compile Include="Service\SubscriptionService.cs" />
     <Compile Include="Service\TopicService.cs" />
+    <Compile Include="Subscriptions\CreateSubscriptionCommand.cs" />
+    <Compile Include="Subscriptions\Interfaces.cs" />
     <Compile Include="Topics\DeleteTopicCommand.cs" />
     <Compile Include="Topics\UpdateTopicCommand.cs" />
     <Compile Include="Topics\CreateTopicCommand.cs" />
