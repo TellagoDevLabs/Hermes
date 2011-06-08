@@ -10,22 +10,22 @@ namespace Business.Tests.Util
     {
         public StubMessageRepository(params Message[] entities)
         {
-            Documents = new HashSet<Message>(entities);
+            Entities = new HashSet<Message>(entities);
             Updates = new HashSet<Message>();
         }
 
-        public HashSet<Message> Documents { get; set; }
+        public HashSet<Message> Entities { get; set; }
 
         public HashSet<Message> Updates { get; set; }
 
         public void MakePersistent(Message entity)
         {
-            Documents.Add(entity);
+            Entities.Add(entity);
         }
 
         public void MakeTransient(MessageKey key)
         {
-            Documents.Remove(Documents.FirstOrDefault(e =>  e.TopicId == key.TopicId && e.Id == key.MessageId));
+            Entities.Remove(Entities.FirstOrDefault(e =>  e.TopicId == key.TopicId && e.Id == key.MessageId));
         }
 
         public void Update(Message entity)

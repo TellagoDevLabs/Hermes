@@ -33,7 +33,7 @@ namespace Business.Tests.Subscriptions
             command.Executing(c => c.Execute(new Subscription{Filter = "pp"}))
                    .Throws<ValidationException>()
                    .And
-                   .Exception.Message.Should().Be.EqualTo(string.Format(Messages.InvalidFilter, "pp"));
+                   .Exception.Message.Should().Be.EqualTo(string.Format(Texts.InvalidFilter, "pp"));
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace Business.Tests.Subscriptions
             command.Executing(c => c.Execute(new Subscription { TargetId = null }))
                    .Throws<ValidationException>()
                    .And
-                   .Exception.Message.Should().Be.EqualTo(Messages.TargetIdMustNotBeNull);
+                   .Exception.Message.Should().Be.EqualTo(Texts.TargetIdMustNotBeNull);
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace Business.Tests.Subscriptions
             command.Executing(c => c.Execute(new Subscription { TargetId = targetId }))
                    .Throws<EntityNotFoundException>()
                    .And
-                   .Exception.Message.Should().Be.EqualTo(string.Format(Messages.EntityNotFound, typeof(Topic).Name, targetId));
+                   .Exception.Message.Should().Be.EqualTo(string.Format(Texts.EntityNotFound, typeof(Topic).Name, targetId));
         }
 
         [Test]
