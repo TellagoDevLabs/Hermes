@@ -58,7 +58,7 @@ namespace Business.Tests.Topics
             var topic = new Topic { Name = name, GroupId = groupId};
             command.Execute(topic);
 
-            stubRepository.Documents.Should().Contain(topic);
+            stubRepository.Entities.Should().Contain(topic);
 
         }
 

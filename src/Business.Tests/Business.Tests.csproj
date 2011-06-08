@@ -40,12 +40,14 @@
     <Compile Include="Services\MessageServiceFixture.cs" />
     <Compile Include="Services\GroupServiceFixture.cs" />
     <Compile Include="Topics\CreateTopicCommandTests.cs" />
+    <Compile Include="Subscriptions\CreateSubscriptionCommandTests.cs" />
     <Compile Include="Topics\DeleteTopicCommandTests.cs" />
     <Compile Include="Topics\UpdateTopicCommandTests.cs" />
+    <Compile Include="Topics\CreateTopicCommandTests.cs" />
     <Compile Include="Messages\CreateMessageCommandTests.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Util\StubMessageCudOperations.cs" />
-    <Compile Include="Util\StubCudOperations.cs" />
+    <Compile Include="Util\StubRepository.cs" />
     <Compile Include="Validators\MessageValidatorFixture.cs" />
   </ItemGroup>
   <ItemGroup>

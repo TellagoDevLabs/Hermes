@@ -57,7 +57,7 @@ namespace Business.Tests.Messages
 
             command.Execute(message);
 
-            stubRepository.Documents.Should().Contain(message);
+            stubRepository.Entities.Should().Contain(message);
 
         }
 
