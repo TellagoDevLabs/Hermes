@@ -38,10 +38,6 @@ namespace TellagoStudios.Hermes.Business.Subscriptions
             {
                 throw new EntityNotFoundException(typeof(Subscription), subscription.Id.Value);
             }
-            if (string.IsNullOrEmpty(subscription.Filter) || !queryValidator.IsValid(subscription.Filter))
-            {
-                throw new ValidationException(string.Format(Texts.InvalidFilter, subscription.Filter));
-            }
         }
     }
 }

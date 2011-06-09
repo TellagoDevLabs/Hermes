@@ -9,11 +9,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
         {
             base.Load(builder);
 
-            builder.RegisterType<RetryService>()
-                .AsImplementedInterfaces()
-                .PropertiesAutowired()
-                .SingleInstance();
-
             builder.RegisterType<NewMessagePusher>()
                 .AsImplementedInterfaces()
                 .PropertiesAutowired()

@@ -84,12 +84,16 @@
     <Compile Include="Extensions\ModelExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsGenericExtensions.cs" />
-    <Compile Include="Factory.cs" />
     <Compile Include="Groups\CreateGroupCommand.cs" />
     <Compile Include="Groups\DeleteGroupCommand.cs" />
     <Compile Include="Groups\Interfaces.cs" />
     <Compile Include="Groups\UpdateGroupCommand.cs" />
     <Compile Include="Guard.cs" />
+    <Compile Include="Model\Retry.cs" />
+    <Compile Include="Retries\CreateRetryCommand.cs" />
+    <Compile Include="Retries\DeleteRetryCommand.cs" />
+    <Compile Include="Retries\Interfaces.cs" />
+    <Compile Include="Retries\UpdateRetryCommand.cs" />
     <Compile Include="Subscriptions\DeleteSubscriptionCommand.cs" />
     <Compile Include="Subscriptions\UpdateSubscriptionCommand.cs" />
     <Compile Include="Texts.cs" />
@@ -102,7 +106,6 @@
     <Compile Include="Model\Identity.cs" />
     <Compile Include="Model\Message.cs" />
     <Compile Include="Model\MessageKey.cs" />
-    <Compile Include="Model\Retry.cs" />
     <Compile Include="Model\Subscription.cs" />
     <Compile Include="Model\TargetKind.cs" />
     <Compile Include="Model\Topic.cs" />
@@ -114,16 +117,6 @@
     <Compile Include="Data\Queries\IGenericJsonPagedQuery.cs" />
     <Compile Include="Data\Queries\IQueryGroupAncestors.cs" />
     <Compile Include="Data\Queries\ITopicsByGroup.cs" />
-    <Compile Include="Repository\ITopicQueries.cs" />
-    <Compile Include="Repository\IGroupRepository.cs" />
-    <Compile Include="Repository\IMessageRepository.cs" />
-    <Compile Include="Repository\IRetryRepository.cs" />
-    <Compile Include="Repository\ITopicRepository.cs" />
-    <Compile Include="Repository\IGroupQueries.cs" />
-    <Compile Include="Service\IMessageService.cs" />
-    <Compile Include="Service\ITopicService.cs" />
-    <Compile Include="Service\MessageService.cs" />
-    <Compile Include="Service\TopicService.cs" />
     <Compile Include="Subscriptions\CreateSubscriptionCommand.cs" />
     <Compile Include="Subscriptions\Interfaces.cs" />
     <Compile Include="Topics\DeleteTopicCommand.cs" />
@@ -131,15 +124,11 @@
     <Compile Include="Topics\CreateTopicCommand.cs" />
     <Compile Include="Topics\Interfaces.cs" />
     <Compile Include="Data\Queries\IExistsTopicByName.cs" />
-    <Compile Include="Validator\MessageValidator.cs" />
-    <Compile Include="Validator\TopicValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\Topic\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

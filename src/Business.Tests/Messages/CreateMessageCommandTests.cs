@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SharpTestsEx;
 using TellagoStudios.Hermes.Business;
+using TellagoStudios.Hermes.Business.Events;
 using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Messages;
@@ -63,11 +64,14 @@ namespace Business.Tests.Messages
 
         private static ICreateMessageCommand CreateCreateMessageCommand(
             IEntityById entityById = null,
-            IMessageRepository cudMessage = null)
+            IMessageRepository cudMessage = null,
+            IEventAggregator eventAggregator = null)
         {
             return new CreateMessageCommand(
                                         entityById ?? Mock.Of<IEntityById>(),
-                                        cudMessage ?? Mock.Of<IMessageRepository>());
+                                        cudMessage ?? Mock.Of<IMessageRepository>(),
+                                        eventAggregator ?? Mock.Of<IEventAggregator>()
+                                        );
         }
     }
 }

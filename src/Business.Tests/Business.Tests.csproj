@@ -37,8 +37,6 @@
     <Compile Include="Groups\UpdateGroupCommandTests.cs" />
     <Compile Include="Groups\CreateGroupCommandTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\MessageServiceFixture.cs" />
-    <Compile Include="Services\GroupServiceFixture.cs" />
     <Compile Include="Subscriptions\CreateSubscriptionCommandTests.cs" />
     <Compile Include="Subscriptions\DeleteSubscriptionCommandTests.cs" />
     <Compile Include="Subscriptions\UpdateSubscriptionCommandTests.cs" />
@@ -49,7 +47,6 @@
     <Compile Include="Utils.cs" />
     <Compile Include="Util\StubMessageCudOperations.cs" />
     <Compile Include="Util\StubRepository.cs" />
-    <Compile Include="Validators\MessageValidatorFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MongoDB.Bson">

@@ -13,6 +13,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
             public const string Subscriptions = "subscriptions";
             public const string Topics = "topics";
             public const string Groups = "groups";
+            public const string Retries = "retries";
         }
 
         public static MongoCollection<TEntity> GetCollectionByType<TEntity>(this MongoDatabase db)
@@ -21,24 +22,28 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
         }
 
         //TODO don't like it. JRO
-        public static string GetCollectionNameForType<TDocumentType>()
+        public static string GetCollectionNameForType<TEntityType>()
         {
             string collectionName;
-            if (typeof(TDocumentType) == typeof(Group))
+            if (typeof(TEntityType) == typeof(Group))
             {
                 collectionName = Collections.Groups;
             }
-            else if (typeof(TDocumentType) == typeof(Subscription))
+            else if (typeof(TEntityType) == typeof(Subscription))
             {
                 collectionName = Collections.Subscriptions;
             }
-            else if (typeof(TDocumentType) == typeof(Topic))
+            else if (typeof(TEntityType) == typeof(Topic))
             {
                 collectionName = Collections.Topics;
             }
+            else if (typeof(TEntityType) == typeof(Retry))
+            {
+                collectionName = Collections.Retries;
+            }
             else
             {
-                throw new InvalidOperationException(string.Format("Unknow collection {0}", typeof(TDocumentType).Name));
+                throw new InvalidOperationException(string.Format("Unknow collection {0}", typeof(TEntityType).Name));
             }
             return collectionName;
         }

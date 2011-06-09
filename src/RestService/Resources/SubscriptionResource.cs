@@ -6,7 +6,6 @@ using System.ServiceModel.Web;
 using Microsoft.ApplicationServer.Http;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Service;
 using TellagoStudios.Hermes.Business.Subscriptions;
 using TellagoStudios.Hermes.RestService.Extensions;
 
@@ -58,9 +57,13 @@ namespace TellagoStudios.Hermes.RestService.Resources
         {
             return Process(() =>
             {
-                var instance = subscriptionPut.ToModel();
-                updateCommand.Execute(instance);
-                return instance.ToFacade();
+                var current = entityById.Get<Subscription>(subscriptionPut.Id.ToModel());
+
+                current.Callback = subscriptionPut.Callback.ToModel();
+                current.Filter = subscriptionPut.Filter;
+                updateCommand.Execute(current);
+                return current.ToFacade();
+
             });
         }
 

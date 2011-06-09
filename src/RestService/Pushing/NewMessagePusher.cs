@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Events;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Repository;
 
 namespace TellagoStudios.Hermes.RestService.Pushing
 {
     public class NewMessagePusher : IEventHandler<NewMessageEvent>
     {
-        public ISubscriptionsByTopicAndTopicGroup SubscriptionService { get; set; }
-        public IMessageRepository Repository { get; set; }
+        public ISubscriptionsByTopicAndTopicGroup SubscriptionsByTopicAndGroup { get; set; }
+        public IMessageByMessageKey Repository { get; set; }
 
         public IRetryService RetryService { get; set; }
 
@@ -32,11 +31,11 @@ namespace TellagoStudios.Hermes.RestService.Pushing
 
         private void Push(Message message)
         {
-            var subscriptions = SubscriptionService.Execute(message.TopicId);
+            var subscriptions = SubscriptionsByTopicAndGroup.Execute(message.TopicId);
 
             var filteredSubscriptions = subscriptions
                 .Where(s => string.IsNullOrWhiteSpace(s.Filter) ||
-                            Repository.Exists(message.ToMessageKey(), s.Filter));
+                            Repository.Exist(message.ToMessageKey(), s.Filter));
 
             foreach (var subscription in filteredSubscriptions)
             {

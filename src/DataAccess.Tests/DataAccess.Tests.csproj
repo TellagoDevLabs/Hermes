@@ -78,11 +78,8 @@
     <Compile Include="Queries\SubscriptionByTopicAndTopicGroupTests.cs" />
     <Compile Include="Queries\SubscriptionsByGroupTests.cs" />
     <Compile Include="Queries\TopicsByGroup.cs" />
-    <Compile Include="Repository\MongoDbGroupFixture.cs" />
     <Compile Include="Repository\ExtensionsTest.cs" />
     <Compile Include="Repository\MongoDbBaseFixture.cs" />
-    <Compile Include="Repository\MongoDbMessageFixture.cs" />
-    <Compile Include="Repository\MongoDbTopicRepositoryFixture.cs" />
     <Compile Include="Repository\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -99,9 +96,7 @@
     <EmbeddedResource Include="mongod_32.exe" />
     <EmbeddedResource Include="mongod_64.exe" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Processor\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
