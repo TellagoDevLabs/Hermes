@@ -18,16 +18,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 .OnActivated(c =>
                 {
                     c.Instance.TopicService = c.Context.Resolve<ITopicService>();
-                    c.Instance.SubscriptionService = c.Context.Resolve<ISubscriptionService>();
-                });
-
-            builder.RegisterType<SubscriptionValidator>()
-                .AsSelf()
-                .InstancePerLifetimeScope()
-                .OnActivated(c =>
-                {
-                    c.Instance.TopicService = c.Context.Resolve<ITopicService>();
-                    c.Instance.Repository = c.Context.Resolve<ISubscriptionRepository>();
                 });
 
             builder.RegisterType<TopicValidator>()

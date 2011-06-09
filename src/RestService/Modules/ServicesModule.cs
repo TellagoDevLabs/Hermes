@@ -23,7 +23,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                     c.Instance.Validator = c.Context.Resolve<MessageValidator>();
 
                     c.Instance.TopicService = c.Context.Resolve<ITopicService>();
-                    c.Instance.SubscriptionService = c.Context.Resolve<ISubscriptionService>();
                     c.Instance.EventAggregator = c.Context.Resolve<IEventAggregator>();
                 });
 
@@ -33,16 +32,6 @@ namespace TellagoStudios.Hermes.RestService.Modules
                 .OnActivated(c =>
                 {
                     c.Instance.Repository = c.Context.Resolve<IRetryRepository>();
-                });
-
-            builder.RegisterType<SubscriptionService>()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope()
-                .OnActivated(c =>
-                {
-                    c.Instance.Repository = c.Context.Resolve<ISubscriptionRepository>();
-                    c.Instance.Validator = c.Context.Resolve<SubscriptionValidator>();
-                    c.Instance.TopicService = c.Context.Resolve<ITopicService>();
                 });
 
             builder.RegisterType<TopicService>()

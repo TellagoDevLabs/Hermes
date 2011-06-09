@@ -13,38 +13,38 @@ namespace Business.Tests.Validators
     public class MessageValidatorFixture
     {
         private Mock<ITopicService> topicService;
-        private Mock<ISubscriptionService> subscriptionService;
+        //private Mock<ISubscriptionService> subscriptionService;
         private MessageValidator validator;
 
-        [TestFixtureSetUp]
-        public void FixtureSetUp()
-        {
-            topicService = new Mock<ITopicService>(MockBehavior.Loose);
-            subscriptionService = new Mock<ISubscriptionService>(MockBehavior.Loose);
+        //[TestFixtureSetUp]
+        //public void FixtureSetUp()
+        //{
+        //    topicService = new Mock<ITopicService>(MockBehavior.Loose);
+        //    subscriptionService = new Mock<ISubscriptionService>(MockBehavior.Loose);
 
-            validator = new MessageValidator
-            {
-                TopicService = topicService.Object,
-                SubscriptionService = subscriptionService.Object
-            };
-        }
+        //    validator = new MessageValidator
+        //    {
+        //        TopicService = topicService.Object,
+        //        SubscriptionService = subscriptionService.Object
+        //    };
+        //}
 
-        [Test]
-        public void ValidateSubsriptionExists_should_pass_on_valid_id()
-        {
-            subscriptionService.Setup(ss => ss.ExistsById(It.IsAny<Identity>())).Returns(true);
+        //[Test]
+        //public void ValidateSubsriptionExists_should_pass_on_valid_id()
+        //{
+        //    subscriptionService.Setup(ss => ss.ExistsById(It.IsAny<Identity>())).Returns(true);
 
-            validator.ValidateSubsriptionExists(Identity.Random());
-        }
+        //    validator.ValidateSubsriptionExists(Identity.Random());
+        //}
 
-        [Test]
-        [ExpectedException(typeof(ValidationException))]
-        public void ValidateSubsriptionExists_should_fail_on_invalid_id()
-        {
-            subscriptionService.Setup(ss => ss.ExistsById(It.IsAny<Identity>())).Returns(false);
+        //[Test]
+        //[ExpectedException(typeof(ValidationException))]
+        //public void ValidateSubsriptionExists_should_fail_on_invalid_id()
+        //{
+        //    subscriptionService.Setup(ss => ss.ExistsById(It.IsAny<Identity>())).Returns(false);
 
-            validator.ValidateSubsriptionExists(Identity.Random());
-        }
+        //    validator.ValidateSubsriptionExists(Identity.Random());
+        //}
 
         [Test]
         public void ValidateBeforeCreate_should_pass_on_valid_message()

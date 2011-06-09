@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Events;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Repository;
-using TellagoStudios.Hermes.Business.Service;
 
 namespace TellagoStudios.Hermes.RestService.Pushing
 {
     public class NewMessagePusher : IEventHandler<NewMessageEvent>
     {
-        public ISubscriptionService SubscriptionService { get; set; }
+        public ISubscriptionsByTopicAndTopicGroup SubscriptionService { get; set; }
         public IMessageRepository Repository { get; set; }
 
         public IRetryService RetryService { get; set; }
@@ -32,7 +32,7 @@ namespace TellagoStudios.Hermes.RestService.Pushing
 
         private void Push(Message message)
         {
-            var subscriptions = SubscriptionService.GetByTopicAndTopicsGroups(message.TopicId);
+            var subscriptions = SubscriptionService.Execute(message.TopicId);
 
             var filteredSubscriptions = subscriptions
                 .Where(s => string.IsNullOrWhiteSpace(s.Filter) ||

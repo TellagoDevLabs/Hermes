@@ -13,7 +13,7 @@ namespace TellagoStudios.Hermes.Business.Service
         public IMessageRepository Repository { get; set; }
         public MessageValidator Validator { get; set; }
         public ITopicService TopicService { get; set; }
-        public ISubscriptionService SubscriptionService { get; set; }
+        //public ISubscriptionService SubscriptionService { get; set; }
         public IEventAggregator EventAggregator { get; set; }
         
         public Message Create(Message message)
@@ -41,24 +41,26 @@ namespace TellagoStudios.Hermes.Business.Service
             Guard.Instance.ArgumentNotNull(()=>subscriptionId, subscriptionId);
 
             Validator.ValidateSubsriptionExists(subscriptionId);
+            
+            //TODO
+            //var subscription = SubscriptionService.Get(subscriptionId);
+            //var topicIds = new List<Identity>();
 
-            var subscription = SubscriptionService.Get(subscriptionId);
-            var topicIds = new List<Identity>();
+            //switch (subscription.TargetKind)
+            //{
+            //    case TargetKind.Topic:
+            //        topicIds.Add(subscription.TargetId.Value);
+            //        break;
+            //    case TargetKind.Group:
+            //        AddTopicIdsFromGroup(topicIds, subscription.TargetId.Value);
+            //        break;
+            //    default:
+            //        throw new InvalidOperationException(string.Format(Texts.TargetKindUnknown, subscription.TargetKind));
+            //}
 
-            switch (subscription.TargetKind)
-            {
-                case TargetKind.Topic:
-                    topicIds.Add(subscription.TargetId.Value);
-                    break;
-                case TargetKind.Group:
-                    AddTopicIdsFromGroup(topicIds, subscription.TargetId.Value);
-                    break;
-                default:
-                    throw new InvalidOperationException(string.Format(Texts.TargetKindUnknown, subscription.TargetKind));
-            }
-
-            // For each topic in collection, gets each message that matchs the filter and returns message's key
-            return topicIds.SelectMany(topicId => Repository.GetMessageKeys(topicId, subscription.Filter));
+            //// For each topic in collection, gets each message that matchs the filter and returns message's key
+            //return topicIds.SelectMany(topicId => Repository.GetMessageKeys(topicId, subscription.Filter));
+            throw new NotImplementedException();
         }
 
         public Message Get(MessageKey key)

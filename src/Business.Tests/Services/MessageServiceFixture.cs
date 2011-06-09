@@ -16,27 +16,27 @@ namespace Business.Tests.Services
         private MessageService service;
         private Mock<IMessageRepository> mockedRepository;
         private Mock<ITopicService> mockedTopicService;
-        private Mock<ISubscriptionService> mockedSubscriptionService;
+        //private Mock<ISubscriptionService> mockedSubscriptionService;
 
-        [TestFixtureSetUp]
-        public void SetUpFixture()
-        {
-            mockedTopicService = new Mock<ITopicService>(MockBehavior.Loose);
-            mockedRepository = new Mock<IMessageRepository>(MockBehavior.Loose);
-            mockedSubscriptionService = new Mock<ISubscriptionService>(MockBehavior.Loose);
+        //[TestFixtureSetUp]
+        //public void SetUpFixture()
+        //{
+        //    mockedTopicService = new Mock<ITopicService>(MockBehavior.Loose);
+        //    mockedRepository = new Mock<IMessageRepository>(MockBehavior.Loose);
+        //    mockedSubscriptionService = new Mock<ISubscriptionService>(MockBehavior.Loose);
 
-            service = new MessageService
-            {
-                Repository = mockedRepository.Object,
-                Validator = new MessageValidator
-                {
-                    TopicService = mockedTopicService.Object, 
-                    SubscriptionService = mockedSubscriptionService.Object
-                },
-                TopicService = mockedTopicService.Object,
-                SubscriptionService = mockedSubscriptionService.Object
-            };
-        }
+        //    service = new MessageService
+        //    {
+        //        Repository = mockedRepository.Object,
+        //        Validator = new MessageValidator
+        //        {
+        //            TopicService = mockedTopicService.Object, 
+        //            SubscriptionService = mockedSubscriptionService.Object
+        //        },
+        //        TopicService = mockedTopicService.Object,
+        //        SubscriptionService = mockedSubscriptionService.Object
+        //    };
+        //}
 
         [Test]
         public void should_create_a_message()
@@ -71,8 +71,8 @@ namespace Business.Tests.Services
             mockedTopicService.Setup(ts => ts.Get(message.TopicId))
                 .Returns(new Topic { Id = message.TopicId });
             
-            mockedSubscriptionService.Setup(ss => ss.Find(It.Is<string>(query => query != null), null, null))
-                .Returns(new Subscription[0]);
+            //mockedSubscriptionService.Setup(ss => ss.Find(It.Is<string>(query => query != null), null, null))
+            //    .Returns(new Subscription[0]);
             
             mockedRepository.Setup(r => r.Create(message)).Returns(response);
 

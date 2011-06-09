@@ -1,4 +1,5 @@
 ﻿using System;
+using MongoDB.Driver;
 using TellagoStudios.Hermes.Business.Model;
 
 namespace TellagoStudios.Hermes.DataAccess.MongoDB
@@ -12,6 +13,11 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
             public const string Subscriptions = "subscriptions";
             public const string Topics = "topics";
             public const string Groups = "groups";
+        }
+
+        public static MongoCollection<TEntity> GetCollectionByType<TEntity>(this MongoDatabase db)
+        {
+            return db.GetCollection<TEntity>(GetCollectionNameForType<TEntity>());
         }
 
         //TODO don't like it. JRO

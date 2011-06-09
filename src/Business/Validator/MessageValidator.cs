@@ -9,16 +9,16 @@ namespace TellagoStudios.Hermes.Business.Validator
     public class MessageValidator
     {
         public ITopicService TopicService { get; set; }
-        public ISubscriptionService SubscriptionService { get; set; }
+        //public ISubscriptionService SubscriptionService { get; set; }
 
         public void ValidateSubsriptionExists(Identity id)
         {
             var errors = new List<string>();
 
-            if (!SubscriptionService.ExistsById(id))
-            {
-                errors.Add(string.Format(Texts.EntityNotFound, typeof(Subscription).Name, id));
-            }
+            //if (!SubscriptionService.ExistsById(id))
+            //{
+            //    errors.Add(string.Format(Texts.EntityNotFound, typeof(Subscription).Name, id));
+            //}
 
             // Any error?
             if (errors.Count > 0) throw new ValidationException(errors);

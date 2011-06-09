@@ -4,8 +4,10 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using Microsoft.ApplicationServer.Http;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Service;
+using TellagoStudios.Hermes.Business.Subscriptions;
 using TellagoStudios.Hermes.RestService.Extensions;
 
 namespace TellagoStudios.Hermes.RestService.Resources
@@ -14,11 +16,30 @@ namespace TellagoStudios.Hermes.RestService.Resources
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
     public class SubscriptionResource : Resource
     {
-        private readonly ISubscriptionService _subscriptionService;
+        private readonly ICreateSubscriptionCommand createCommand;
+        private readonly IUpdateSubscriptionCommand updateCommand;
+        private readonly IDeleteSubscriptionCommand deleteCommand;
+        private readonly IEntityById entityById;
+        private readonly ISubscriptionsByGroup subscriptionsByGroup;
+        private readonly ISubscriptionsByTopic subscriptionsByTopic;
+        private readonly IGenericJsonPagedQuery genericJsonPagedQuery;
 
-        public SubscriptionResource(ISubscriptionService subscriptionService)
+        public SubscriptionResource(
+            ICreateSubscriptionCommand createCommand,
+            IUpdateSubscriptionCommand updateCommand,
+            IDeleteSubscriptionCommand deleteCommand,
+            IEntityById entityById,
+            ISubscriptionsByGroup subscriptionsByGroup,
+            ISubscriptionsByTopic subscriptionsByTopic,
+            IGenericJsonPagedQuery genericJsonPagedQuery)
         {
-            _subscriptionService = subscriptionService;
+            this.createCommand = createCommand;
+            this.updateCommand = updateCommand;
+            this.deleteCommand = deleteCommand;
+            this.entityById = entityById;
+            this.subscriptionsByGroup = subscriptionsByGroup;
+            this.subscriptionsByTopic = subscriptionsByTopic;
+            this.genericJsonPagedQuery = genericJsonPagedQuery;
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
@@ -27,8 +48,8 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return Process(() =>
                                {
                                    var instance = subscription.ToModel();
-                                   var result = _subscriptionService.Create(instance);
-                                   return result.ToFacade();
+                                   createCommand.Execute(instance);
+                                   return instance.ToFacade();
                                });
         }
 
@@ -38,21 +59,21 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return Process(() =>
             {
                 var instance = subscriptionPut.ToModel();
-                var result = _subscriptionService.Update(instance);
-                return result.ToFacade();
+                updateCommand.Execute(instance);
+                return instance.ToFacade();
             });
         }
 
         [WebGet(UriTemplate = "{id}")]
         public HttpResponseMessage<Facade.Subscription> Get(Identity id)
         {
-            return Process(() => _subscriptionService.Get(id).ToFacade());
+            return Process(() => entityById.Get<Subscription>(id).ToFacade());
         }
 
         [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
         public HttpResponseMessage Delete(Identity id)
         {
-            return Process(() => _subscriptionService.Delete(id));
+            return Process(() => deleteCommand.Execute(id));
         }
 
         [WebGet(UriTemplate = "topicgroup/{id}")] 
@@ -60,7 +81,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
         {
             return Process(() =>
             {
-                var result = _subscriptionService.GetByGroup(id);
+                var result = subscriptionsByGroup.Execute(id);
                 return result
                     .Select(item => item.ToFacade())
                     .ToArray();
@@ -72,10 +93,10 @@ namespace TellagoStudios.Hermes.RestService.Resources
         {
             return Process(() =>
             {
-                var result = _subscriptionService.GetByTopic(id);
+                var result = subscriptionsByTopic.Execute(id);
                 return result
-                    .Select(item => item.ToFacade())
-                    .ToArray();
+                          .Select(item => item.ToFacade())
+                          .ToArray();
             });
         }
 
@@ -88,7 +109,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
 
             return Process(() =>
                                {
-                                   var result = _subscriptionService.Find(query, validatedSkip, validatedLimit);
+                                   var result = genericJsonPagedQuery.Execute<Subscription>(query, validatedSkip, validatedLimit);
                                    return result
                                        .Select(item => item.ToFacade())
                                        .ToArray();

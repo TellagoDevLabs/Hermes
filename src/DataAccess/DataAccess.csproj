@@ -77,6 +77,9 @@
     <Compile Include="Queries\ExistGroupByGroupName.cs" />
     <Compile Include="Queries\GenericJsonPagedQuery.cs" />
     <Compile Include="Queries\QueryGroupAncestry.cs" />
+    <Compile Include="Queries\SubscriptionsByGroup.cs" />
+    <Compile Include="Queries\SubscriptionsByTopic.cs" />
+    <Compile Include="Queries\SubscriptionsByTopicAndTopicGroup.cs" />
     <Compile Include="Queries\TopicsByGroup.cs" />
   </ItemGroup>
   <ItemGroup>

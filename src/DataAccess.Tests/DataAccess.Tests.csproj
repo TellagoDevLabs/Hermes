@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\ChildGroupsOfGroupTests.cs" />
+    <Compile Include="Queries\SubscriptionsByTopicTests.cs" />
     <Compile Include="Queries\MessageKeysBySubscriptionTests.cs" />
     <Compile Include="Queries\MessageKeysByGroupTests.cs" />
     <Compile Include="Queries\MessageKeysByTopicTests.cs" />
@@ -74,6 +75,8 @@
     <Compile Include="Queries\QueryEntityByIdTests.cs" />
     <Compile Include="Queries\ExistGroupByGroupNameTests.cs" />
     <Compile Include="Queries\QueryGroupAncestryTests.cs" />
+    <Compile Include="Queries\SubscriptionByTopicAndTopicGroupTests.cs" />
+    <Compile Include="Queries\SubscriptionsByGroupTests.cs" />
     <Compile Include="Queries\TopicsByGroup.cs" />
     <Compile Include="Repository\MongoDbGroupFixture.cs" />
     <Compile Include="Repository\ExtensionsTest.cs" />
