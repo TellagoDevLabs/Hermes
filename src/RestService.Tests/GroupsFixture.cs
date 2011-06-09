@@ -66,8 +66,8 @@ namespace RestService.Tests
             Assert.AreEqual(group.Id, result.Id.ToModel());
             Assert.AreEqual(group.Name, result.Name);
             Assert.IsNotNull(result.Parent);
-            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Parent, result.Parent.rel);
-            Assert.AreEqual(ResourceLocation.OfGroup(parent.Id.Value), result.Parent.href);
+            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Parent, result.Parent.Rel);
+            Assert.AreEqual(ResourceLocation.OfGroup(parent.Id.Value), result.Parent.HRef);
         }
 
         [Test]
@@ -208,37 +208,31 @@ namespace RestService.Tests
         public void Should_put_a_topic()
         {
             var groupPut = new F.GroupPut()
-            {
-                Id = F.Identity.Random(),
-                Description = "description",
-                ParentId = F.Identity.Random(),
-                Name = "test"
-            };
+                               {
+                                   Id = F.Identity.Random(),
+                                   Description = "description",
+                                   ParentId = F.Identity.Random(),
+                                   Name = "test"
+                               };
 
-            var parent = new M.Group { Id = groupPut.ParentId.ToModel() };
+            var parent = new M.Group {Id = groupPut.ParentId.ToModel()};
             var group = new M.Group()
-            {
-                Description = groupPut.Description,
-                ParentId = parent.Id,
-                Id = groupPut.Id.ToModel(),
-                Name = groupPut.Name
-            };
+                            {
+                                Description = groupPut.Description,
+                                ParentId = parent.Id,
+                                Id = groupPut.Id.ToModel(),
+                                Name = groupPut.Name
+                            };
 
 
-            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>()));//.Returns(group);
+            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())); //.Returns(group);
 
-            var result = client.ExecutePut<F.GroupPut, F.Group>("", groupPut);
+            client.ExecutePut<F.GroupPut>("", groupPut);
 
             mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
             mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPut.Description)));
             mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPut.Name)));
             mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
-
-            Assert.AreEqual(group.Description, result.Description);
-            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Parent, result.Parent.rel);
-            Assert.AreEqual(ResourceLocation.OfGroup(groupPut.ParentId.Value.ToModel()), result.Parent.href);
-            Assert.AreEqual(group.Id, result.Id.ToModel());
-            Assert.AreEqual(group.Name, result.Name);
         }
 
         [Test]

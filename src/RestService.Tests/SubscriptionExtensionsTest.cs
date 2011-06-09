@@ -136,8 +136,8 @@ namespace RestService.Tests
 
             Assert.That(facade.Id, Is.EqualTo(_id.ToFacade()));
             Assert.IsNotNull(facade.Target);
-            Assert.That(facade.Target.rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Topic));
-            Assert.That(facade.Target.href, Is.EqualTo(ResourceLocation.OfTopic(_topicId)));
+            Assert.That(facade.Target.Rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Topic));
+            Assert.That(facade.Target.HRef, Is.EqualTo(ResourceLocation.OfTopic(_topicId)));
             Assert.IsNotNull(facade.Callback);
             Assert.That(model.Callback.Kind.ToString(), Is.EqualTo(facade.Callback.Kind.ToString()));
             Assert.That(facade.Callback.Url, Is.EqualTo(_callback.Url));
@@ -164,8 +164,8 @@ namespace RestService.Tests
 
             Assert.That(facade.Id, Is.EqualTo(_id.ToFacade()));
             Assert.IsNotNull(facade.Target);
-            Assert.That(facade.Target.rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Group));
-            Assert.That(facade.Target.href, Is.EqualTo(ResourceLocation.OfGroup(_groupId)));
+            Assert.That(facade.Target.Rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Group));
+            Assert.That(facade.Target.HRef, Is.EqualTo(ResourceLocation.OfGroup(_groupId)));
             Assert.IsNotNull(facade.Callback);
             Assert.That(facade.Callback.Kind.ToString(), Is.EqualTo(facade.Callback.Kind.ToString()));
             Assert.That(facade.Callback.Url, Is.EqualTo(_callback.Url));

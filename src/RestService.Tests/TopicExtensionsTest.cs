@@ -85,8 +85,8 @@ namespace RestService.Tests
             Assert.That(facade.Description, Is.EqualTo(model.Description));
             Assert.That(facade.Name, Is.EqualTo(model.Name));
             Assert.That(facade.Group, Is.Not.Null);
-            Assert.That(facade.Group.rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Group));
-            Assert.That(facade.Group.href, Is.EqualTo(ResourceLocation.OfGroup(_groupId)));
+            Assert.That(facade.Group.Rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Group));
+            Assert.That(facade.Group.HRef, Is.EqualTo(ResourceLocation.OfGroup(_groupId)));
         }
     }
 }

@@ -37,12 +37,12 @@ namespace RestService.Tests
             }
         }
 
-        public void ExecutePut<T>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.OK)
+        public void ExecutePut<T>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.NoContent)
         {
-            DoPut(operation, entity, null);
+            DoPut(operation, entity, null, expectedCode);
         }
 
-        public U ExecutePut<T, U>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.OK)
+        public U ExecutePut<T, U>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.NoContent)
         {
             U instance = default(U);
 
@@ -51,12 +51,12 @@ namespace RestService.Tests
             return instance;
         }
 
-        public void ExecutePost<T>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.OK)
+        public void ExecutePost<T>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.Created)
         {
-            DoPost<T>(operation, entity, null);
+            DoPost<T>(operation, entity, null, expectedCode);
         }
 
-        public U ExecutePost<T, U>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.OK)
+        public U ExecutePost<T, U>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.Created)
         {
             U instance = default(U);
 
@@ -65,7 +65,7 @@ namespace RestService.Tests
             return instance;
         }
 
-        public void ExecuteDelete(string operation, HttpStatusCode expectedCode = HttpStatusCode.OK)
+        public void ExecuteDelete(string operation, HttpStatusCode expectedCode = HttpStatusCode.NoContent)
         {
             using (var client = CreateClient(this.Url))
             {
@@ -86,7 +86,7 @@ namespace RestService.Tests
             return client;
         }
 
-        private void DoPost<T>(string operation, T entity, Action<HttpContent> action, HttpStatusCode expectedCode = HttpStatusCode.OK)
+        private void DoPost<T>(string operation, T entity, Action<HttpContent> action, HttpStatusCode expectedCode = HttpStatusCode.Created)
         {
             using (var client = new HttpClient(Url))
             {
@@ -102,7 +102,7 @@ namespace RestService.Tests
             }
         }
 
-        private void DoPut<T>(string operation, T entity, Action<HttpContent> action, HttpStatusCode expectedCode = HttpStatusCode.OK)
+        private void DoPut<T>(string operation, T entity, Action<HttpContent> action, HttpStatusCode expectedCode = HttpStatusCode.NoContent)
         {
             using (var client = new HttpClient(Url))
             {

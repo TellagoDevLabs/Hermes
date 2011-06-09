@@ -90,18 +90,18 @@ namespace TellagoStudios.Hermes.RestService.Extensions
                 case TargetKind.Topic:
                     subscription.Target = new Facade.Link
                                               {
-                                                  rel = Constants.Relationships.Topic, 
+                                                  Rel = Constants.Relationships.Topic, 
 // ReSharper disable PossibleInvalidOperationException
-                                                  href = Resources.ResourceLocation.OfTopic(from.TargetId.Value)
+                                                  HRef = Resources.ResourceLocation.OfTopic(from.TargetId.Value)
 // ReSharper restore PossibleInvalidOperationException
                                               };
                     break;
                 case TargetKind.Group:
                     subscription.Target = new Facade.Link
                                               {
-                                                  rel = Constants.Relationships.Group, 
+                                                  Rel = Constants.Relationships.Group, 
 // ReSharper disable PossibleInvalidOperationException
-                                                  href = Resources.ResourceLocation.OfGroup(from.TargetId.Value)
+                                                  HRef = Resources.ResourceLocation.OfGroup(from.TargetId.Value)
 // ReSharper restore PossibleInvalidOperationException
                                               };
                     break;

@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.RestService.Resources;
 
 namespace TellagoStudios.Hermes.RestService.Pushing
 {

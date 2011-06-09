@@ -35,37 +35,36 @@ namespace TellagoStudios.Hermes.RestService.Resources
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
-        public HttpResponseMessage<Facade.Group> Create(Facade.GroupPost topic)
+        public HttpResponseMessage Create(Facade.GroupPost topic)
         {
-            return  Process(() =>
+            return  ProcessPost(() =>
                                {
                                    var instance = topic.ToModel();
                                    createGroupCommand.Execute(instance);
-                                   return instance.ToFacade();
+                                   return ResourceLocation.OfGroup(instance.Id.Value);
                                });
         }
 
         [WebGet(UriTemplate = "{id}")]
         public HttpResponseMessage<Facade.Group> Get(Identity id)
         {
-            return Process(() => entityById.Get<Group>(id).ToFacade());
+            return ProcessGet(() => entityById.Get<Group>(id).ToFacade());
         }
 
         [WebInvoke(UriTemplate = "", Method = "PUT")]
-        public HttpResponseMessage<Facade.Group> Update(Facade.GroupPut group)
+        public HttpResponseMessage Update(Facade.GroupPut group)
         {
-            return Process(() =>
+            return ProcessPut(() =>
                                {
                                    var instance = group.ToModel();
                                    updateGroupCommand.Execute(instance);
-                                   return instance.ToFacade();
                                });
         }
 
         [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
         public HttpResponseMessage Delete(Identity id)
         {
-            return Process(() => deleteGroupCommand.Execute(id));
+            return ProcessDelete(() => deleteGroupCommand.Execute(id));
         }
 
         [WebGet(UriTemplate = "?query={query}&skip={skip}&limit={limit}")]
@@ -75,7 +74,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
             var validatedSkip = skip > 0 ? new int?(skip) : new int?();
             var validatedLimit = limit > 0 ? new int?(limit) : new int?();
 
-            return Process(() => Find(query, validatedSkip, validatedLimit));
+            return ProcessGet(() => Find(query, validatedSkip, validatedLimit));
         }
 
         #region Private members

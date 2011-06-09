@@ -64,8 +64,8 @@ namespace RestService.Tests
             var result = client.ExecuteGet<F.Topic>("/" + topic.Id);
 
             Assert.AreEqual(topic.Description, result.Description);
-            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Group, result.Group.rel);
-            Assert.AreEqual(ResourceLocation.OfGroup(topic.GroupId), result.Group.href);
+            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Group, result.Group.Rel);
+            Assert.AreEqual(ResourceLocation.OfGroup(topic.GroupId), result.Group.HRef);
             Assert.AreEqual(topic.Id, result.Id.ToModel());
             Assert.AreEqual(topic.Name, result.Name);
         }

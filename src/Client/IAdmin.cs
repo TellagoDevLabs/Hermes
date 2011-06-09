@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using TellagoStudios.Hermes.Facade;
 
@@ -22,7 +23,7 @@ namespace TellagoStudios.Hermes.Client
         Subscription[] GetSubscriptionsByTopic(Identity topicId);
         Subscription[] GetSubscriptionsByGroup(Identity groupId);
 
-        Link PostMessage(Message message);
+        Uri PostMessage(Message message);
         Link[] GetMessagesLink(Identity subscriptionId);
         HttpWebResponse GetMessage(string href);
         HttpWebResponse GetMessage(Identity topicId, Identity messageId);

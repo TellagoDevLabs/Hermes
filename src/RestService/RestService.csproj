@@ -100,7 +100,6 @@
     <Compile Include="Pushing\RetryService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ResourceLocation.cs" />
     <Compile Include="Modules\CommandsModule.cs" />
     <Compile Include="Modules\QueriesModule.cs" />
     <Compile Include="Extensions\MessageExtensions.cs" />

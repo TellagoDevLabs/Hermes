@@ -41,14 +41,14 @@ namespace TellagoStudios.Hermes.RestService.Resources
         }
 
         [WebInvoke(UriTemplate = "/topic/{id}", Method = "POST")]
-        public HttpResponseMessage<Link> CreateMessageOnTopic(Identity id, HttpRequestMessage request)
+        public HttpResponseMessage CreateMessageOnTopic(Identity id, HttpRequestMessage request)
         {
-            return Process(()=>
+            return ProcessPost(()=>
             {
                 var message = Create(request);
                 message.TopicId = id;
                 createMessageCommand.Execute(message);
-                return message.ToLink();
+                return ResourceLocation.OfMessageByTopic(message);
             });
         }
 
@@ -56,10 +56,10 @@ namespace TellagoStudios.Hermes.RestService.Resources
         public HttpResponseMessage<Link[]> GetBySubscription(Identity id, int skip, int limit)
         {
             // set valid values of opional parameters
-            var validatedSkip = skip > 0 ? new int?(skip) : new int?();
-            var validatedLimit = limit > 0 ? new int?(limit) : new int?();
+            var validatedSkip = skip > 0 ? skip : new int?();
+            var validatedLimit = limit > 0 ? limit : new int?();
 
-            return Process(() => messageKeysBySubscription
+            return ProcessGet(() => messageKeysBySubscription
                     .Get(id, validatedSkip, validatedLimit)
                     .Select(key => key.ToLink())
                     .ToArray()
@@ -69,7 +69,9 @@ namespace TellagoStudios.Hermes.RestService.Resources
         [WebGet(UriTemplate = "{messageId}/topic/{topicId}")]
         public HttpResponseMessage Get(Identity topicId, Identity messageId, HttpRequestMessage request)
         {
-            return Process((response) => 
+            var response = new HttpResponseMessage(HttpStatusCode.OK, string.Empty);
+
+            DoProcess(() => 
             {
                 var key = new MessageKey { TopicId = topicId, MessageId = messageId }; 
                 var message = messageByMessageKey.Get(key);
@@ -82,16 +84,18 @@ namespace TellagoStudios.Hermes.RestService.Resources
                     PopulateHttpResponseMessage(ref response, message);
                 }
             });
+
+            return response;
         }
 
         [WebGet(UriTemplate = "topic/{id}?skip={skip}&limit={limit}")]
         public HttpResponseMessage<Link[]> GetForTopic(Identity id, int skip, int limit)
         {
             // set valid values of opional parameters
-            var validatedSkip = skip > 0 ? new int?(skip) : new int?();
-            var validatedLimit = limit > 0 ? new int?(limit) : new int?();
+            var validatedSkip = skip > 0 ? skip : new int?();
+            var validatedLimit = limit > 0 ? limit : new int?();
 
-            return Process(() => messageKeysByTopic
+            return ProcessGet(() => messageKeysByTopic
                     .Get(id, validatedSkip, validatedLimit)
                     .Select(key => key.ToLink())
                     .ToArray()
@@ -102,10 +106,10 @@ namespace TellagoStudios.Hermes.RestService.Resources
         public HttpResponseMessage<Link[]> GetForGroup(Identity id, int skip, int limit)
         {
             // set valid values of opional parameters
-            var validatedSkip = skip > 0 ? new int?(skip) : new int?();
-            var validatedLimit = limit > 0 ? new int?(limit) : new int?();
+            var validatedSkip = skip > 0 ? skip : new int?();
+            var validatedLimit = limit > 0 ? limit  : new int?();
 
-            return Process(() => messageKeysByGroup
+            return ProcessGet(() => messageKeysByGroup
                     .Get(id, validatedSkip, validatedLimit)
                     .Select(key => key.ToLink())
                     .ToArray()
@@ -114,7 +118,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
 
         #region Private methods
 
-        private Message Create(HttpRequestMessage request)
+        private static Message Create(HttpRequestMessage request)
         {
             var message = new Message
                               {
@@ -154,7 +158,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
 
         }
 
-        private void PopulateHttpResponseMessage(ref HttpResponseMessage response, Message message)
+        private static void PopulateHttpResponseMessage(ref HttpResponseMessage response, Message message)
         {
             Guard.Instance.ArgumentNotNull(()=>message, message);
 

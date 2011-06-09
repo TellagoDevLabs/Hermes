@@ -40,27 +40,12 @@ namespace TellagoStudios.Hermes.Client
                 .Send(webExceptionHandler);
         }
 
-        protected U Put<T, U>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
-        {
-            return Client(operation, "PUT", headers)
-                .Serialize(data)
-                .Send(webExceptionHandler)
-                .Deserialize<U>();
-        }
-
-        protected void Post<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
-        {
-            Client(operation, "POST", headers)
-                .Serialize(data)
-                .Send(webExceptionHandler);
-        }
-
-        protected U Post<T, U>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        protected Uri Post<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
         {
             return Client(operation, "POST", headers)
                 .Serialize(data)
                 .Send(webExceptionHandler)
-                .Deserialize<U>();
+                .GetLocation();
         }
 
         protected void Delete(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
@@ -253,6 +238,12 @@ namespace TellagoStudios.Hermes.Client
                 var entity = (T)serializer.Deserialize(reader);
                 return entity;
             }
+        }
+
+        static public Uri GetLocation(this HttpWebResponse response)
+        {
+            var location = response.Headers[HttpResponseHeader.Location];
+            return string.IsNullOrWhiteSpace(location) ? null : new Uri(location);
         }
     }
 }

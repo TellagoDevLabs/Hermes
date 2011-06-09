@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
@@ -42,47 +44,45 @@ namespace TellagoStudios.Hermes.RestService.Resources
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
-        public HttpResponseMessage<Facade.Subscription> Create(Facade.SubscriptionPost subscription)
+        public HttpResponseMessage Create(Facade.SubscriptionPost subscription)
         {
-            return Process(() =>
+            return ProcessPost(()  =>
                                {
                                    var instance = subscription.ToModel();
                                    createCommand.Execute(instance);
-                                   return instance.ToFacade();
+                                   return ResourceLocation.OfSubscription(instance.Id.Value);
                                });
         }
 
         [WebInvoke(UriTemplate = "", Method = "PUT")]
-        public HttpResponseMessage<Facade.Subscription> Update(Facade.SubscriptionPut subscriptionPut)
+        public HttpResponseMessage Update(Facade.SubscriptionPut subscriptionPut)
         {
-            return Process(() =>
+            return ProcessPut(() =>
             {
                 var current = entityById.Get<Subscription>(subscriptionPut.Id.ToModel());
 
                 current.Callback = subscriptionPut.Callback.ToModel();
                 current.Filter = subscriptionPut.Filter;
                 updateCommand.Execute(current);
-                return current.ToFacade();
-
             });
         }
 
         [WebGet(UriTemplate = "{id}")]
         public HttpResponseMessage<Facade.Subscription> Get(Identity id)
         {
-            return Process(() => entityById.Get<Subscription>(id).ToFacade());
+            return ProcessGet(() => entityById.Get<Subscription>(id).ToFacade());
         }
 
         [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
         public HttpResponseMessage Delete(Identity id)
         {
-            return Process(() => deleteCommand.Execute(id));
+            return ProcessDelete(() => deleteCommand.Execute(id));
         }
 
         [WebGet(UriTemplate = "topicgroup/{id}")] 
         public HttpResponseMessage<Facade.Subscription[]> GetByGroup(Identity id, HttpRequestMessage request)
         {
-            return Process(() =>
+            return ProcessGet(() =>
             {
                 var result = subscriptionsByGroup.Execute(id);
                 return result
@@ -94,7 +94,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
         [WebGet(UriTemplate = "topic/{id}")]
         public HttpResponseMessage<Facade.Subscription[]> GetByTopic(Identity id)
         {
-            return Process(() =>
+            return ProcessGet(() =>
             {
                 var result = subscriptionsByTopic.Execute(id);
                 return result
@@ -110,7 +110,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
             var validatedSkip = skip > 0 ? skip : new int?();
             var validatedLimit = limit > 0 ? limit : new int?();
 
-            return Process(() =>
+            return ProcessGet(() =>
                                {
                                    var result = genericJsonPagedQuery.Execute<Subscription>(query, validatedSkip, validatedLimit);
                                    return result

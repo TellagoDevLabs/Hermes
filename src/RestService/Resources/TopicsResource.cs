@@ -43,35 +43,34 @@ namespace TellagoStudios.Hermes.RestService.Resources
         [WebGet(UriTemplate = "{id}")]
         public HttpResponseMessage<Topic> Get(Identity id)
         {
-            return Process(() => entityById.Get<M.Topic>(id.ToModel()).ToFacade());
+            return ProcessGet(() => entityById.Get<M.Topic>(id.ToModel()).ToFacade());
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
-        public HttpResponseMessage<Topic> Create(TopicPost topic)
+        public HttpResponseMessage Create(TopicPost topic)
         {
-            return Process(() =>
+            return ProcessPost(() =>
                                {
                                    var instance = topic.ToModel();
                                    createGroupCommand.Execute(instance);
-                                   return instance.ToFacade();
+                                   return ResourceLocation.OfTopic(instance.Id.Value);
                                });
         }
 
         [WebInvoke(UriTemplate = "", Method = "PUT")]
-        public HttpResponseMessage<Topic> Update(TopicPut topic)
+        public HttpResponseMessage Update(TopicPut topic)
         {
-            return Process(() =>
+            return ProcessPut(() =>
                                {
                                    var instance = topic.ToModel();
                                    updateGroupCommand.Execute(instance);
-                                   return instance.ToFacade();
                                });
         }
 
         [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
         public HttpResponseMessage Delete(Identity id)
         {
-            return Process(() => deleteGroupCommand.Execute(id.ToModel()));
+            return ProcessDelete(() => deleteGroupCommand.Execute(id.ToModel()));
         }
 
         [WebGet(UriTemplate = "?skip={skip}&limit={limit}&query={query}")]
@@ -81,7 +80,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
             var validatedSkip = skip > 0 ? skip : new int?();
             var validatedLimit = limit > 0 ? limit : new int?();
 
-            return Process(() =>
+            return ProcessGet(() =>
                                    genericJsonPagedQuery.Execute<M.Topic>(query, validatedSkip, validatedLimit)
                                         .Select(i => i.ToFacade())
                                         .ToArray()
@@ -95,7 +94,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
             var validatedSkip = skip > 0 ? skip : new int?();
             var validatedLimit = limit > 0 ? limit : new int?();
 
-            return Process(() => 
+            return ProcessGet(() => 
                     topicsByGroup.GetTopics(groupId.ToModel(), validatedSkip, validatedLimit)
                         .Select(item => item.ToFacade())
                         .ToArray());

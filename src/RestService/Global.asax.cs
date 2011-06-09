@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.ServiceModel;
 using System.Web.Routing;
 using Autofac;
 using Microsoft.ApplicationServer.Http.Activation;
@@ -52,6 +53,8 @@ namespace TellagoStudios.Hermes.RestService
 
             #endregion
 
+            ResourceLocation.BaseAddress = new Uri(ConfigurationManager.AppSettings["baseAddress"]);
+
             #region Initial Process of Retries queue
 
             var retryService = container.Resolve<IRetryService>();
@@ -65,7 +68,6 @@ namespace TellagoStudios.Hermes.RestService
             }
 
             #endregion
-
         }
 
         void Application_Start(object sender, EventArgs e)
