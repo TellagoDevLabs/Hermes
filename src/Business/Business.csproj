@@ -114,12 +114,10 @@
     <Compile Include="Data\Queries\IGenericJsonPagedQuery.cs" />
     <Compile Include="Data\Queries\IQueryGroupAncestors.cs" />
     <Compile Include="Data\Queries\ITopicsByGroup.cs" />
-    <Compile Include="Repository\ISubscriptionQueries.cs" />
     <Compile Include="Repository\ITopicQueries.cs" />
     <Compile Include="Repository\IGroupRepository.cs" />
     <Compile Include="Repository\IMessageRepository.cs" />
     <Compile Include="Repository\IRetryRepository.cs" />
-    <Compile Include="Repository\ISubscriptionRepository.cs" />
     <Compile Include="Repository\ITopicRepository.cs" />
     <Compile Include="Repository\IGroupQueries.cs" />
     <Compile Include="Service\IMessageService.cs" />

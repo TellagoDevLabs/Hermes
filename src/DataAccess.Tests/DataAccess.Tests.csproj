@@ -82,7 +82,6 @@
     <Compile Include="Repository\ExtensionsTest.cs" />
     <Compile Include="Repository\MongoDbBaseFixture.cs" />
     <Compile Include="Repository\MongoDbMessageFixture.cs" />
-    <Compile Include="Repository\MongoDbSubscriptionFixture.cs" />
     <Compile Include="Repository\MongoDbTopicRepositoryFixture.cs" />
     <Compile Include="Repository\Utils.cs" />
   </ItemGroup>

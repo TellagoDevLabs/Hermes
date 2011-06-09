@@ -60,7 +60,6 @@
     <Compile Include="MongoDB\MongoDbConstants.cs" />
     <Compile Include="MongoDB\MongoDbMessageRepository.cs" />
     <Compile Include="MongoDB\MongoDbRetryRepository.cs" />
-    <Compile Include="MongoDB\MongoDbSubscriptionRepository.cs" />
     <Compile Include="MongoDB\MongoDbGroupRepository.cs" />
     <Compile Include="MongoDB\MongoDbTopicRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
