@@ -87,6 +87,7 @@
     <Compile Include="Groups\Interfaces.cs" />
     <Compile Include="Groups\UpdateGroupCommand.cs" />
     <Compile Include="Guard.cs" />
+    <Compile Include="Subscriptions\DeleteSubscriptionCommand.cs" />
     <Compile Include="Subscriptions\UpdateSubscriptionCommand.cs" />
     <Compile Include="Texts.cs" />
     <Compile Include="Messages\CreateMessageCommand.cs" />
