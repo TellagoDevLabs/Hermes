@@ -71,6 +71,7 @@
     <Compile Include="Queries\MessageKeysByTopic.cs" />
     <Compile Include="Queries\MessageByMessageKey.cs" />
     <Compile Include="Queries\ExistTopicByName.cs" />
+    <Compile Include="Queries\QueryValidator.cs" />
     <Compile Include="Queries\Repository.cs" />
     <Compile Include="Queries\EntityById.cs" />
     <Compile Include="Queries\ExistGroupByGroupName.cs" />
