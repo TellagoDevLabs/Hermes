@@ -30,13 +30,15 @@ namespace TellagoStudios.Hermes.Business.Subscriptions
 
         private void Validate(Subscription subscription)
         {
-            if(!subscription.Id.HasValue)
+            if(!subscription.Id.HasValue) throw new ValidationException(Texts.IdMustNotBeNull);
+            if(!entityById.Exist<Subscription>(subscription.Id.Value)) throw new EntityNotFoundException(typeof(Subscription), subscription.Id.Value);
+            if (string.IsNullOrWhiteSpace(subscription.Filter))
             {
-                throw new ValidationException(Texts.IdMustNotBeNull);
+                subscription.Filter = null;
             }
-            if(!entityById.Exist<Subscription>(subscription.Id.Value))
+            else if (!queryValidator.IsValid(subscription.Filter))
             {
-                throw new EntityNotFoundException(typeof(Subscription), subscription.Id.Value);
+                throw new ValidationException(string.Format(Texts.InvalidFilter, subscription.Filter));
             }
         }
     }
