@@ -40,6 +40,7 @@
     <Compile Include="Services\MessageServiceFixture.cs" />
     <Compile Include="Services\GroupServiceFixture.cs" />
     <Compile Include="Subscriptions\CreateSubscriptionCommandTests.cs" />
+    <Compile Include="Subscriptions\UpdateSubscriptionCommandTests.cs" />
     <Compile Include="Topics\DeleteTopicCommandTests.cs" />
     <Compile Include="Topics\UpdateTopicCommandTests.cs" />
     <Compile Include="Topics\CreateTopicCommandTests.cs" />

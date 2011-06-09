@@ -4,12 +4,12 @@ namespace TellagoStudios.Hermes.Business.Subscriptions
 {
     public interface ICreateSubscriptionCommand
     {
-        void Execute(Subscription Subscription);
+        void Execute(Subscription subscription);
     }
 
     public interface IUpdateSubscriptionCommand
     {
-        void Execute(Subscription Subscription);
+        void Execute(Subscription subscription);
     }
 
     public interface IDeleteSubscriptionCommand
