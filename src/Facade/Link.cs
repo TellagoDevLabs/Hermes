@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace TellagoStudios.Hermes.Facade
 {
-    [XmlRoot("link", Namespace = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade")]
+    [XmlRoot("link", Namespace = XmlNamespaces.Default)]
     public class Link
     {
         [XmlAttribute("rel")]

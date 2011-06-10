@@ -43,7 +43,8 @@ namespace TellagoStudios.Hermes.RestService
             if (!container.TryResolve(out config))
             {
                 config = HttpHostConfiguration.Create()
-                    .SetResourceFactory(new AutofacResourceFactory(container));
+                    .SetResourceFactory(new AutofacResourceFactory(container))
+                    .SetOperationHandlerFactory(container.Resolve<HttpOperationHandlerFactory>());
             }
 
             RouteTable.Routes.MapServiceRoute<TopicsResource>(Constants.Routes.Topics, config);

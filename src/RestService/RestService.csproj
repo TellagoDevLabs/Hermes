@@ -88,9 +88,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="HermesMediaTypeFormatter.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Modules\BusinessPushingModule.cs" />
     <Compile Include="Modules\EventModule.cs" />
+    <Compile Include="Modules\WebApiModule.cs" />
     <Compile Include="Modules\ServicesModule.cs">
       <SubType>Code</SubType>
     </Compile>

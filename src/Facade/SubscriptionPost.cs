@@ -2,7 +2,7 @@
 
 namespace TellagoStudios.Hermes.Facade
 {
-    [XmlRoot(ElementName = "Subscription", Namespace = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade")]
+    [XmlRoot(ElementName = "Subscription", Namespace = XmlNamespaces.Default)]
     public class SubscriptionPost
     {
         [XmlElement(ElementName = "topicId", Order = 0)]
