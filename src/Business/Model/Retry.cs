@@ -2,7 +2,7 @@
 
 namespace TellagoStudios.Hermes.Business.Model
 {
-    public class Retry
+    public class Retry : EntityBase
     {
 
         public Retry()
@@ -15,7 +15,6 @@ namespace TellagoStudios.Hermes.Business.Model
             Subscription = subscription;
         }
 
-        public Identity? Id { get; set; }
         public int Count { get; set; }        
         // UTC date time when the message was tried to send last time
         public DateTime UtcLastTry { get; set; }

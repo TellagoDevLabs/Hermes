@@ -4,8 +4,9 @@ using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Net.Http;
 using Microsoft.ApplicationServer.Http;
+using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Service;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.RestService.Extensions;
 
 namespace TellagoStudios.Hermes.RestService.Resources
@@ -14,45 +15,56 @@ namespace TellagoStudios.Hermes.RestService.Resources
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
     public class GroupsResource : Resource
     {
-        private readonly IGroupService _groupService;
+        private readonly IEntityById entityById;
+        private readonly IGenericJsonPagedQuery genericJsonPagedQuery;
+        private readonly ICreateGroupCommand createGroupCommand;
+        private readonly IUpdateGroupCommand updateGroupCommand;
+        private readonly IDeleteGroupCommand deleteGroupCommand;
 
-        public GroupsResource(IGroupService groupService)
+        public GroupsResource(IEntityById entityById,
+            IGenericJsonPagedQuery genericJsonPagedQuery,
+            ICreateGroupCommand createGroupCommand, 
+            IUpdateGroupCommand updateGroupCommand,
+            IDeleteGroupCommand deleteGroupCommand)
         {
-            _groupService = groupService;
+            this.entityById = entityById;
+            this.genericJsonPagedQuery = genericJsonPagedQuery;
+            this.createGroupCommand = createGroupCommand;
+            this.updateGroupCommand = updateGroupCommand;
+            this.deleteGroupCommand = deleteGroupCommand;
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
-        public HttpResponseMessage<Facade.Group> Create(Facade.GroupPost topic)
+        public HttpResponseMessage Create(Facade.GroupPost topic)
         {
-            return  Process(() =>
+            return  ProcessPost(() =>
                                {
                                    var instance = topic.ToModel();
-                                   var result = _groupService.Create(instance);
-                                   return result.ToFacade();
+                                   createGroupCommand.Execute(instance);
+                                   return ResourceLocation.OfGroup(instance.Id.Value);
                                });
         }
 
         [WebGet(UriTemplate = "{id}")]
         public HttpResponseMessage<Facade.Group> Get(Identity id)
         {
-            return Process(() => _groupService.Get(id).ToFacade());
+            return ProcessGet(() => entityById.Get<Group>(id).ToFacade());
         }
 
         [WebInvoke(UriTemplate = "", Method = "PUT")]
-        public HttpResponseMessage<Facade.Group> Update(Facade.GroupPut group)
+        public HttpResponseMessage Update(Facade.GroupPut group)
         {
-            return Process(() =>
+            return ProcessPut(() =>
                                {
                                    var instance = group.ToModel();
-                                   var result = _groupService.Update(instance);
-                                   return result.ToFacade();
+                                   updateGroupCommand.Execute(instance);
                                });
         }
 
         [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
         public HttpResponseMessage Delete(Identity id)
         {
-            return Process(()=>_groupService.Delete(id));
+            return ProcessDelete(() => deleteGroupCommand.Execute(id));
         }
 
         [WebGet(UriTemplate = "?query={query}&skip={skip}&limit={limit}")]
@@ -62,13 +74,13 @@ namespace TellagoStudios.Hermes.RestService.Resources
             var validatedSkip = skip > 0 ? new int?(skip) : new int?();
             var validatedLimit = limit > 0 ? new int?(limit) : new int?();
 
-            return Process(() => Find(query, validatedSkip, validatedLimit));
+            return ProcessGet(() => Find(query, validatedSkip, validatedLimit));
         }
 
         #region Private members
         private Facade.Group[] Find(string query, int? skip, int? limit)
         {
-            var result = _groupService.Find(query, skip, limit);
+            var result = genericJsonPagedQuery.Execute<Group>(query, skip, limit);
             return result.Select(item => item.ToFacade()).ToArray();
         }
         #endregion

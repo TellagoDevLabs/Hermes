@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.ServiceModel;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
@@ -43,7 +44,8 @@ namespace TellagoStudios.Hermes.RestService
             if (!container.TryResolve(out config))
             {
                 config = HttpHostConfiguration.Create()
-                    .SetResourceFactory(new AutofacResourceFactory(container));
+                    .SetResourceFactory(new AutofacResourceFactory(container))
+                    .SetOperationHandlerFactory(container.Resolve<HttpOperationHandlerFactory>());
             }
 
             RouteTable.Routes.MapServiceRoute<TopicsResource>(Constants.Routes.Topics, config);
@@ -52,6 +54,8 @@ namespace TellagoStudios.Hermes.RestService
             RouteTable.Routes.MapServiceRoute<SubscriptionResource>(Constants.Routes.Subscriptions, config);
 
             #endregion
+
+            ResourceLocation.BaseAddress = new Uri(ConfigurationManager.AppSettings["baseAddress"]);
 
             #region Initial Process of Retries queue
 
@@ -66,7 +70,6 @@ namespace TellagoStudios.Hermes.RestService
             }
 
             #endregion
-
         }
 
         void Application_Start(object sender, EventArgs e)

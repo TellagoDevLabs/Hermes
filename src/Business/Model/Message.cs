@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TellagoStudios.Hermes.Business.Model
 {
-    public class Message 
+    public class Message
     {
         public Message()
         {
@@ -12,7 +12,7 @@ namespace TellagoStudios.Hermes.Business.Model
         }
 
         public Identity? Id { get; set; }
-        
+
         // Post content
         public byte[] Payload { get; set; }
 

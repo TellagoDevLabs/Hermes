@@ -3,26 +3,43 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TellagoStudios.Hermes.Business;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Repository;
+using TellagoStudios.Hermes.Business.Retries;
 
 namespace TellagoStudios.Hermes.RestService.Pushing
 {
     public class RetryService : IRetryService
     {
-        public IRetryRepository Repository { get; set; }
+        public IEntityById entityById; 
+        public ICreateRetryCommand createRetryCommand;
+        public IDeleteRetryCommand deleteRetryCommand;
+        public IUpdateRetryCommand updateRetryCommand;
+        public IGenericJsonPagedQuery genericJsonPagedQuery;
 
         public bool IsRunning { get; private set; } 
 
         #region Public Methods
-
-        public Retry Add(Retry message)
+        public RetryService(IEntityById entityById,
+            ICreateRetryCommand createRetryCommand,
+            IDeleteRetryCommand deleteRetryCommand,
+            IUpdateRetryCommand updateRetryCommand,
+            IGenericJsonPagedQuery genericJsonPagedQuery)
         {
-            var newRetry = Repository.Create(message);
+            this.entityById = entityById;
+            this.createRetryCommand = createRetryCommand;
+            this.deleteRetryCommand = deleteRetryCommand;
+            this.updateRetryCommand = updateRetryCommand;
+            this.genericJsonPagedQuery = genericJsonPagedQuery;
+        }
+
+        public Retry Add(Retry retry)
+        {
+            createRetryCommand.Execute(retry);
 
             ProcessRetries();
 
-            return newRetry;
+            return retry;
         }
 
         public void ProcessRetries()
@@ -46,7 +63,7 @@ namespace TellagoStudios.Hermes.RestService.Pushing
         {
             while (true) 
             {
-                var retries = Repository.Find(string.Empty, null, null);
+                var retries = genericJsonPagedQuery.Execute<Retry>(string.Empty, null, null);
 
                 if (retries == null || !retries.Any())
                     break;
@@ -62,12 +79,12 @@ namespace TellagoStudios.Hermes.RestService.Pushing
 
                         retry.Message.PushToSubscription(retry.Subscription);
 
-                        Repository.Delete(retry.Id.Value);
+                        deleteRetryCommand.Execute(retry.Id.Value);
                     }
                     catch (Exception ex)
                     {
                         System.Diagnostics.Trace.TraceError(
-                            string.Format(Business.Messages.ErrorPushingCallback, retry.Message.Id, retry.Subscription.Id) +
+                            string.Format(Texts.ErrorPushingCallback, retry.Message.Id, retry.Subscription.Id) +
                             "\r\n" + ex);
                         HandleRetryLogic(retry);
                     }
@@ -86,9 +103,9 @@ namespace TellagoStudios.Hermes.RestService.Pushing
                 .ArgumentNotNull(() => retry.Id, retry.Id);
 
             if (retry.Count == Constants.RetryValues.RetryMax)
-                Repository.Delete(retry.Id.Value);
+                deleteRetryCommand.Execute(retry.Id.Value);
             else
-                Repository.Update(retry);
+                updateRetryCommand.Execute(retry);
         } 
 
         #endregion

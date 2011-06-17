@@ -1,11 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using Microsoft.ApplicationServer.Http;
+using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.Business.Service;
+using TellagoStudios.Hermes.Business.Subscriptions;
 using TellagoStudios.Hermes.RestService.Extensions;
 
 namespace TellagoStudios.Hermes.RestService.Resources
@@ -14,53 +17,74 @@ namespace TellagoStudios.Hermes.RestService.Resources
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
     public class SubscriptionResource : Resource
     {
-        private readonly ISubscriptionService _subscriptionService;
+        private readonly ICreateSubscriptionCommand createCommand;
+        private readonly IUpdateSubscriptionCommand updateCommand;
+        private readonly IDeleteSubscriptionCommand deleteCommand;
+        private readonly IEntityById entityById;
+        private readonly ISubscriptionsByGroup subscriptionsByGroup;
+        private readonly ISubscriptionsByTopic subscriptionsByTopic;
+        private readonly IGenericJsonPagedQuery genericJsonPagedQuery;
 
-        public SubscriptionResource(ISubscriptionService subscriptionService)
+        public SubscriptionResource(
+            ICreateSubscriptionCommand createCommand,
+            IUpdateSubscriptionCommand updateCommand,
+            IDeleteSubscriptionCommand deleteCommand,
+            IEntityById entityById,
+            ISubscriptionsByGroup subscriptionsByGroup,
+            ISubscriptionsByTopic subscriptionsByTopic,
+            IGenericJsonPagedQuery genericJsonPagedQuery)
         {
-            _subscriptionService = subscriptionService;
+            this.createCommand = createCommand;
+            this.updateCommand = updateCommand;
+            this.deleteCommand = deleteCommand;
+            this.entityById = entityById;
+            this.subscriptionsByGroup = subscriptionsByGroup;
+            this.subscriptionsByTopic = subscriptionsByTopic;
+            this.genericJsonPagedQuery = genericJsonPagedQuery;
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
-        public HttpResponseMessage<Facade.Subscription> Create(Facade.SubscriptionPost subscription)
+        public HttpResponseMessage Create(Facade.SubscriptionPost subscription)
         {
-            return Process(() =>
+            return ProcessPost(()  =>
                                {
                                    var instance = subscription.ToModel();
-                                   var result = _subscriptionService.Create(instance);
-                                   return result.ToFacade();
+                                   createCommand.Execute(instance);
+                                   return ResourceLocation.OfSubscription(instance.Id.Value);
                                });
         }
 
         [WebInvoke(UriTemplate = "", Method = "PUT")]
-        public HttpResponseMessage<Facade.Subscription> Update(Facade.SubscriptionPut subscriptionPut)
+        public HttpResponseMessage Update(Facade.SubscriptionPut subscriptionPut)
         {
-            return Process(() =>
+            return ProcessPut(() =>
             {
-                var instance = subscriptionPut.ToModel();
-                var result = _subscriptionService.Update(instance);
-                return result.ToFacade();
+                var current = entityById.Get<Subscription>(subscriptionPut.Id.ToModel());
+
+                current.Callback = subscriptionPut.Callback.ToModel();
+                current.Filter = subscriptionPut.Filter;
+                updateCommand.Execute(current);
             });
         }
 
         [WebGet(UriTemplate = "{id}")]
         public HttpResponseMessage<Facade.Subscription> Get(Identity id)
         {
-            return Process(() => _subscriptionService.Get(id).ToFacade());
+            return ProcessGet(() => entityById.Get<Subscription>(id).ToFacade());
         }
 
         [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
         public HttpResponseMessage Delete(Identity id)
         {
-            return Process(() => _subscriptionService.Delete(id));
+            return ProcessDelete(() => deleteCommand.Execute(id));
         }
 
         [WebGet(UriTemplate = "topicgroup/{id}")] 
         public HttpResponseMessage<Facade.Subscription[]> GetByGroup(Identity id, HttpRequestMessage request)
         {
-            return Process(() =>
+            return ProcessGet(() =>
             {
-                var result = _subscriptionService.GetByGroup(id);
+                var result = subscriptionsByGroup.Execute(id);
                 return result
                     .Select(item => item.ToFacade())
                     .ToArray();
@@ -70,12 +94,12 @@ namespace TellagoStudios.Hermes.RestService.Resources
         [WebGet(UriTemplate = "topic/{id}")]
         public HttpResponseMessage<Facade.Subscription[]> GetByTopic(Identity id)
         {
-            return Process(() =>
+            return ProcessGet(() =>
             {
-                var result = _subscriptionService.GetByTopic(id);
+                var result = subscriptionsByTopic.Execute(id);
                 return result
-                    .Select(item => item.ToFacade())
-                    .ToArray();
+                          .Select(item => item.ToFacade())
+                          .ToArray();
             });
         }
 
@@ -86,9 +110,9 @@ namespace TellagoStudios.Hermes.RestService.Resources
             var validatedSkip = skip > 0 ? skip : new int?();
             var validatedLimit = limit > 0 ? limit : new int?();
 
-            return Process(() =>
+            return ProcessGet(() =>
                                {
-                                   var result = _subscriptionService.Find(query, validatedSkip, validatedLimit);
+                                   var result = genericJsonPagedQuery.Execute<Subscription>(query, validatedSkip, validatedLimit);
                                    return result
                                        .Select(item => item.ToFacade())
                                        .ToArray();

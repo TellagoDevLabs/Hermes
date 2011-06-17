@@ -2,7 +2,7 @@
 
 namespace TellagoStudios.Hermes.Facade
 {
-    [XmlRoot(ElementName = "Group", Namespace = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade")]
+    [XmlRoot(ElementName = "Group", Namespace = XmlNamespaces.Default)]
     public class GroupPut
     {
         [XmlElement(ElementName = "id", Order = 0)]

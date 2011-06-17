@@ -1,21 +1,35 @@
-﻿using TellagoStudios.Hermes.Business;
+﻿using System;
+using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
 
 namespace TellagoStudios.Hermes.RestService.Resources
 {
     public static class ResourceLocation
     {
-        public static string OfTopic(Identity id)
+        public static Uri BaseAddress {get; set; }
+
+        private static Uri CreateUri(string resource)
         {
-            return "/" + Constants.Routes.Topics + "/" + id;
+            Guard.Instance.ArgumentNotNull(() => BaseAddress, BaseAddress);
+            return new Uri(BaseAddress, resource);            
         }
 
-        public static string OfGroup(Identity id)
+        public static Uri OfTopic(Identity id)
         {
-            return "/" + Constants.Routes.Groups + "/" + id;
+            return CreateUri( "/" + Constants.Routes.Topics + "/" + id);
         }
 
-        public static string OfMessageByTopic(Message message)
+        public static Uri  OfGroup(Identity id)
+        {
+            return CreateUri( "/" + Constants.Routes.Groups + "/" + id);
+        }
+
+        public static Uri OfSubscription(Identity id)
+        {
+            return CreateUri( "/" + Constants.Routes.Subscriptions + "/" + id);
+        }
+
+        public static Uri OfMessageByTopic(Message message)
         {
             Guard.Instance
                 .ArgumentNotNull(() => message, message)
@@ -24,16 +38,16 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return OfMessageByTopic(message.TopicId, message.Id.Value);
         }
 
-        public static string OfMessageByTopic(MessageKey key)
+        public static Uri OfMessageByTopic(MessageKey key)
         {
             Guard.Instance.ArgumentNotNull(()=>key, key);
 
             return OfMessageByTopic(key.TopicId, key.MessageId);
         }
 
-        public static string OfMessageByTopic(Identity topicId, Identity messageId)
+        public static Uri OfMessageByTopic(Identity topicId, Identity messageId)
         {
-            return "/" + Constants.Routes.Messages + "/" + messageId + "/topic/" + topicId;
+            return CreateUri( "/" + Constants.Routes.Messages + "/" + messageId + "/topic/" + topicId);
         }
 
         public static string LinkToMessage(Identity topicId, Identity messageId)

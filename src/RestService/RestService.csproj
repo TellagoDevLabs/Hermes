@@ -125,21 +125,26 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="HermesMediaTypeFormatter.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Modules\BusinessPushingModule.cs" />
     <Compile Include="Modules\EventModule.cs" />
+    <Compile Include="Modules\WebApiModule.cs" />
+    <Compile Include="Modules\ServicesModule.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Pushing\IRetryService.cs" />
     <Compile Include="Pushing\MessageExtensions.cs" />
     <Compile Include="Pushing\NewMessagePusher.cs" />
-    <Compile Include="Pushing\RetryService.cs" />
-    <Compile Include="ResourceLocation.cs" />
+    <Compile Include="Pushing\RetryService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modules\CommandsModule.cs" />
+    <Compile Include="Modules\QueriesModule.cs" />
     <Compile Include="Extensions\MessageExtensions.cs" />
     <Compile Include="Resources\MessageResource.cs" />
-    <Compile Include="Modules\RepositoriesModule.cs" />
     <Compile Include="Modules\ResourcesModule.cs" />
-    <Compile Include="Modules\ServicesModule.cs" />
-    <Compile Include="Modules\ValidatorsModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Extensions\SubscriptionExtensions.cs" />

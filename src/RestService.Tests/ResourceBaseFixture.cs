@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
+using System.ServiceModel;
 using Autofac;
 using Microsoft.ApplicationServer.Http.Activation;
 using Microsoft.ApplicationServer.Http.Description;
 using NUnit.Framework;
+using TellagoStudios.Hermes.RestService.Resources;
 
 namespace RestService.Tests
 {
@@ -28,6 +31,7 @@ namespace RestService.Tests
             host = new HttpConfigurableServiceHost(type, config, baseUri);
             host.Open();
 
+            ResourceLocation.BaseAddress = baseUri;
 
             // Create client instance 
             client = new RestClient(baseUri);

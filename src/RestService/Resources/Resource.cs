@@ -10,31 +10,37 @@ namespace TellagoStudios.Hermes.RestService.Resources
 {
     public abstract class Resource
     {
-        protected HttpResponseMessage Process(Action action)
+        protected HttpResponseMessage ProcessPost(Func<Uri> action)
         {
-            return Process((response) => action());
+            return Process(HttpStatusCode.Created,
+                           (response) => response.Headers.Location = action());
         }
 
-        protected HttpResponseMessage Process(Action<HttpResponseMessage> action)
+        protected HttpResponseMessage ProcessPut(Action action)
         {
-            var response = new HttpResponseMessage();
-            response.StatusCode = HttpStatusCode.OK;
+            return Process(HttpStatusCode.NoContent, (response)=>action());
+        }
+
+        protected HttpResponseMessage ProcessDelete(Action action)
+        {
+            return Process(HttpStatusCode.NoContent, (response) => action());
+        }
+
+        private HttpResponseMessage Process(HttpStatusCode statusCode, Action<HttpResponseMessage> action)
+        {
+            var response = new HttpResponseMessage(statusCode, string.Empty);
             DoProcess(() => action(response));
             return response;
         }
 
-        protected HttpResponseMessage<T> Process<T>(Func<T> getEntity)
-        {
-            return Process((response) => getEntity());
-        }
-
-        protected HttpResponseMessage<T> Process<T>(Func<HttpResponseMessage, T> getEntity)
+        protected HttpResponseMessage<T> ProcessGet<T>(Func<T> getEntity)
+            where T: class
         {
             var response = new HttpResponseMessage<T>(HttpStatusCode.OK);
 
             DoProcess(() =>
             {
-                var resource = getEntity(response);
+                var resource = getEntity();
                 if (resource == null)
                 {
                     response.StatusCode = HttpStatusCode.NotFound;
@@ -48,7 +54,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return response;  
         }
 
-        private void DoProcess(Action doProcessAction)
+        protected void DoProcess(Action doProcessAction)
         {
             Guard.Instance.ArgumentNotNull(() => doProcessAction, doProcessAction);
 

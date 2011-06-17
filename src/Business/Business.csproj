@@ -66,6 +66,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Queries\IQueryValidator.cs" />
+    <Compile Include="Data\Commands\IMessageRepository.cs" />
+    <Compile Include="Data\Queries\IMessageKeysByGroup.cs" />
+    <Compile Include="Data\Queries\IMessageKeysByTopic.cs" />
+    <Compile Include="Data\Queries\IMessageByMessageKey.cs" />
+    <Compile Include="Data\Queries\IMessageKeysBySubscription.cs" />
+    <Compile Include="Data\Queries\ISubscriptionsByGroup.cs" />
+    <Compile Include="Data\Queries\ISubscriptionsByTopic.cs" />
+    <Compile Include="Data\Queries\ISubscriptionsByTopicAndTopicGroup.cs" />
     <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Events\IEventAggregator.cs" />
     <Compile Include="Events\IEventHandler.cs" />
@@ -75,44 +84,51 @@
     <Compile Include="Extensions\ModelExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsGenericExtensions.cs" />
-    <Compile Include="Factory.cs" />
+    <Compile Include="Groups\CreateGroupCommand.cs" />
+    <Compile Include="Groups\DeleteGroupCommand.cs" />
+    <Compile Include="Groups\Interfaces.cs" />
+    <Compile Include="Groups\UpdateGroupCommand.cs" />
     <Compile Include="Guard.cs" />
-    <Compile Include="Messages.cs" />
+    <Compile Include="Model\Retry.cs" />
+    <Compile Include="Retries\CreateRetryCommand.cs" />
+    <Compile Include="Retries\DeleteRetryCommand.cs" />
+    <Compile Include="Retries\Interfaces.cs" />
+    <Compile Include="Retries\UpdateRetryCommand.cs" />
+    <Compile Include="Subscriptions\DeleteSubscriptionCommand.cs" />
+    <Compile Include="Subscriptions\UpdateSubscriptionCommand.cs" />
+    <Compile Include="Texts.cs" />
+    <Compile Include="Messages\CreateMessageCommand.cs" />
+    <Compile Include="Messages\Interfaces.cs" />
     <Compile Include="Model\Callback.cs" />
     <Compile Include="Model\CallbackKind.cs" />
+    <Compile Include="Model\EntityBase.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\Identity.cs" />
     <Compile Include="Model\Message.cs" />
     <Compile Include="Model\MessageKey.cs" />
-    <Compile Include="Model\Retry.cs" />
     <Compile Include="Model\Subscription.cs" />
     <Compile Include="Model\TargetKind.cs" />
     <Compile Include="Model\Topic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\ISubscriptionQueries.cs" />
-    <Compile Include="Repository\ITopicQueries.cs" />
-    <Compile Include="Repository\IGroupRepository.cs" />
-    <Compile Include="Repository\IMessageRepository.cs" />
-    <Compile Include="Repository\IRetryRepository.cs" />
-    <Compile Include="Repository\ISubscriptionRepository.cs" />
-    <Compile Include="Repository\ITopicRepository.cs" />
-    <Compile Include="Service\IGroupService.cs" />
-    <Compile Include="Repository\IGroupQueries.cs" />
-    <Compile Include="Service\IMessageService.cs" />
-    <Compile Include="Service\ISubscriptionService.cs" />
-    <Compile Include="Service\ITopicService.cs" />
-    <Compile Include="Service\MessageService.cs" />
-    <Compile Include="Service\SubscriptionService.cs" />
-    <Compile Include="Service\GroupService.cs" />
-    <Compile Include="Service\TopicService.cs" />
-    <Compile Include="Validator\MessageValidator.cs" />
-    <Compile Include="Validator\SubscriptionValidator.cs" />
-    <Compile Include="Validator\GroupValidator.cs" />
-    <Compile Include="Validator\TopicValidator.cs" />
+    <Compile Include="Data\Queries\IChildGroupsOfGroup.cs" />
+    <Compile Include="Data\Commands\IRepository.cs" />
+    <Compile Include="Data\Queries\IEntityById.cs" />
+    <Compile Include="Data\Queries\IExistGroupByGroupName.cs" />
+    <Compile Include="Data\Queries\IGenericJsonPagedQuery.cs" />
+    <Compile Include="Data\Queries\IQueryGroupAncestors.cs" />
+    <Compile Include="Data\Queries\ITopicsByGroup.cs" />
+    <Compile Include="Subscriptions\CreateSubscriptionCommand.cs" />
+    <Compile Include="Subscriptions\Interfaces.cs" />
+    <Compile Include="Topics\DeleteTopicCommand.cs" />
+    <Compile Include="Topics\UpdateTopicCommand.cs" />
+    <Compile Include="Topics\CreateTopicCommand.cs" />
+    <Compile Include="Topics\Interfaces.cs" />
+    <Compile Include="Data\Queries\IExistsTopicByName.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -122,7 +138,6 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Exec Condition="Exists('$(ProjectDir)packages.config')"
-            Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)packages.config')" Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
   </Target>
 </Project>

@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.RestService.Resources;
 
 namespace TellagoStudios.Hermes.RestService.Pushing
 {
@@ -22,7 +23,7 @@ namespace TellagoStudios.Hermes.RestService.Pushing
                     request.PopulateWithMessage(message);
                     break;
                 default:
-                    throw new InvalidOperationException(string.Format(Business.Messages.CallbackKindUnknown, subscription.Callback.Kind));
+                    throw new InvalidOperationException(string.Format(Business.Texts.CallbackKindUnknown, subscription.Callback.Kind));
             }
 
             new HttpClient().Send(request);

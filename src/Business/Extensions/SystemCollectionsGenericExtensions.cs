@@ -1,4 +1,6 @@
-﻿// ReSharper disable CheckNamespace
+﻿using System.Linq;
+
+// ReSharper disable CheckNamespace
 namespace System.Collections.Generic
 // ReSharper restore CheckNamespace
 {

@@ -33,7 +33,7 @@ namespace TellagoStudios.Hermes.Business
             if (argValue.Cast<object>().Any())
                 return Instance;
 
-            throw new ArgumentException(Messages.ArgumentWasEmpty, GetArgumentName(argName));
+            throw new ArgumentException(Texts.ArgumentWasEmpty, GetArgumentName(argName));
         }
 
         public Guard ArgumentNotNullOrWhiteSpace(Expression<Func<object>> argName, IEnumerable argValue)
@@ -48,13 +48,13 @@ namespace TellagoStudios.Hermes.Business
             if (argValue.Cast<object>().Any())
                 return Instance;
 
-            throw new ArgumentException(Messages.ArgumentWasEmptyOrWhitespace, GetArgumentName(argName));
+            throw new ArgumentException(Texts.ArgumentWasEmptyOrWhitespace, GetArgumentName(argName));
         }
  
         public Guard ArgumentValid(Expression<Func<object>> argName, Func<bool> validation)
         {
             if (validation())
-                throw new ArgumentException(Messages.ArgumentWasInvalid, GetArgumentName(argName));
+                throw new ArgumentException(Texts.ArgumentWasInvalid, GetArgumentName(argName));
 
             return Instance;
         }

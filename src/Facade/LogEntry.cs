@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 namespace TellagoStudios.Hermes.Facade
 {
-    [XmlRoot(ElementName = "LogEntry", Namespace = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade")]
+    [XmlRoot(ElementName = "LogEntry", Namespace = XmlNamespaces.Default)]
     public class LogEntry
     {
         [XmlElement(ElementName="id", Order=0)]

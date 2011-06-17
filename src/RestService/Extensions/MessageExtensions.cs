@@ -11,8 +11,8 @@ namespace TellagoStudios.Hermes.RestService.Extensions
 
             return new Facade.Link
             {
-                rel = Constants.Relationships.Message,
-                href = Resources.ResourceLocation.OfMessageByTopic(from)
+                Rel = Constants.Relationships.Message,
+                HRef = Resources.ResourceLocation.OfMessageByTopic(from)
             };
         }
 
@@ -22,8 +22,8 @@ namespace TellagoStudios.Hermes.RestService.Extensions
 
             return new Facade.Link
             {
-                rel = Constants.Relationships.Message,
-                href = Resources.ResourceLocation.OfMessageByTopic(from)
+                Rel = Constants.Relationships.Message,
+                HRef = Resources.ResourceLocation.OfMessageByTopic(from)
             };
         }
     }

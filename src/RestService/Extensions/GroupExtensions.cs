@@ -44,8 +44,8 @@ namespace TellagoStudios.Hermes.RestService.Extensions
         {
             return new Facade.Link
             {
-                rel = rel,
-                href = Resources.ResourceLocation.OfGroup(id)
+                Rel = rel,
+                HRef = Resources.ResourceLocation.OfGroup(id)
             };
         }
 

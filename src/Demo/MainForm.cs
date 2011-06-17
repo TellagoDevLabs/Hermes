@@ -218,7 +218,7 @@ namespace Demo
                 {
                     Data = s,
                     ID = s.Id,
-                    Target = s.Target.href,
+                    Target = s.Target.HRef,
                     Filter = s.Filter,
                     Callback = s.Callback == null ? null : s.Callback.Kind.ToString() + " " + s.Callback.Url
                 })
@@ -356,7 +356,7 @@ namespace Demo
 
             var link = (Link) lbMessages.SelectedValue;
 
-            var response = HermesClient.NewAdmin().GetMessage(link.href); 
+            var response = HermesClient.NewAdmin().GetMessage(link.HRef.ToString()); 
 
             RequestResult.ShowResponse(response);
         }

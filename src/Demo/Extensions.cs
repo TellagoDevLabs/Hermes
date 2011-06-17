@@ -1,4 +1,5 @@
-﻿using TellagoStudios.Hermes.Facade;
+﻿using System.Linq;
+using TellagoStudios.Hermes.Facade;
 
 namespace Demo
 {
@@ -6,15 +7,15 @@ namespace Demo
     {
         static public Identity GetId (this Link link)
         {
-            if (link == null || string.IsNullOrEmpty(link.href)) return Identity.Empty;
+            if (link == null || link.HRef == null) return Identity.Empty;
 
-            var index = link.href.LastIndexOf('/');
-            return new Identity(link.href.Substring(index + 1));
+            var id = link.HRef.Segments.Last();
+            return new Identity(id);
         }
 
         static public string ToXmlString (this Link link)
         {
-            return string.Format("<link rel=\"{0}\" href=\"{1}\" />", link.rel, link.href);
+            return string.Format("<link rel=\"{0}\" href=\"{1}\" />", link.Rel, link.HRef);
         }
     }
 }

@@ -151,7 +151,7 @@ namespace TellagoStudios.Hermes.Client
 
         #region Messages
 
-        public Link PostMessage(Message message)
+        public Uri PostMessage(Message message)
         {
             Guard.Instance
                 .ArgumentNotNull(() => message, message)
@@ -161,8 +161,7 @@ namespace TellagoStudios.Hermes.Client
                 .Select(pp => new Header(Constants.PrivateHeaders.PromotedProperty + pp.Name, pp.Value))
                 .Union(message.Headers ?? new Header[0]);
 
-            var link = Post<Stream, Link>(Operations.PostMessagesOnTopic(message.TopicId), message.Payload, headers);
-            return link;
+            return Post(Operations.PostMessagesOnTopic(message.TopicId), message.Payload, headers);
         }
 
         #region GetMessagesLink

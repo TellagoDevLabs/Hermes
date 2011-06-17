@@ -56,6 +56,7 @@
     <Compile Include="Topic.cs" />
     <Compile Include="TopicPost.cs" />
     <Compile Include="TopicPut.cs" />
+    <Compile Include="XmlNamespaces.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -66,7 +67,6 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Exec Condition="Exists('$(ProjectDir)packages.config')"
-            Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)packages.config')" Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
   </Target>
 </Project>

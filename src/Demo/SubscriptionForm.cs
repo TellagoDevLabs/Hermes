@@ -53,7 +53,7 @@ namespace Demo
             return Dialog<SubscriptionForm>.Show(form =>
             {
                 form.txtID.Text = subscription.Id.ToString();
-                form.txtTarget.Text = subscription.Target.href;
+                form.txtTarget.Text = subscription.Target.HRef.ToString();
 
                 if (!string.IsNullOrWhiteSpace(subscription.Filter))
                 {

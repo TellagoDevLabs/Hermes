@@ -1,3 +1,4 @@
+using System;
 using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client
@@ -14,6 +15,6 @@ namespace TellagoStudios.Hermes.Client
         void DeleteGroup(Identity groupId);
         Group[] GetGroups();
 
-        Link PostMessage(Message message);
+        Uri PostMessage(Message message);
     }
 }
