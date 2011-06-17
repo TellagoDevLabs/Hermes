@@ -53,6 +53,9 @@
     <Reference Include="Microsoft.Net.Http">
       <HintPath>..\..\lib\WCF Web API Preview 4\Microsoft.Net.Http.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.Mvc">
+      <HintPath>..\packages\Mvc3Futures.3.0.20105.0\lib\Microsoft.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
@@ -159,6 +162,7 @@
       <DependentUpon>TopicForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -191,7 +195,6 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Exec Condition="Exists('$(ProjectDir)packages.config')"
-            Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)packages.config')" Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
   </Target>
 </Project>
