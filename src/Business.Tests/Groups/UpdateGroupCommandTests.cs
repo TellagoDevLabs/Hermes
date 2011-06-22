@@ -19,7 +19,7 @@ namespace Business.Tests.Groups
         public void WhenGroupNameIsDuplicated_ThenThrowValidateException()
         {
             var id = Identity.Random();
-            var groupCommand = CreateUpdateGroupCommand(Mock.Of<IExistGroupByGroupName>(q => q.Execute("test", id) == true),
+            var groupCommand = CreateUpdateGroupCommand(Mock.Of<IExistsGroupByGroupName>(q => q.Execute("test", id) == true),
                 Mock.Of<IEntityById>(q => q.Exist<Group>(id)));
 
             groupCommand.Executing(gc => gc.Execute(new Group { Name = "test", Id = id }))
@@ -102,11 +102,11 @@ namespace Business.Tests.Groups
         }
 
         private static IUpdateGroupCommand CreateUpdateGroupCommand(
-            IExistGroupByGroupName existGroupByGroupName = null,
+            IExistsGroupByGroupName existGroupByGroupName = null,
             IEntityById entityById = null,
             IRepository<Group> cudGroup = null)
         {
-            return new UpdateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>(),
+            return new UpdateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistsGroupByGroupName>(),
                                         entityById ?? Mock.Of<IEntityById>(),
                                         cudGroup ?? Mock.Of<IRepository<Group>>());
         }

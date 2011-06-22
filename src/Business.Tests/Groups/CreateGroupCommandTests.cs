@@ -25,7 +25,7 @@ namespace Business.Tests.Groups
         [Test]
         public void WhenGroupNameIsDuplicated_ThenThrowValidateException()
         {
-            var groupCommand = CreateCreateGroupCommand(Mock.Of<IExistGroupByGroupName>(q => q.Execute("test", null) == true));
+            var groupCommand = CreateCreateGroupCommand(Mock.Of<IExistsGroupByGroupName>(q => q.Execute("test", null) == true));
 
             groupCommand.Executing(gc => gc.Execute(new Group {Name = "test"}))
                                     .Throws<ValidationException>()
@@ -57,11 +57,11 @@ namespace Business.Tests.Groups
         }
 
         private static ICreateGroupCommand CreateCreateGroupCommand(
-            IExistGroupByGroupName existGroupByGroupName = null, 
+            IExistsGroupByGroupName existGroupByGroupName = null, 
             IEntityById entityById = null,
             IRepository<Group> cudGroup = null)
         {
-            return new CreateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistGroupByGroupName>(),
+            return new CreateGroupCommand(existGroupByGroupName ?? Mock.Of<IExistsGroupByGroupName>(),
                                         entityById ?? Mock.Of<IEntityById>(),
                                         cudGroup ?? Mock.Of<IRepository<Group>>());
         }

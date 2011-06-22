@@ -20,12 +20,17 @@
             <hr />
             <ul id="menu">
                 <li class="label">VIEW</li>
-                <li class="selected">@Html.ActionLink("Home", "Index", "Home")</li>
+                <li class="selected">@Html.ActionLink("Home", "Index","Home")</li>
                 <li>@Html.ActionLink("About", "About", "Home")</li>
             </ul>
         </div>
 
         <div id="main">
+            <ul id="home-highlights" class="highlights">
+                <li><a href="/admin/group/index">Groups</a></li>
+                <li>Topics</li>
+                <li>Messages</li>
+            </ul>
             @RenderBody()
             <div id="footer">
             </div>

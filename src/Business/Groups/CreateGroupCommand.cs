@@ -8,11 +8,11 @@ namespace TellagoStudios.Hermes.Business.Groups
     public class CreateGroupCommand :  ICreateGroupCommand
     {
         private readonly IRepository<Group> repository;
-        private readonly IExistGroupByGroupName existGroupByGroupName;
+        private readonly IExistsGroupByGroupName existGroupByGroupName;
         private readonly IEntityById entityById;
 
         public CreateGroupCommand(
-            IExistGroupByGroupName existGroupByGroupName, 
+            IExistsGroupByGroupName existGroupByGroupName, 
             IEntityById entityById, 
             IRepository<Group> repository)
         {

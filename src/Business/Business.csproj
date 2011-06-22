@@ -113,7 +113,7 @@
     <Compile Include="Data\Queries\IChildGroupsOfGroup.cs" />
     <Compile Include="Data\Commands\IRepository.cs" />
     <Compile Include="Data\Queries\IEntityById.cs" />
-    <Compile Include="Data\Queries\IExistGroupByGroupName.cs" />
+    <Compile Include="Data\Queries\IExistsGroupByGroupName.cs" />
     <Compile Include="Data\Queries\IGenericJsonPagedQuery.cs" />
     <Compile Include="Data\Queries\IQueryGroupAncestors.cs" />
     <Compile Include="Data\Queries\ITopicsByGroup.cs" />

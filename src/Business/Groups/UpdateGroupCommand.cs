@@ -10,9 +10,9 @@ namespace TellagoStudios.Hermes.Business.Groups
     {
         private readonly IEntityById entityById;
         private readonly IRepository<Group> repository;
-        private readonly IExistGroupByGroupName existGroupByGroupName;
+        private readonly IExistsGroupByGroupName existGroupByGroupName;
 
-        public UpdateGroupCommand(IExistGroupByGroupName existGroupByGroupName, IEntityById entityById, IRepository<Group> repository) 
+        public UpdateGroupCommand(IExistsGroupByGroupName existGroupByGroupName, IEntityById entityById, IRepository<Group> repository) 
         {
             this.existGroupByGroupName = existGroupByGroupName;
             this.entityById = entityById;
