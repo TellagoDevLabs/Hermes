@@ -1,6 +1,8 @@
-﻿@{
+﻿@using TellagoStudios.Hermes.Business.Data.Queries
+@{
     ViewBag.Title = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    TopicsStatisticsResults topicsStatistics = ViewBag.TopicsStatistics;
 }
 
 <div id="main-content">
@@ -9,11 +11,29 @@
     </div>
     <div class="tile">
         <h6>topics</h6>
+
     </div>
     <div class="tile">
         <h6>messages</h6>
     </div>
     <div class="last tile">
         <h6>news</h6>
+    </div>
+</div>
+<br />
+
+<div id="main-content">
+    <div class="sub-tile">
+        Most active topics
+        <ul>
+        @{
+            foreach (var topicStat in topicsStatistics.MostActiveAllTime)
+            {
+                <li>
+                @topicStat.Name - @topicStat.MessageCount
+                </li>    
+            }
+        }
+        </ul>
     </div>
 </div>

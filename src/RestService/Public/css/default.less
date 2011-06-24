@@ -373,10 +373,29 @@ hr.space {background:#fff;color:#fff;visibility:hidden;}
     background-color: #00C0F0;
 }
 
-.tile
+.inner-tile(@background: #0080C0)
 {
     .span-5;
     .prepend-1;
     height: 160px;
-    background: #0080C0;
+    background: @background;
+	font-family: sans-serif; 
+	color: #E6E6FA;
+	font-size: 150%;
+}
+
+.tile
+{
+    .inner-tile;	
+}
+
+.sub-tile
+{
+    margin-top: 1em;
+    .inner-tile(#DAA520);	
+}
+
+.sub-tile:hover
+{
+    background-color: #ADFF2F
 }
