@@ -49,12 +49,6 @@ namespace RestService.Tests
         {
             var client = new HttpClient(baseUri);
             var content = new StringContent("sample");
-            content.Headers.Add(Constants.PrivateHeaders.PromotedProperty + "String", "\"valueOne\"");
-            content.Headers.Add(Constants.PrivateHeaders.PromotedProperty + "Integer", "100");
-            content.Headers.Add(Constants.PrivateHeaders.PromotedProperty + "Document", "{\"prop1\":\"value1\", \"prop2\":2}");
-
-            content.Headers.Add(Constants.PrivateHeaders.PromotedProperties,
-                                "str=\"strValue\",int=200,doc={\"prop\":10}");
 
             var topicId = Identity.Random();
             var response = new Message {Id = Identity.Random() };
@@ -84,7 +78,6 @@ namespace RestService.Tests
             };
 
             message.Headers.Add("Content-Type", new[] { contentType });
-            message.PromotedProperties.Add(ppName, ppValue.ToString());
 
             var key = new MessageKey { MessageId = message.Id.Value, TopicId = message.TopicId };
 

@@ -18,11 +18,6 @@ namespace Demo
             cbContentType.Items.Add("application/xml");
             cbContentType.Items.Add("application/json");
             cbContentType.SelectedIndex = 0;
-
-            cbPP.Items.Add("Create one header by property.");
-            cbPP.Items.Add("Create only one header for all properties");
-            cbPP.SelectedIndex = 0;
-
             lbHeaders.Items.Add(new Header ( "Accept", "application/xml" ));
         }
 
@@ -36,9 +31,6 @@ namespace Demo
                         .ToList();
 
                     headers.Add(new Header { Name = HttpRequestHeader.ContentType.ToString(), Value = f.cbContentType.Text });
-
-                    var promotedProperties = f.lbPP.Items
-                        .Cast<Header>();
 
                     Stream stream = null;
                     if (f.txtContent.Text!=null)
@@ -54,8 +46,7 @@ namespace Demo
                     {
                         TopicId = topicId,
                         Payload = stream,
-                        Headers = headers,
-                        PromotedProperties = promotedProperties
+                        Headers = headers
                     };
 
                     return msg;
@@ -81,19 +72,6 @@ namespace Demo
                 lbHeaders.Items.RemoveAt(lbHeaders.SelectedIndex);
         }
 
-        private void btAddPP_Click(object sender, EventArgs e)
-        {
-            var header = HeaderForm.New();
-            if (header != null)
-                lbPP.Items.Add(header);
-        }
-
-        private void btRemovePP_Click(object sender, EventArgs e)
-        {
-            if (lbPP.SelectedIndex >= 0)
-                lbPP.Items.RemoveAt(lbPP.SelectedIndex);
-        }
-
         private void btCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -110,6 +88,21 @@ namespace Demo
 
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbPP_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lbPP_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -157,9 +157,7 @@ namespace TellagoStudios.Hermes.Client
                 .ArgumentNotNull(() => message, message)
                 .ArgumentNotNull(() => message.TopicId, message.TopicId);
 
-            var headers = (message.PromotedProperties ?? new Header[0])
-                .Select(pp => new Header(Constants.PrivateHeaders.PromotedProperty + pp.Name, pp.Value))
-                .Union(message.Headers ?? new Header[0]);
+            var headers = message.Headers ?? new Header[0];
 
             return Post(Operations.PostMessagesOnTopic(message.TopicId), message.Payload, headers);
         }

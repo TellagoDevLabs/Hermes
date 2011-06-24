@@ -128,25 +128,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
                                   // Populate post's body
                                   Payload = request.Content.ReadAsByteArray()
                               };
-
-            var index = Constants.PrivateHeaders.PromotedProperty.Length;
-            request.Headers
-                .Where(h => h.Key.StartsWith(Constants.PrivateHeaders.PromotedProperty))
-                .ForEach(h => { message.PromotedProperties[h.Key.Substring(index)] = h.Value.FirstOrDefault(); } );
-
-            IEnumerable<string> values;
-            if (request.Headers.TryGetValues(Constants.PrivateHeaders.PromotedProperties, out values))
-            {
-                foreach (var value in values)
-                {
-                    foreach (var item in value.Split(','))
-                    {
-                        var prop = item.Split('=');
-                        message.PromotedProperties[prop[0]] = prop[1];
-                    }
-                }
-            }
-
+            
             // Populate headers
             request.Headers
                 .Where(h => !h.Key.StartsWith(Constants.PrivateHeaders.Prefix))

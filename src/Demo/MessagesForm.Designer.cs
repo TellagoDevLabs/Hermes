@@ -33,11 +33,6 @@
             this.btAddHeader = new System.Windows.Forms.Button();
             this.btRemoveHeader = new System.Windows.Forms.Button();
             this.cbContentType = new System.Windows.Forms.ComboBox();
-            this.btRemovePP = new System.Windows.Forms.Button();
-            this.btAddPP = new System.Windows.Forms.Button();
-            this.lbPP = new System.Windows.Forms.ListBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cbPP = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtContent = new System.Windows.Forms.TextBox();
             this.btCancel = new System.Windows.Forms.Button();
@@ -89,51 +84,6 @@
             this.cbContentType.Size = new System.Drawing.Size(306, 21);
             this.cbContentType.TabIndex = 10;
             // 
-            // btRemovePP
-            // 
-            this.btRemovePP.Location = new System.Drawing.Point(308, 309);
-            this.btRemovePP.Name = "btRemovePP";
-            this.btRemovePP.Size = new System.Drawing.Size(75, 23);
-            this.btRemovePP.TabIndex = 8;
-            this.btRemovePP.Text = "Remove";
-            this.btRemovePP.UseVisualStyleBackColor = true;
-            this.btRemovePP.Click += new System.EventHandler(this.btRemovePP_Click);
-            // 
-            // btAddPP
-            // 
-            this.btAddPP.Location = new System.Drawing.Point(227, 309);
-            this.btAddPP.Name = "btAddPP";
-            this.btAddPP.Size = new System.Drawing.Size(75, 23);
-            this.btAddPP.TabIndex = 7;
-            this.btAddPP.Text = "Add";
-            this.btAddPP.UseVisualStyleBackColor = true;
-            this.btAddPP.Click += new System.EventHandler(this.btAddPP_Click);
-            // 
-            // lbPP
-            // 
-            this.lbPP.FormattingEnabled = true;
-            this.lbPP.Location = new System.Drawing.Point(12, 195);
-            this.lbPP.Name = "lbPP";
-            this.lbPP.Size = new System.Drawing.Size(371, 108);
-            this.lbPP.TabIndex = 5;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 179);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(101, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Promoted properties";
-            // 
-            // cbPP
-            // 
-            this.cbPP.FormattingEnabled = true;
-            this.cbPP.Location = new System.Drawing.Point(12, 309);
-            this.cbPP.Name = "cbPP";
-            this.cbPP.Size = new System.Drawing.Size(209, 21);
-            this.cbPP.TabIndex = 6;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -180,11 +130,6 @@
             this.Controls.Add(this.btOK);
             this.Controls.Add(this.txtContent);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.cbPP);
-            this.Controls.Add(this.btRemovePP);
-            this.Controls.Add(this.btAddPP);
-            this.Controls.Add(this.lbPP);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.cbContentType);
             this.Controls.Add(this.btRemoveHeader);
             this.Controls.Add(this.btAddHeader);
@@ -204,11 +149,6 @@
         private System.Windows.Forms.Button btAddHeader;
         private System.Windows.Forms.Button btRemoveHeader;
         private System.Windows.Forms.ComboBox cbContentType;
-        private System.Windows.Forms.Button btRemovePP;
-        private System.Windows.Forms.Button btAddPP;
-        private System.Windows.Forms.ListBox lbPP;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox cbPP;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtContent;
         private System.Windows.Forms.Button btCancel;
