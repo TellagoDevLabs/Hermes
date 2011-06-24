@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Topics";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model IEnumerable<TellagoStudios.Hermes.Business.Model.Group>
+ 
+<table>
+        <tr>
+            <th>Actions</th>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+
+    @foreach (var group in Model)
+    {
+        <tr>
+            <td>
+                @Ajax.ActionLink("Edit", "Edit", "Group", new { id = group.Id }, new AjaxOptions ())
+                @Ajax.ActionLink("Delete", "Delete", "Group",new { id = group.Id }, new AjaxOptions { Confirm = "Delete group?", HttpMethod = "Post", UpdateTargetId = "main" })
+            </td>
+             <td>
+                @group.Name
+            </td>
+            <td>
+                @group.Description
+            </td>
+        </tr>
+    }
+ 
+    </table>
+    <p>
+        @Ajax.ActionLink("Create New Group", "Create", "Group", new AjaxOptions())
+    </p>

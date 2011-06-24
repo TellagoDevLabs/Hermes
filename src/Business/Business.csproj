@@ -75,6 +75,7 @@
     <Compile Include="Data\Queries\ISubscriptionsByGroup.cs" />
     <Compile Include="Data\Queries\ISubscriptionsByTopic.cs" />
     <Compile Include="Data\Queries\ISubscriptionsByTopicAndTopicGroup.cs" />
+    <Compile Include="Data\Queries\ITopicsStatistics.cs" />
     <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Events\IEventAggregator.cs" />
     <Compile Include="Events\IEventHandler.cs" />

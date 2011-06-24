@@ -225,6 +225,9 @@
   <ItemGroup>
     <Content Include="Views\Group\Edit.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Topic\Index.cshtml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
