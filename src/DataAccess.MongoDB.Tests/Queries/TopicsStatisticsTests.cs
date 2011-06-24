@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Linq;
 using DataAccess.Tests.Repository;
 using DataAccess.Tests.Util;
-using MongoDB.Bson;
 using MongoDB.Driver.Builders;
 using NUnit.Framework;
-using TellagoStudios.Hermes.Business.Data.Queries;
+using SharpTestsEx;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
+using TellagoStudios.Hermes.DataAccess.MongoDB.Queries;
 
 namespace DataAccess.Tests.Queries
 {
@@ -66,35 +67,10 @@ namespace DataAccess.Tests.Queries
         public void FromAllTimeShouldWork()
         {
             var query = new TopicsStatistics(base.connectionString);
-            query.Execute();
+            var result = query.Execute();
+            result.MostActiveAllTime
+                .Satisfy(mostActives => mostActives.Any(ma => ma.Name == "FooTopic" && ma.MessageCount == 3)
+                                     && mostActives.Any(ma => ma.Name == "BarTopic" && ma.MessageCount == 2));
         }
-    }
-
-    public class TopicsStatistics : MongoDbRepository, ITopicsStatistics
-    {
-        public TopicsStatistics(string connectionString) : base(connectionString)
-        {
-        }
-
-        #region ITopicsStatistics Members
-
-        public TopicStatisticsSingleResults Execute()
-        {
-
-            var topTopics = DB.GetCollectionByType<Topic>()
-                .Group(null,
-                       "Id",
-                       new BsonDocument("count", "0"),
-                       new BsonJavaScript("function(obj, prev) { prev.count = 1000 }"),
-                       null);
-
-            //db[\"this.msg_\" + obj.Id].count()
-            //throw new NotImplementedException();
-
-            //DB.GetCollectionByType<Message>()
-            return null;
-        }
-
-        #endregion
     }
 }

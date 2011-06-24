@@ -4,7 +4,7 @@ namespace TellagoStudios.Hermes.Business.Data.Queries
 {
     public interface ITopicsStatistics
     {
-        TopicStatisticsSingleResults Execute();
+        TopicsStatisticsResults Execute();
     }
 
     public class TopicsStatisticsResults
