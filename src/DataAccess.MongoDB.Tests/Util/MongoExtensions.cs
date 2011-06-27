@@ -6,10 +6,7 @@ namespace DataAccess.Tests.Util
     {
         public static MongoCollection<T> InsertMany<T>(this MongoCollection<T> collection, params T[] documents)
         {
-            foreach (var document in documents)
-            {
-                collection.Insert(document);
-            }
+            collection.InsertBatch(documents);
             return collection;
         }
     }

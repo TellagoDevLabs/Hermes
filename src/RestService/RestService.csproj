@@ -122,6 +122,7 @@
     <Compile Include="Controllers\CssController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TopicController.cs" />
     <Compile Include="CustomViewEngine.cs" />
     <Compile Include="DotLessResult.cs" />
     <Compile Include="Extensions\IdentityExtensions.cs" />

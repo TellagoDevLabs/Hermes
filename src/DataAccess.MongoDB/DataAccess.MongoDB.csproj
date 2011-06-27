@@ -76,6 +76,7 @@
     <Compile Include="Queries\SubscriptionsByTopic.cs" />
     <Compile Include="Queries\SubscriptionsByTopicAndTopicGroup.cs" />
     <Compile Include="Queries\TopicsByGroup.cs" />
+    <Compile Include="Queries\TopicsSortedByName.cs" />
     <Compile Include="Queries\TopicsStatistics.cs" />
   </ItemGroup>
   <ItemGroup>
