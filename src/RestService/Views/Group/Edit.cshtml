@@ -1,23 +1,34 @@
 ﻿@{
-    ViewBag.Title = "Edit a  group";
+    ViewBag.Title = "Edit a group";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    @model TellagoStudios.Hermes.RestService.Models.GroupModel
-               
-    <div class="editor-label">
-        @Html.LabelFor(model => model.Name)
-    </div>
-    <div class="editor-label">
-        @Html.EditorFor(model => model.Name)
-        @Html.ValidationMessageFor(model => model.Name)
-    </div>
+@model TellagoStudios.Hermes.RestService.Models.GroupEditModel
 
-    <div class="editor-label">
-        @Html.LabelFor(model => model.Description)
-    </div>
-    <div class="editor-label">
-        @Html.EditorFor(model => model.Description)
-    </div>
+<hr/>
 
-
+@using (Html.BeginForm())
+{
+     <fieldset>
+        <legend>Group</legend>
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.Group.Id)
+        <ul>
+            <li>
+                @Html.LabelFor(m => m.Group.Name)
+                @Html.EditorFor(m => m.Group.Name)
+                @Html.ValidationMessageFor(m => m.Group.Name)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.Group.Description)
+                @Html.EditorFor(m => m.Group.Description)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.Group.ParentId, "Parent")
+                @Html.DropDownListFor(m => m.Group.ParentId, new SelectList(Model.GroupList, "Id", "Name"))
+            </li>
+        </ul>
+    </fieldset>
+    <input type="submit" value="Save changes" />
+    @Ajax.ActionLink("Back to List of Groups", "Index", "Group", new AjaxOptions())
+}

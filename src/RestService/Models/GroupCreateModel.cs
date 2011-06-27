@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TellagoStudios.Hermes.RestService.Models
 {
-    public class GroupModel
+    public class GroupCreateModel
     {
-        [Key]
-        [Required(ErrorMessage = "Id is required")]
-        public string Id { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
@@ -14,5 +12,7 @@ namespace TellagoStudios.Hermes.RestService.Models
         public string Description { get; set; }
 
         public string ParentId { get; set; }
+
+        public IEnumerable<GroupModel> GroupList { get; set; }
     }
 }

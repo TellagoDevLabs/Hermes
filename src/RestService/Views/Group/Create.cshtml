@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Create a new group";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model TellagoStudios.Hermes.RestService.Models.GroupCreateModel
+
+<hr/>
+
+@using (Html.BeginForm())
+{
+     <fieldset>
+        <legend>Group</legend>
+        @Html.ValidationSummary(true)
+        <ul>
+            <li>
+                @Html.LabelFor(m => m.Name)
+                @Html.EditorFor(m => m.Name)
+                @Html.ValidationMessageFor(m => m.Name)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.Description)
+                @Html.EditorFor(m => m.Description)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.ParentId, "Parent")
+                @Html.DropDownListFor(m => m.ParentId, new SelectList(Model.GroupList, "Id", "Name"))
+            </li>
+        </ul>
+    </fieldset>
+    <input type="submit" value="Save changes" />
+    @Ajax.ActionLink("Back to List of Groups", "Index", "Group", new AjaxOptions())
+}
+    
+

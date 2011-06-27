@@ -131,6 +131,10 @@
     <Compile Include="HermesMediaTypeFormatter.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\GroupCreateModel.cs">
+      <Tags>Group Model Web </Tags>
+    </Compile>
+    <Compile Include="Models\GroupEditModel.cs" />
     <Compile Include="Models\GroupModel.cs" />
     <Compile Include="Modules\BusinessPushingModule.cs" />
     <Compile Include="Modules\EventModule.cs" />
@@ -226,7 +230,10 @@
     <Content Include="Views\Group\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Topic\Index.cshtml" />
+    <Content Include="Views\Group\Create.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+   <Content Include="Views\Topic\Index.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
