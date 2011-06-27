@@ -17,7 +17,6 @@ namespace TellagoStudios.Hermes.RestService.Extensions
             return new Subscription
             {
                 Callback = from.Callback.ToModel(),
-                Filter = from.Filter,
                 TargetId = id,
                 TargetKind = kind
             };
@@ -30,7 +29,6 @@ namespace TellagoStudios.Hermes.RestService.Extensions
             return new Subscription
             {
                 Callback = from.Callback.ToModel(),
-                Filter = from.Filter,
                 Id = from.Id.ToModel()
             };
         }
@@ -79,7 +77,6 @@ namespace TellagoStudios.Hermes.RestService.Extensions
             var subscription  = new Facade.Subscription
             { 
                 Callback = from.Callback.ToFacade(),
-                Filter = from.Filter,
 // ReSharper disable PossibleInvalidOperationException
                 Id = from.Id.Value.ToFacade(),
 // ReSharper restore PossibleInvalidOperationException

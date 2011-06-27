@@ -26,17 +26,6 @@ namespace Business.Tests.Subscriptions
                 repository ?? Mock.Of<IRepository<Subscription>>());    
         }
 
-        [Test]
-        public void WhenQueryIsNotValid_ThenThrowException()
-        {
-            var command = CreateCommand(isQueryValid: Mock.Of<IQueryValidator>(qv => qv.IsValid("pp") == false));
-            command.Executing(c => c.Execute(new Subscription{Filter = "pp"}))
-                   .Throws<ValidationException>()
-                   .And
-                   .Exception.Message.Should().Be.EqualTo(string.Format(Texts.InvalidFilter, "pp"));
-        }
-
-        [Test]
         public void WhenTargetIdIsNull_ThenThrowValidationException()
         {
             var command = CreateCommand();

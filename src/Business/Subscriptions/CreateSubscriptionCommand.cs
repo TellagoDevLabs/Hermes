@@ -23,7 +23,6 @@ namespace TellagoStudios.Hermes.Business.Subscriptions
 
         public void Execute(Subscription subscription)
         {
-            if (!queryValidator.IsValid(subscription.Filter)) throw new ValidationException(string.Format(Texts.InvalidFilter, subscription.Filter));
             if (subscription.TargetId == null) throw new ValidationException(Texts.TargetIdMustNotBeNull);
             if (!entityById.Exist<Topic>(subscription.TargetId.Value)) throw new EntityNotFoundException(typeof(Topic), subscription.TargetId.Value);
             repository.MakePersistent(subscription);

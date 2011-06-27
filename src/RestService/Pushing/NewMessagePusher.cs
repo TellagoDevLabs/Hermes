@@ -33,11 +33,7 @@ namespace TellagoStudios.Hermes.RestService.Pushing
         {
             var subscriptions = SubscriptionsByTopicAndGroup.Execute(message.TopicId);
 
-            var filteredSubscriptions = subscriptions
-                .Where(s => string.IsNullOrWhiteSpace(s.Filter) ||
-                            Repository.Exist(message.ToMessageKey(), s.Filter));
-
-            foreach (var subscription in filteredSubscriptions)
+            foreach (var subscription in subscriptions)
             {
                 try
                 {

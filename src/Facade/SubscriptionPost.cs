@@ -11,10 +11,7 @@ namespace TellagoStudios.Hermes.Facade
         [XmlElement(ElementName = "groupId", Order = 1)]
         public Identity? GroupId { get; set; }
 
-        [XmlElement(ElementName = "filter", Order = 2)]
-        public string Filter { get; set; }
-
-        [XmlElement(ElementName = "callback", Order = 3)]
+        [XmlElement(ElementName = "callback", Order = 2)]
         public Callback Callback { get; set; }
     }
 }

@@ -17,7 +17,6 @@ namespace RestService.Tests
         private M.Identity _id;
         private M.Identity _topicId;
         private M.Identity _groupId;
-        private string _filter;
         private F.Callback _callback;
 
         [SetUp]
@@ -26,7 +25,6 @@ namespace RestService.Tests
             _id = Identity.Random();
             _topicId = Identity.Random();
             _groupId = Identity.Random();
-            _filter = "{\"name1\":value1}";
             _callback = new F.Callback
                             {
                                 Url = "http://host/service/resource?param1=val1",
@@ -39,7 +37,6 @@ namespace RestService.Tests
         {
             var post = new F.SubscriptionPost
             {
-                Filter = _filter,
                 TopicId = _topicId.ToFacade(),
                 Callback = _callback,
             };
@@ -51,7 +48,6 @@ namespace RestService.Tests
             Assert.IsNotNull(model.Callback);
             Assert.That(model.Callback.Kind.ToString(), Is.EqualTo(_callback.Kind.ToString()));
             Assert.That(model.Callback.Url.ToString(), Is.EqualTo(_callback.Url));
-            Assert.That(model.Filter, Is.EqualTo(_filter));
         }
 
         [Test]
@@ -60,7 +56,6 @@ namespace RestService.Tests
             var post = new F.SubscriptionPut
             {
                 Id = _id.ToFacade(),
-                Filter = _filter,
                 Callback = _callback
             };
 
@@ -72,7 +67,6 @@ namespace RestService.Tests
             Assert.IsNotNull(model.Callback);
             Assert.That(model.Callback.Kind.ToString(), Is.EqualTo(_callback.Kind.ToString()));
             Assert.That(model.Callback.Url.ToString(), Is.EqualTo(_callback.Url));
-            Assert.That(model.Filter, Is.EqualTo(_filter));
         }
 
         [Test]
@@ -80,7 +74,6 @@ namespace RestService.Tests
         {
             var post = new F.SubscriptionPost
             {
-                Filter = _filter,
                 GroupId = _groupId.ToFacade(),
                 Callback = _callback,
             };
@@ -92,7 +85,6 @@ namespace RestService.Tests
             Assert.IsNotNull(model.Callback);
             Assert.That(model.Callback.Kind.ToString(), Is.EqualTo(_callback.Kind.ToString()));
             Assert.That(model.Callback.Url.ToString(), Is.EqualTo(_callback.Url));
-            Assert.That(model.Filter, Is.EqualTo(_filter));
         }
 
         [Test]
@@ -101,7 +93,6 @@ namespace RestService.Tests
             var post = new F.SubscriptionPut
             {
                 Id = _id.ToFacade(),
-                Filter = _filter,
                 Callback = _callback
             };
 
@@ -113,7 +104,6 @@ namespace RestService.Tests
             Assert.IsNotNull(model.Callback);
             Assert.That(model.Callback.Kind.ToString(), Is.EqualTo(_callback.Kind.ToString()));
             Assert.That(model.Callback.Url.ToString(), Is.EqualTo(_callback.Url));
-            Assert.That(model.Filter, Is.EqualTo(_filter));
         }
 
         [Test]
@@ -122,7 +112,6 @@ namespace RestService.Tests
             var model = new M.Subscription
             {
                 Id = _id,
-                Filter = _filter,
                 TargetId = _topicId,
                 TargetKind = M.TargetKind.Topic,
                 Callback = new M.Callback
@@ -141,7 +130,6 @@ namespace RestService.Tests
             Assert.IsNotNull(facade.Callback);
             Assert.That(model.Callback.Kind.ToString(), Is.EqualTo(facade.Callback.Kind.ToString()));
             Assert.That(facade.Callback.Url, Is.EqualTo(_callback.Url));
-            Assert.That(facade.Filter, Is.EqualTo(_filter));
         }
 
         [Test]
@@ -150,7 +138,6 @@ namespace RestService.Tests
             var model = new M.Subscription
             {
                 Id = _id,
-                Filter = _filter,
                 TargetId = _groupId,
                 TargetKind = M.TargetKind.Group,
                 Callback = new M.Callback
@@ -169,7 +156,6 @@ namespace RestService.Tests
             Assert.IsNotNull(facade.Callback);
             Assert.That(facade.Callback.Kind.ToString(), Is.EqualTo(facade.Callback.Kind.ToString()));
             Assert.That(facade.Callback.Url, Is.EqualTo(_callback.Url));
-            Assert.That(facade.Filter, Is.EqualTo(_filter));
         }
 
         [Test]

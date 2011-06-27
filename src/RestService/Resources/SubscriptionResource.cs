@@ -62,7 +62,6 @@ namespace TellagoStudios.Hermes.RestService.Resources
                 var current = entityById.Get<Subscription>(subscriptionPut.Id.ToModel());
 
                 current.Callback = subscriptionPut.Callback.ToModel();
-                current.Filter = subscriptionPut.Filter;
                 updateCommand.Execute(current);
             });
         }
