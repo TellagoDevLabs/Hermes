@@ -240,13 +240,10 @@
     <Content Include="Views\Group\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
-   <Content Include="Views\Topic\Index.cshtml" />
+    <Content Include="Views\Topic\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Topic\Edit.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Topic\ViewPage1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Topic\Create.cshtml" />
