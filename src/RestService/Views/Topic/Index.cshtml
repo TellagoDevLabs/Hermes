@@ -17,7 +17,6 @@
         <tr>
             <td>
                 @Html.ActionLink("Edit", "Edit", "Topic", new { id = topic.Id.Value }, new AjaxOptions {HttpMethod = "GET", UpdateTargetId = "Result"})
-                @Ajax.ActionLink("Delete", "Delete", "Topic", new { id = topic.Id.Value }, new AjaxOptions { Confirm = "Delete topic?", HttpMethod = "Post", UpdateTargetId = "main" })
             </td>
              <td>
                 @topic.Name
@@ -30,5 +29,5 @@
  
     </table>
     <p>
-        @Html.ActionLink("Create New Group", "Create", "Topic", new AjaxOptions())
+        @Html.ActionLink("Create new Topic", "Create", "Topic", new AjaxOptions())
     </p>
