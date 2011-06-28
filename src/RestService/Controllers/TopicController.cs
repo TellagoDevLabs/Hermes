@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using TellagoStudios.Hermes.Business.Data.Commads;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.RestService.Models;
@@ -11,12 +12,18 @@ namespace TellagoStudios.Hermes.RestService.Controllers
         private readonly ITopicsSortedByName topicsSortedByName;
         private readonly IGroupsSortedByName groupsSortedByName;
         private readonly IEntityById entityById;
+        private readonly IRepository<Topic> topicRepository;
 
-        public TopicController(ITopicsSortedByName topicsSortedByName, IGroupsSortedByName groupsSortedByName,IEntityById entityById)
+        public TopicController(
+            ITopicsSortedByName topicsSortedByName, 
+            IGroupsSortedByName groupsSortedByName,
+            IEntityById entityById,
+            IRepository<Topic> topicRepository)
         {
             this.topicsSortedByName = topicsSortedByName;
             this.groupsSortedByName = groupsSortedByName;
             this.entityById = entityById;
+            this.topicRepository = topicRepository;
         }
 
         public ActionResult Index()
@@ -35,7 +42,16 @@ namespace TellagoStudios.Hermes.RestService.Controllers
         [HttpPost]
         public ActionResult Edit(EditTopicModel model)
         {
-            throw new NotImplementedException();
+            var entity = entityById.Get<Topic>((Identity) model.TopicId);
+            entity.Name = model.Name;
+            entity.Description = model.Description;
+            if(!string.IsNullOrEmpty(model.Group))
+            {
+                entity.GroupId = (Identity) model.Group;    
+            }
+            
+            topicRepository.Update(entity);
+            return RedirectToAction("Index");
         }
 
         public ActionResult Delete(Identity id)

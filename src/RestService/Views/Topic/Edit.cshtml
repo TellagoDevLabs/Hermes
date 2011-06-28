@@ -8,8 +8,6 @@
 @{ Html.EnableClientValidation(); }
 @using (Html.BeginForm())
 {
-    @(ViewContext.ClientValidationEnabled = true)
-
     
     <fieldset>
        <legend>Topic</legend>
@@ -29,6 +27,7 @@
            @Html.DropDownListFor(model => model.Group, new SelectList(Model.Groups, "Id", "Name"))
            @Html.ValidationMessageFor(model => model.Description)
        </div>
+       @Html.HiddenFor(m => m.TopicId)
     </fieldset>                             
     <input type="submit" value="Save" />
 }

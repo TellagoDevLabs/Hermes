@@ -12,11 +12,18 @@ namespace TellagoStudios.Hermes.RestService.Models
         {
             Name = topic.Name;
             Description = topic.Description;
-            Groups = groups;
-            Group = Groups.First(g => g.Id == topic.GroupId);
+            Groups = groups.Select(g => new GroupViewModel((string) g.Id.Value, g.Name)).ToArray();
+            Group = (string) topic.GroupId;
+            TopicId = (string) topic.Id.Value;
         }
 
-        public IEnumerable<Group> Groups { get; private set; }
+        public EditTopicModel()
+        {
+        }
+
+        public string TopicId { get; set; }
+
+        public IEnumerable<GroupViewModel> Groups { get; private set; }
         
         [Required(ErrorMessage = "Name is requierd")]
         public string Name { get; set; }
@@ -24,6 +31,20 @@ namespace TellagoStudios.Hermes.RestService.Models
         public string Description { get; set; }
         
         [Required(ErrorMessage = "Group is requierd")]
-        public Group Group { get; set; }
+        public string Group { get; set; }
+
+        public class GroupViewModel
+        {
+            public GroupViewModel(string id, string name)
+            {
+                Id = id;
+                Name = name;
+            }
+
+            public string Id { get; set; }
+            public string Name { get; set; }
+        }
     }
+
+    
 }

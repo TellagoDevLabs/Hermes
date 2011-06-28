@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using RestService.Tests.Util;
 using SharpTestsEx;
+using TellagoStudios.Hermes.Business.Data.Commads;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.RestService.Controllers;
@@ -24,7 +25,8 @@ namespace RestService.Tests.Controllers
             var defaultGroupQuery = Mock.Of<IGroupsSortedByName>(q => q.Execute() == new Group[]{SampleGroup});
             return new TopicController( topicsSortedByName ?? Mock.Of<ITopicsSortedByName>(),
                                         groupsSortedByName ?? defaultGroupQuery, 
-                                        entityById ?? Mock.Of<IEntityById>());
+                                        entityById ?? Mock.Of<IEntityById>(), Mock.Of<IRepository<Topic>>()
+                                        );
         }
 
         [Test]
@@ -61,6 +63,18 @@ namespace RestService.Tests.Controllers
                   .And.ValueOf.StatusCode.Should().Be.EqualTo(404);
         }
 
+
+        [Test]
+        public void WhenPostingATopic_ThenMapAndSaveChanges()
+        {
+            var topic = new Topic { Name = "Topic 1", Description = "Foo", GroupId = SampleGroup.Id.Value };
+            var entityById = Mock.Of<IEntityById>(e => e.Get<Topic>(It.IsAny<Identity>()) == topic);
+
+            var topicsController = CreateController(entityById: entityById);
+
+            topicsController.Edit(new EditTopicModel {Description = "Desc", Name = "Tap"});
+            topic.Satisfy(t => t.Description == "Desc" && t.Name == "Tap");
+        }
 
     }
 }
