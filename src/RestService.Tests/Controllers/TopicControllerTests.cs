@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -76,5 +77,16 @@ namespace RestService.Tests.Controllers
             topic.Satisfy(t => t.Description == "Desc" && t.Name == "Tap");
         }
 
+        [Test]
+        public void CreateMethod_ShouldReturnAModelWithAllGroups()
+        {
+            var controller = CreateController();
+            controller.Create()
+                      .GetModel<EditTopicModel>()
+                      .Groups.Satisfy(gs => gs.Any(g => g.Name == SampleGroup.Name));
+        }
+
+        [Test]
+        public void 
     }
 }

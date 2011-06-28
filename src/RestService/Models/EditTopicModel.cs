@@ -9,16 +9,21 @@ namespace TellagoStudios.Hermes.RestService.Models
     {
         public EditTopicModel(
             Topic topic, IEnumerable<Group> groups)
+            : this(groups)
         {
             Name = topic.Name;
             Description = topic.Description;
-            Groups = groups.Select(g => new GroupViewModel((string) g.Id.Value, g.Name)).ToArray();
+            
             Group = (string) topic.GroupId;
             TopicId = (string) topic.Id.Value;
         }
 
         public EditTopicModel()
+        {}
+
+        public EditTopicModel(IEnumerable<Group> groups)
         {
+            Groups = groups.Select(g => new GroupViewModel((string)g.Id.Value, g.Name)).ToArray();
         }
 
         public string TopicId { get; set; }

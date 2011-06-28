@@ -39,19 +39,25 @@ namespace TellagoStudios.Hermes.RestService.Controllers
             var model = new EditTopicModel(entity, groupsSortedByName.Execute());
             return View(model);
         }
+
         [HttpPost]
         public ActionResult Edit(EditTopicModel model)
         {
+            if (!ModelState.IsValid) return View(model);
             var entity = entityById.Get<Topic>((Identity) model.TopicId);
-            entity.Name = model.Name;
-            entity.Description = model.Description;
-            if(!string.IsNullOrEmpty(model.Group))
-            {
-                entity.GroupId = (Identity) model.Group;    
-            }
-            
+            ModelToEntity(model, entity);
             topicRepository.Update(entity);
             return RedirectToAction("Index");
+        }
+
+        private static void ModelToEntity(EditTopicModel model, Topic entity)
+        {
+            entity.Name = model.Name;
+            entity.Description = model.Description;
+            if (!string.IsNullOrEmpty(model.Group))
+            {
+                entity.GroupId = (Identity) model.Group;
+            }
         }
 
         public ActionResult Delete(Identity id)
@@ -61,7 +67,18 @@ namespace TellagoStudios.Hermes.RestService.Controllers
 
         public ActionResult Create()
         {
-            throw new NotImplementedException();
+            var model = new EditTopicModel(this.groupsSortedByName.Execute());
+            return View(model);   
+        }
+
+        [HttpPost]
+        public ActionResult Create(EditTopicModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+            var topic = new Topic();
+            ModelToEntity(model, topic);
+            topicRepository.MakePersistent(topic);
+            return RedirectToAction("Index");
         }
     }
 }
