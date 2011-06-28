@@ -1,12 +1,15 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <title>@ViewBag.Title</title>
-    <script src="@Url.Content("~/Scripts/jquery-1.4.4.min.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/MicrosoftAjax.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/MicrosoftMvcValidation.js")" type="text/javascript"></script></head>
     <link href="@Url.Content("~/public/css/default.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/jquery-1.4.4.js")" type="text/javascript" ></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript" ></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript" ></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript" ></script>
+</head>
+
 <body>
     <div class="page">
 
@@ -29,10 +32,12 @@
         <div id="main">
             <ul id="home-highlights" class="highlights">
                 <li><a href="/admin/group/index">Groups</a></li>
-                <li>Topics</li>
+                <li><a href="/admin/topic/index">Topics</a></li>
                 <li>Messages</li>
             </ul>
+            <div class="main-content" style="clear: both">
             @RenderBody()
+            </div>
             <div id="footer">
             </div>
         </div>

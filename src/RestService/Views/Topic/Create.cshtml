@@ -1,0 +1,33 @@
+﻿@using TellagoStudios.Hermes.RestService.Models
+@model EditTopicModel
+
+@{
+    ViewBag.Title = "Edit Topic";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{ Html.EnableClientValidation(); }
+@using (Html.BeginForm())
+{
+    
+    <fieldset>
+       <legend>Topic</legend>
+       <div>
+           @Html.LabelFor(m => m.Name)
+           @Html.EditorFor(model => model.Name)
+           @Html.ValidationMessageFor(model => model.Name)
+       </div>
+       
+       <div>
+           @Html.LabelFor(m => m.Description)
+           @Html.EditorFor(model => model.Description)
+           @Html.ValidationMessageFor(model => model.Description)
+       </div>
+       <div>
+           @Html.LabelFor(m => m.Group)
+           @Html.DropDownListFor(model => model.Group, new SelectList(Model.Groups, "Id", "Name"))
+           @Html.ValidationMessageFor(model => model.Description)
+       </div>
+       @Html.HiddenFor(m => m.TopicId)
+    </fieldset>                             
+    <input type="submit" value="Save" />
+}

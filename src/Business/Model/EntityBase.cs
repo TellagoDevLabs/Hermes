@@ -15,7 +15,9 @@
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return Equals((EntityBase) obj);
+            var entityBase = obj as EntityBase;
+            if(entityBase == null) return false;
+            return Equals(entityBase);
         }
 
         public override int GetHashCode()

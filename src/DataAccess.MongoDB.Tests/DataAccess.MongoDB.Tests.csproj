@@ -78,6 +78,7 @@
     <Compile Include="Queries\SubscriptionByTopicAndTopicGroupTests.cs" />
     <Compile Include="Queries\SubscriptionsByGroupTests.cs" />
     <Compile Include="Queries\TopicsByGroup.cs" />
+    <Compile Include="Queries\TopicsSortedByNameTests.cs" />
     <Compile Include="Queries\TopicsStatisticsTests.cs" />
     <Compile Include="Repository\ExtensionsTest.cs" />
     <Compile Include="Repository\MongoDbBaseFixture.cs" />

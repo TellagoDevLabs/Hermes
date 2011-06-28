@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model IEnumerable<TellagoStudios.Hermes.Business.Model.Group>
+@model IEnumerable<TellagoStudios.Hermes.Business.Model.Topic>
  
 <table>
         <tr>
@@ -12,23 +12,23 @@
             <th>Description</th>
         </tr>
 
-    @foreach (var group in Model)
+    @foreach (var topic in Model)
     {
         <tr>
             <td>
-                @Ajax.ActionLink("Edit", "Edit", "Group", new { id = group.Id }, new AjaxOptions ())
-                @Ajax.ActionLink("Delete", "Delete", "Group",new { id = group.Id }, new AjaxOptions { Confirm = "Delete group?", HttpMethod = "Post", UpdateTargetId = "main" })
+                @Html.ActionLink("Edit", "Edit", "Topic", new { id = topic.Id.Value }, new AjaxOptions {HttpMethod = "GET", UpdateTargetId = "Result"})
+                @Ajax.ActionLink("Delete", "Delete", "Topic", new { id = topic.Id.Value }, new AjaxOptions { Confirm = "Delete topic?", HttpMethod = "Post", UpdateTargetId = "main" })
             </td>
              <td>
-                @group.Name
+                @topic.Name
             </td>
             <td>
-                @group.Description
+                @topic.Description
             </td>
         </tr>
     }
  
     </table>
     <p>
-        @Ajax.ActionLink("Create New Group", "Create", "Group", new AjaxOptions())
+        @Html.ActionLink("Create New Group", "Create", "Topic", new AjaxOptions())
     </p>

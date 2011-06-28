@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Queries\IGroupsSortedByName.cs" />
     <Compile Include="Data\Queries\IQueryValidator.cs" />
     <Compile Include="Data\Commands\IMessageRepository.cs" />
     <Compile Include="Data\Queries\IMessageKeysByGroup.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Data\Queries\ISubscriptionsByGroup.cs" />
     <Compile Include="Data\Queries\ISubscriptionsByTopic.cs" />
     <Compile Include="Data\Queries\ISubscriptionsByTopicAndTopicGroup.cs" />
+    <Compile Include="Data\Queries\ITopicsSortedByName.cs" />
     <Compile Include="Data\Queries\ITopicsStatistics.cs" />
     <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Events\IEventAggregator.cs" />
