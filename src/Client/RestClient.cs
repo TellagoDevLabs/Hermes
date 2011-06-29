@@ -9,38 +9,53 @@ using System.Xml.Serialization;
 
 namespace TellagoStudios.Hermes.Client
 {
-    public abstract class RestClient
+    public class RestClient
     {
-        protected static Uri BaseAddress { get; set; }
+        private readonly Uri baseAddress;
+
+        public RestClient(Uri baseAddress)
+        {
+            this.baseAddress = baseAddress;
+        }
+
         public static Action<WebException> WebExceptionHandler { get; set; }
 
-        protected HttpWebResponse GetResponse(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        public HttpWebResponse GetResponse(string operation, 
+                                            IEnumerable<Header> headers = null, 
+                                            Action<WebException> webExceptionHandler = null)
         {
             return Client(operation, "GET", headers)
                 .Send(webExceptionHandler);
         }
 
-        protected void Get(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        public void Get(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             Client(operation, "GET", headers)
                 .Send(webExceptionHandler);
         }
 
-        protected T Get<T>(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        public T Get<T>(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             return Client(operation, "GET", headers)
                 .Send(webExceptionHandler)
                 .Deserialize<T>();
         }
 
-        protected void Put<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
+        public T GetFromUrl<T>(Uri url, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        {
+            return ExecuteRequest(url, "GET", headers)
+                .Send(webExceptionHandler)
+                .Deserialize<T>();
+        }
+
+        public void Put<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
         {
             Client(operation, "PUT", headers)
                 .Serialize(data)
                 .Send(webExceptionHandler);
         }
 
-        protected Uri Post<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
+        public Uri Post<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
         {
             return Client(operation, "POST", headers)
                 .Serialize(data)
@@ -48,17 +63,17 @@ namespace TellagoStudios.Hermes.Client
                 .GetLocation();
         }
 
-        protected void Delete(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        public void Delete(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             Client(operation, "DELETE", headers)
                 .Send(webExceptionHandler);
         }
 
-        private static HttpWebRequest Client(string operation, string method, IEnumerable<Header> headers)
+        private HttpWebRequest Client(string operation, string method, IEnumerable<Header> headers)
         {
             Uri url;
 
-            if (BaseAddress == null && string.IsNullOrWhiteSpace(operation))
+            if (baseAddress == null && string.IsNullOrWhiteSpace(operation))
             {
                 throw new InvalidOperationException(
                     "An invalid request URI was provided. The request URI must either be an absolute URI or BaseAddress must be set.");
@@ -66,7 +81,7 @@ namespace TellagoStudios.Hermes.Client
 
             if (string.IsNullOrWhiteSpace(operation))
             {
-                url = BaseAddress;
+                url = baseAddress;
             }
             else
             {
@@ -77,9 +92,9 @@ namespace TellagoStudios.Hermes.Client
                 {
                     url = requestUri;
                 }
-                else if (BaseAddress != null)
+                else if (baseAddress != null)
                 {
-                    url = new Uri(BaseAddress, requestUri);
+                    url = new Uri(baseAddress, requestUri);
                 }
                 else
                 {
@@ -88,9 +103,14 @@ namespace TellagoStudios.Hermes.Client
                 }
             }
 
-            var request = (HttpWebRequest)WebRequest.Create(url);
+            return ExecuteRequest(url, method, headers);
+        }
+
+        private static HttpWebRequest ExecuteRequest(Uri url, string method, IEnumerable<Header> headers)
+        {
+            var request = (HttpWebRequest) WebRequest.Create(url);
             request.Method = method;
-            if (headers != null && headers.Any())
+            if (headers != null)
             {
                 foreach (var header in headers)
                 {

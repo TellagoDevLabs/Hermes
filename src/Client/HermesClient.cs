@@ -1,112 +1,88 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Net;
 using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client
 {
-    public class HermesClient : RestClient, IPubliser, ISuscriber, IAdmin
+    public class HermesClient
     {
-        private static Func<string> _getUrl;
-
-        public static Func<string> GetUrl
-        {
-            get { return _getUrl; }
-            set { _getUrl = value; BaseAddress = new Uri(value()); }
-        }
+        private readonly RestClient restClient;
 
         #region Constructors
-        internal HermesClient(string hermesAddress)
+
+        public HermesClient(string hermesAddress)
         {
             Guard.Instance.ArgumentNotNullOrEmpty(() => hermesAddress, hermesAddress);
 
-            BaseAddress = new Uri(hermesAddress);
+            var address = new Uri(hermesAddress);
+            restClient = new RestClient(address);
         }
 
-        internal HermesClient(Uri hermesAddress)
+        public HermesClient(Uri hermesAddress)
         {
             Guard.Instance.ArgumentNotNull(() => hermesAddress, hermesAddress);
-
-            BaseAddress = hermesAddress;
+            restClient = new RestClient(hermesAddress);
         }
-        #endregion
-
-        #region Factories
-        public static IAdmin NewAdmin()
-        {
-            Guard.Instance.ArgumentNotNull(() => BaseAddress, BaseAddress);
-
-            return new HermesClient(BaseAddress);
-        }
-
-        public static IPubliser NewPublisher()
-        {
-            Guard.Instance.ArgumentNotNull(() => BaseAddress, BaseAddress);
-
-            return new HermesClient(BaseAddress);
-        }
-
-        public static ISuscriber NewSuscriber()
-        {
-            Guard.Instance.ArgumentNotNull(() => BaseAddress, BaseAddress);
-
-            return new HermesClient(BaseAddress);
-        }         
-        #endregion
-
-        #region Topics
 
         public void CreateTopic(TopicPost topicPost)
         {
             Guard.Instance.ArgumentNotNull(() => topicPost, topicPost);
 
-            Post(Operations.Topics, topicPost);
+            restClient.Post(Operations.Topics, topicPost);
         }
 
         public Topic[] GetTopicsByGroup(Identity groupId)
         {
-            return Get<Topic[]>(Operations.GetTopicsByGroup(groupId));
+            return restClient.Get<Topic[]>(Operations.GetTopicsByGroup(groupId));
         }
 
         public void UpdateTopic(TopicPut topicPut)
         {
             Guard.Instance.ArgumentNotNull(() => topicPut, topicPut);
 
-            Put(Operations.Topics, topicPut);
+            restClient.Put(Operations.Topics, topicPut);
         }
 
         public void DeleteTopic(Identity topicId)
         {
-            Delete(Operations.DeleteTopic(topicId));
+            restClient.Delete(Operations.DeleteTopic(topicId));
         }
 
         #endregion
 
         #region Topic Groups
 
-        public void CreateGroup(GroupPost groupPost)
+        public void CreateGroup(Group group)
         {
-            Guard.Instance.ArgumentNotNull(() => groupPost, groupPost);
-
-            Post(Operations.Groups, groupPost);
+            Guard.Instance.ArgumentNotNull(() => group, group);
+            if(group.IsPersisted)
+            {
+                throw new InvalidOperationException("The group is already persisted.");
+            }
+            var location = restClient.Post(Operations.Groups, new GroupPost
+            {
+                Name = group.Name,
+                Description = group.Description
+            });
+            var createdGroup = restClient.GetFromUrl<Facade.Group>(location);
+            group.Id = createdGroup.Id.ToString();
         }
 
         public Group[] GetGroups()
         {
-            return Get<Group[]>(Operations.Groups);
+            return restClient.Get<Group[]>(Operations.Groups);
         }
 
         public void UpdateGroup(GroupPut groupPut)
         {
             Guard.Instance.ArgumentNotNull(() => groupPut, groupPut);
 
-            Put(Operations.Groups, groupPut);
+            restClient.Put(Operations.Groups, groupPut);
         }
 
         public void DeleteGroup(Identity groupId)
         {
-            Delete(Operations.DeleteGroup(groupId));
+            restClient.Delete(Operations.DeleteGroup(groupId));
         }
 
         #endregion
@@ -117,34 +93,34 @@ namespace TellagoStudios.Hermes.Client
         {
             Guard.Instance.ArgumentNotNull(() => post, post);
 
-            Post(Operations.Subscriptions, post);
+            restClient.Post(Operations.Subscriptions, post);
         }
 
         public Subscription[] GetSubscriptions()
         {
-            return Get<Subscription[]>(Operations.Subscriptions);
+            return restClient.Get<Subscription[]>(Operations.Subscriptions);
         }
 
         public Subscription[] GetSubscriptionsByTopic(Identity topicId)
         {
-            return Get<Subscription[]>(Operations.Subscriptions + "/topic/" + topicId);
+            return restClient.Get<Subscription[]>(Operations.Subscriptions + "/topic/" + topicId);
         }
 
         public Subscription[] GetSubscriptionsByGroup(Identity groupId)
         {
-            return Get<Subscription[]>(Operations.Subscriptions + "/topicgroup/" + groupId);
+            return restClient.Get<Subscription[]>(Operations.Subscriptions + "/topicgroup/" + groupId);
         }
 
         public void UpdateSubscription(SubscriptionPut put)
         {
             Guard.Instance.ArgumentNotNull(() => put, put);
 
-            Put(Operations.Subscriptions, put);
+            restClient.Put(Operations.Subscriptions, put);
         }
 
         public void DeleteSubscription(Identity subscriptionId)
         {
-            Delete(Operations.DeleteSubscription(subscriptionId));
+            restClient.Delete(Operations.DeleteSubscription(subscriptionId));
         }
 
         #endregion
@@ -159,14 +135,14 @@ namespace TellagoStudios.Hermes.Client
 
             var headers = message.Headers ?? new Header[0];
 
-            return Post(Operations.PostMessagesOnTopic(message.TopicId), message.Payload, headers);
+            return restClient.Post(Operations.PostMessagesOnTopic(message.TopicId), message.Payload, headers);
         }
 
         #region GetMessagesLink
 
         public Link[] GetMessagesLink(Identity subscriptionId)
         {
-            return Get<Link[]>(Operations.GetMessagesBySubscription(subscriptionId));  
+            return restClient.Get<Link[]>(Operations.GetMessagesBySubscription(subscriptionId));  
           
         }
 
@@ -176,12 +152,12 @@ namespace TellagoStudios.Hermes.Client
         {
             Guard.Instance.ArgumentNotNullOrEmpty(() => href, href);
 
-            return GetResponse(href);
+            return restClient.GetResponse(href);
         }
 
         public HttpWebResponse GetMessage(Identity topicId, Identity messageId)
         {
-            return GetResponse(Operations.GetMessageInTopic(topicId, messageId));
+            return restClient.GetResponse(Operations.GetMessageInTopic(topicId, messageId));
         }
 
         #endregion                                                        

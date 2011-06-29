@@ -16,7 +16,8 @@
     {
         <tr>
             <td>
-                @Html.ActionLink("Edit", "Edit", "Topic", new { id = topic.Id.Value }, new AjaxOptions {HttpMethod = "GET", UpdateTargetId = "Result"})
+                @Html.ActionLink("Edit", "Edit", "Topic",  new { id = topic.Id.Value }, 
+                                 new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "Result" })
             </td>
              <td>
                 @topic.Name
