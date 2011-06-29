@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using NUnit.Framework;
 using SharpTestsEx;
@@ -46,6 +47,27 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
             client.CreateGroup(group);
             client.Executing(c => c.CreateGroup(group))
                 .Throws<InvalidOperationException>();
+        }
+
+        [Test]
+        public void CanDeleteAGroup()
+        {
+            var group = new Group("Test", "Foo");
+            client.CreateGroup(group);
+
+            client.DeleteGroup(group.Id);
+        }
+
+
+        [Test]
+        public void CanGetAGroup()
+        {
+            var group = new Group("Test", "Foo");
+            
+            client.CreateGroup(group);
+
+            client.GetGroups()
+                  .Satisfy(gs => gs.Any(g => g.Name == "Test" && g.Description == "Foo")); 
         }
     }
 }

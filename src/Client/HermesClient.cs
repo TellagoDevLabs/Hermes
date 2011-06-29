@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using TellagoStudios.Hermes.Facade;
 
@@ -70,7 +71,9 @@ namespace TellagoStudios.Hermes.Client
 
         public Group[] GetGroups()
         {
-            return restClient.Get<Group[]>(Operations.Groups);
+            return restClient.Get<Facade.Group[]>(Operations.Groups)
+                            .Select(g => new Group(g.Name , g.Description))
+                            .ToArray();
         }
 
         public void UpdateGroup(GroupPut groupPut)
@@ -80,9 +83,9 @@ namespace TellagoStudios.Hermes.Client
             restClient.Put(Operations.Groups, groupPut);
         }
 
-        public void DeleteGroup(Identity groupId)
+        public void DeleteGroup(string groupId)
         {
-            restClient.Delete(Operations.DeleteGroup(groupId));
+            restClient.Delete(Operations.DeleteGroup((Identity) groupId));
         }
 
         #endregion
@@ -160,6 +163,6 @@ namespace TellagoStudios.Hermes.Client
             return restClient.GetResponse(Operations.GetMessageInTopic(topicId, messageId));
         }
 
-        #endregion                                                        
+        #endregion
     }
 }
