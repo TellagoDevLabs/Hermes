@@ -85,8 +85,5 @@ namespace RestService.Tests.Controllers
                       .GetModel<EditTopicModel>()
                       .Groups.Satisfy(gs => gs.Any(g => g.Name == SampleGroup.Name));
         }
-
-        [Test]
-        public void 
     }
 }
