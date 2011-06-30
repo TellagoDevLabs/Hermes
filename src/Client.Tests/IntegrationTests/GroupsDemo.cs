@@ -41,7 +41,7 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         }
 
         [Test]
-        public void CanGetAGroup()
+        public void CanGetGroups()
         {
             client.CreateGroup("Test", "Foo");
             client.GetGroups()
