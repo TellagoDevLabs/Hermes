@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="IntegrationTests\GroupsDemo.cs" />
     <Compile Include="IntegrationTests\DeployAndStartWebApplication.cs" />
+    <Compile Include="IntegrationTests\MessagesDemo.cs" />
     <Compile Include="IntegrationTests\TopicsDemo.cs" />
     <Compile Include="Util\IntegrationTestbase.cs" />
     <Compile Include="Util\IISExpress.cs" />

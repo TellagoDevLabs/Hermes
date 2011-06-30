@@ -215,7 +215,7 @@ namespace TellagoStudios.Hermes.Client
 
             return response;
         }
-
+        
         static public HttpWebRequest Serialize<T>(this HttpWebRequest request, T data)
         {
             if (string.IsNullOrEmpty(request.ContentType))

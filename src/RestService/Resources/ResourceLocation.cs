@@ -13,6 +13,11 @@ namespace TellagoStudios.Hermes.RestService.Resources
             Guard.Instance.ArgumentNotNull(() => BaseAddress, BaseAddress);
             return new Uri(BaseAddress, resource);            
         }
+        
+        public static Uri OfCreateMessageIngTopic(Identity topicId)
+        {
+            return CreateUri("/" + Constants.Routes.Messages + "/topic/" + topicId);
+        }
 
         public static Uri OfTopics()
         {
@@ -80,5 +85,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
 
             return LinkToMessage(message.TopicId, message.Id.Value);
         }
+
+        
     }
 }

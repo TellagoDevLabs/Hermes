@@ -21,6 +21,10 @@ namespace TellagoStudios.Hermes.RestService.Modules
                     .As(typeof (IRepository<>))
                     .WithParameter("connectionString", cs.ConnectionString);
 
+            builder.RegisterType<MessageRepository>()
+                    .As<IMessageRepository>()
+                    .WithParameter("connectionString", cs.ConnectionString);
+
             builder.RegisterAssemblyTypes(typeof (MongoDbRepository).Assembly)
                 .Where( t =>  t.Namespace.StartsWith("TellagoStudios.Hermes.DataAccess.MongoDB.Queries") && !t.IsAbstract && !t.IsInterface)
                 .WithParameter("connectionString", cs.ConnectionString)

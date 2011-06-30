@@ -1,3 +1,4 @@
+using System.IO;
 using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client
@@ -47,6 +48,16 @@ namespace TellagoStudios.Hermes.Client
                                    Id = (Identity) Id
                                };
             restClient.Put(topic.GetLinkForRelation("Update"), topicPut);
+        }
+
+        /// <summary>
+        /// Post a new message and return the id
+        /// </summary>
+        /// <returns></returns>
+        public string PostMessage<T>(T data)
+        {
+            var location = restClient.Post(topic.GetLinkForRelation("Post Message"), data);
+            return location.ToString();
         }
     }
 }

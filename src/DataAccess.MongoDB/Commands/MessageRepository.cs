@@ -6,28 +6,34 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Commands
 {
     public class MessageRepository : MongoDbRepository, IMessageRepository
     {
-
         public MessageRepository(string connectionString)
             : base(connectionString)
         {
         }
 
+        #region IMessageRepository Members
+
         public void MakePersistent(Message entity)
         {
-            var collection = DB.GetCollection<Message>(MongoDbConstants.GetCollectionNameForMessage(entity.TopicId));
+            MongoCollection<Message> collection =
+                DB.GetCollection<Message>(MongoDbConstants.GetCollectionNameForMessage(entity.TopicId));
             collection.Save(entity);
         }
 
         public void MakeTransient(MessageKey key)
         {
-                        var collection = DB.GetCollection<Message>(MongoDbConstants.GetCollectionNameForMessage(key.TopicId));
-                        collection.Remove(key.MessageId);
+            MongoCollection<Message> collection =
+                DB.GetCollection<Message>(MongoDbConstants.GetCollectionNameForMessage(key.TopicId));
+            collection.Remove(key.MessageId);
         }
 
         public void Update(Message entity)
         {
-            var collection = DB.GetCollection<Message>(MongoDbConstants.GetCollectionNameForMessage(entity.TopicId));
+            MongoCollection<Message> collection =
+                DB.GetCollection<Message>(MongoDbConstants.GetCollectionNameForMessage(entity.TopicId));
             collection.Save(entity);
         }
+
+        #endregion
     }
 }

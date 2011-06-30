@@ -12,7 +12,8 @@ namespace TellagoStudios.Hermes.RestService.Modules
             base.Load(builder);
             builder.Register(cc =>
                                  {
-                                     Func<Type, IEnumerable> handlerFactory = t => (IEnumerable) cc.Resolve(typeof (IEnumerable<>).MakeGenericType(t));
+                                     var context = cc.Resolve<IComponentContext>();
+                                     Func<Type, IEnumerable> handlerFactory = t => (IEnumerable)context.Resolve(typeof(IEnumerable<>).MakeGenericType(t));
                                      return new EventAggregator(handlerFactory);
                                  })
                     .As<IEventAggregator>()
