@@ -38,7 +38,7 @@ namespace RestService.Tests
                 mockedGenericJsonQuery.Object,
                 mockedCreateCommand.Object,
                 mockedUpdateCommand.Object,
-                mockedDeleteCommand.Object));
+                mockedDeleteCommand.Object, Mock.Of<ITopicsByGroup>()));
         }
 
         protected override Type GetServiceType()

@@ -23,21 +23,19 @@ namespace TellagoStudios.Hermes.RestService.Resources
         private readonly ICreateTopicCommand createGroupCommand;
         private readonly IUpdateTopicCommand updateGroupCommand;
         private readonly IDeleteTopicCommand deleteGroupCommand;
-        private readonly ITopicsByGroup topicsByGroup;
+        
 
         public TopicsResource( IEntityById entityById,
             IGenericJsonPagedQuery genericJsonPagedQuery,
             ICreateTopicCommand createGroupCommand,
             IUpdateTopicCommand updateGroupCommand,
-            IDeleteTopicCommand deleteGroupCommand,
-            ITopicsByGroup topicsByGroup)
+            IDeleteTopicCommand deleteGroupCommand)
         {
             this.entityById = entityById;
             this.genericJsonPagedQuery = genericJsonPagedQuery;
             this.createGroupCommand = createGroupCommand;
             this.updateGroupCommand = updateGroupCommand;
             this.deleteGroupCommand = deleteGroupCommand;
-            this.topicsByGroup = topicsByGroup;
         }
 
         [WebGet(UriTemplate = "{id}")]
@@ -88,17 +86,6 @@ namespace TellagoStudios.Hermes.RestService.Resources
                                );
         }
 
-        [WebGet(UriTemplate = "/group/{groupId}?skip={skip}&limit={limit}")]
-        public HttpResponseMessage<Topic[]> GetByGroup(Identity groupId, int skip, int limit)
-        {
-            // set valid values of opional parameters
-            var validatedSkip = skip > 0 ? skip : new int?();
-            var validatedLimit = limit > 0 ? limit : new int?();
 
-            return ProcessGet(() => 
-                    topicsByGroup.GetTopics(groupId.ToModel(), validatedSkip, validatedLimit)
-                        .Select(item => item.ToFacade())
-                        .ToArray());
-        }
     }
 }

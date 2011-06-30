@@ -8,6 +8,7 @@ using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.RestService.Extensions;
+using Topic = TellagoStudios.Hermes.Facade.Topic;
 
 namespace TellagoStudios.Hermes.RestService.Resources
 {
@@ -20,18 +21,21 @@ namespace TellagoStudios.Hermes.RestService.Resources
         private readonly ICreateGroupCommand createGroupCommand;
         private readonly IUpdateGroupCommand updateGroupCommand;
         private readonly IDeleteGroupCommand deleteGroupCommand;
+        private readonly ITopicsByGroup topicsByGroup;
 
         public GroupsResource(IEntityById entityById,
             IGenericJsonPagedQuery genericJsonPagedQuery,
             ICreateGroupCommand createGroupCommand, 
             IUpdateGroupCommand updateGroupCommand,
-            IDeleteGroupCommand deleteGroupCommand)
+            IDeleteGroupCommand deleteGroupCommand,
+            ITopicsByGroup topicsByGroup)
         {
             this.entityById = entityById;
             this.genericJsonPagedQuery = genericJsonPagedQuery;
             this.createGroupCommand = createGroupCommand;
             this.updateGroupCommand = updateGroupCommand;
             this.deleteGroupCommand = deleteGroupCommand;
+            this.topicsByGroup = topicsByGroup;
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
@@ -84,5 +88,18 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return result.Select(item => item.ToFacade()).ToArray();
         }
         #endregion
+
+        [WebGet(UriTemplate = "{groupId}/topics?skip={skip}&limit={limit}")]
+        public HttpResponseMessage<Topic[]> GetByGroup(Facade.Identity groupId, int skip, int limit)
+        {
+            // set valid values of opional parameters
+            var validatedSkip = skip > 0 ? skip : new int?();
+            var validatedLimit = limit > 0 ? limit : new int?();
+
+            return ProcessGet(() =>
+                    topicsByGroup.GetTopics(groupId.ToModel(), validatedSkip, validatedLimit)
+                        .Select(item => item.ToFacade())
+                        .ToArray());
+        }
     }
 }

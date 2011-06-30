@@ -19,6 +19,11 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return CreateUri("/" + Constants.Routes.Topics  );
         }
 
+        public static Uri OfTopicsByGroup(Identity id)
+        {
+            return CreateUri("/" + Constants.Routes.Groups + "/" + id + "/topics");
+        }
+
         public static Uri OfTopic(Identity id)
         {
             return CreateUri( "/" + Constants.Routes.Topics + "/" + id);

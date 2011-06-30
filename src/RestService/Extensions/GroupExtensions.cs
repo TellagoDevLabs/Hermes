@@ -69,7 +69,7 @@ namespace TellagoStudios.Hermes.RestService.Extensions
                 yield return group.ParentId.ToLink(Constants.Relationships.Parent);
             }
             yield return new Link(ResourceLocation.OfTopics(), "Create Topic");
-            yield return new Link(ResourceLocation.OfTopics(), "All Topics");
+            yield return new Link(ResourceLocation.OfTopicsByGroup(group.Id.Value), "All Topics");
             yield return new Link(ResourceLocation.OfGroup(group.Id.Value), "Delete");
             yield return new Link(ResourceLocation.OfGroup(group.Id.Value), "Update");
         }

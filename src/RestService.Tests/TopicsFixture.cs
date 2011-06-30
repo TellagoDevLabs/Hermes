@@ -23,7 +23,6 @@ namespace RestService.Tests
         private Mock<IDeleteTopicCommand> mockedDeleteCommand;
         private Mock<IEntityById> mockedEntityById;
         private Mock<IGenericJsonPagedQuery> mockedGenericJsonQuery;
-        private Mock<ITopicsByGroup> mockedTopicsByGroup;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
@@ -32,15 +31,13 @@ namespace RestService.Tests
             mockedUpdateCommand = new Mock<IUpdateTopicCommand>();
             mockedDeleteCommand = new Mock<IDeleteTopicCommand>();
             mockedEntityById = new Mock<IEntityById>();
-            mockedTopicsByGroup = new Mock<ITopicsByGroup>();
             mockedGenericJsonQuery = new Mock<IGenericJsonPagedQuery>();
             builder.RegisterInstance(new TopicsResource(
                 mockedEntityById.Object,
                 mockedGenericJsonQuery.Object,
                 mockedCreateCommand.Object,
                 mockedUpdateCommand.Object,
-                mockedDeleteCommand.Object,
-                mockedTopicsByGroup.Object));
+                mockedDeleteCommand.Object));
         }
 
         protected override Type GetServiceType()

@@ -39,8 +39,13 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         {
             var topic1 = sampleGroup.CreateTopic("Topic1");
             var topic2 = sampleGroup.CreateTopic("Topic2");
+            var topic3 = client.CreateGroup("AnotherGroup").CreateTopic("Topic3");
+
             sampleGroup.GetAllTopics()
-                .Should().Have.SameValuesAs(topic1, topic2);
+                .Should()
+                        .Contain(topic1)
+                        .And.Contain(topic2)
+                        .And.Not.Contain(topic3);
         }
 
 
