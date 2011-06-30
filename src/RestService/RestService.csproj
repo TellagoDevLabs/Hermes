@@ -158,6 +158,7 @@
     <Compile Include="Modules\CommandsModule.cs" />
     <Compile Include="Modules\QueriesModule.cs" />
     <Compile Include="Extensions\MessageExtensions.cs" />
+    <Compile Include="Resources\FeedResource.cs" />
     <Compile Include="Resources\MessageResource.cs" />
     <Compile Include="Modules\ResourcesModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
