@@ -12,6 +12,14 @@ namespace TellagoStudios.Hermes.Client
     public class RestClient
     {
         private readonly Uri baseAddress;
+        private readonly Uri proxy;
+
+        public RestClient(Uri baseAddress, Uri proxy)
+            : this(baseAddress)
+        {
+            this.proxy = proxy;
+        }
+
 
         public RestClient(Uri baseAddress)
         {
@@ -85,7 +93,7 @@ namespace TellagoStudios.Hermes.Client
             }
             else
             {
-                if (operation[0] != '/') operation = '/' + operation;
+                //if (operation[0] != '/') operation = '/' + operation;
 
                 var requestUri = new Uri(operation, UriKind.RelativeOrAbsolute);
                 if (requestUri.IsAbsoluteUri)
@@ -106,7 +114,7 @@ namespace TellagoStudios.Hermes.Client
             return ExecuteRequest(url, method, headers);
         }
 
-        private static HttpWebRequest ExecuteRequest(Uri url, string method, IEnumerable<Header> headers)
+        private HttpWebRequest ExecuteRequest(Uri url, string method, IEnumerable<Header> headers)
         {
             var request = (HttpWebRequest) WebRequest.Create(url);
             request.Method = method;
@@ -124,6 +132,10 @@ namespace TellagoStudios.Hermes.Client
                         request.Headers.Add(header.Name, header.Value);
                     }
                 }
+            }
+            if(proxy != null)
+            {
+                request.Proxy = new WebProxy(proxy, false);
             }
             return request;
         }

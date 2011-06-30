@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml.Serialization;
 using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client
@@ -23,7 +27,7 @@ namespace TellagoStudios.Hermes.Client
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (ModelBase)) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((ModelBase) obj);
         }
 
@@ -48,13 +52,19 @@ namespace TellagoStudios.Hermes.Client
         public string Name { get { return group.Name; } }
         public string Description { get { return group.Description; } }
 
-        public Topic CreateTopic(string name, string description)
+        public Topic CreateTopic(string name, string description = "")
         {
-            var topicPost = new Facade.TopicPost {Name = name, Description = description, GroupId = (Identity) this.Id};
+            var topicPost = new TopicPost {Name = name, Description = description, GroupId = (Identity) this.Id};
             var location = restClient.Post(group.GetLinkForRelation("Create Topic"), topicPost);
             var topicCreated = restClient.Get<Facade.Topic>(location.ToString());
 
             return new Topic(topicCreated, this, restClient);
+        }
+
+        public IEnumerable<Topic> GetAllTopics()
+        {
+            var topics = restClient.Get<Facade.Topic[]>(group.GetLinkForRelation("All Topics"));
+            return topics.Select(tf => new Topic(tf, this, restClient)).ToList();
         }
     }
 
@@ -72,13 +82,38 @@ namespace TellagoStudios.Hermes.Client
             : base((string) topic.Id)
         {
             this.topic = topic;
-            @group = @group;
+            this.@group = @group;
             this.restClient = restClient;
         }
 
 
-        public string Name { get { return topic.Name; } }
-        public string Description { get { return topic.Description; } }
+        public string Name
+        {
+            get { return topic.Name; }
+            set { topic.Name = value; }
+        }
+        public string Description
+        {
+            get { return topic.Description; }
+            set { topic.Description = value; }
+        }
         public Group Group { get { return group; } }
+
+        public void Delete()
+        {
+            restClient.Delete(topic.GetLinkForRelation("Delete"));
+        }
+
+        public void SaveChanges()
+        {
+            var topicPut = new TopicPut
+                               {
+                                   Description = this.Description,
+                                   Name = this.Name,
+                                   GroupId = (Identity) group.Id,
+                                   Id = (Identity) Id
+                               };
+            restClient.Put(topic.GetLinkForRelation("Update"), topicPut);
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using TellagoStudios.Hermes.Business;
-using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Facade;
+using TellagoStudios.Hermes.RestService.Resources;
+using Topic = TellagoStudios.Hermes.Business.Model.Topic;
 
 namespace TellagoStudios.Hermes.RestService.Extensions
 {
@@ -40,7 +42,12 @@ namespace TellagoStudios.Hermes.RestService.Extensions
                 Id = from.Id.Value.ToFacade(),
                 Name = from.Name,
                 Description = from.Description,
-                Links = { from.GroupId.ToLink(Constants.Relationships.Group) }
+                Links =
+                    {
+                        from.GroupId.ToLink(Constants.Relationships.Group),
+                        new Link(ResourceLocation.OfTopic(from.Id.Value), "Delete"),
+                        new Link(ResourceLocation.OfTopic(from.Id.Value), "Update")
+                    }
             };
         }
     }

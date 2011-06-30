@@ -57,9 +57,10 @@ namespace TellagoStudios.Hermes.RestService.Resources
                                });
         }
 
-        [WebInvoke(UriTemplate = "", Method = "PUT")]
-        public HttpResponseMessage Update(TopicPut topic)
+        [WebInvoke(UriTemplate = "{id}", Method = "PUT")]
+        public HttpResponseMessage Update(Identity id, TopicPut topic)
         {
+            //todo id?mmm
             return ProcessPut(() =>
                                {
                                    var instance = topic.ToModel();

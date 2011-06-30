@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using NUnit.Framework;
 using SharpTestsEx;
@@ -24,7 +25,7 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         
 
         [Test]
-        public void WhenTopicIsCreated_ThenIsPersistedShouldBeTrue()
+        public void CanCreateATopic()
         {
             var topic = sampleGroup.CreateTopic("Test topic", "Test description");
 
@@ -32,67 +33,38 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
                        && t.Description == "Test description"
                        && !string.IsNullOrEmpty(t.Id));
         }
-
-        //[Test]
-        //public void WhenCreatingATopicWithinTransientGroup_ThenPersistGroupToo()
-        //{
-        //    var group1 = new Group("FooBarGroup");
-        //    var topic = new Topic("Test topic", group1);
-        //    client.CreateTopic(topic);
-        //    group1.IsPersisted.Should().Be.True();
-        //}
-
-        //[Test]
-        //public void WhenCreatingTwoTopicsWithSameNameWithinSameGroup_ThenFail()
-        //{
-        //    var topic1 = new Topic("Test topic", sampleGroup);
-        //    var topic2 = new Topic("Test topic", sampleGroup);
-
-        //    client.CreateTopic(topic1);
-
-        //    client.Executing(c => c.CreateTopic(topic2))
-        //        .Throws<WebException>();
-
-        //}
-
-        //[Test]
-        //public void WhenCallingCreateWithAPersistedTopic_ThenFail()
-        //{
-        //    var topic = new Topic("Test topic", sampleGroup);
-
-        //    client.CreateTopic(topic);
-
-        //    client.Executing(c => c.CreateTopic(topic))
-        //        .Throws<InvalidOperationException>();
-        //}
-
-        //[Test]
-        //public void CanDeleteTopic()
-        //{
-        //    var topic = new Topic("Test topic", sampleGroup);
-
-        //    client.CreateTopic(topic);
-
-        //    client.DeleteTopic(topic.Id);
-        //}
+        
+        [Test]
+        public void CanGetAllTopicsForAGroup()
+        {
+            var topic1 = sampleGroup.CreateTopic("Topic1");
+            var topic2 = sampleGroup.CreateTopic("Topic2");
+            sampleGroup.GetAllTopics()
+                .Should().Have.SameValuesAs(topic1, topic2);
+        }
 
 
-        //[Test]
-        //public void CanGetTopicById()
-        //{
-        //    var topic1 = new Topic("Topic 1", sampleGroup);
-        //    var topic2 = new Topic("Topic 2", sampleGroup);
-        //    var topic3 = new Topic("Topic 2", new Group("Another group"));
+        [Test]
+        public void CanDeleteATopic()
+        {
+            var topic1 = sampleGroup.CreateTopic("Topic1");
+            
+            topic1.Delete();
 
-        //    client.CreateTopic(topic1);
-        //    client.CreateTopic(topic2);
-        //    client.CreateTopic(topic3);
+            sampleGroup.GetAllTopics().Should().Be.Empty();
+        }
 
-        //    client.GetTopicsByGroup(sampleGroup.Id)
-        //        .Should()
-        //            .Contain(topic1)
-        //            .And.Contain(topic2)
-        //            .And.Not.Contain(topic3);
-        //}
+        [Test]
+        public void CanUpdateTopic()
+        {
+            var topic1 = sampleGroup.CreateTopic("Topic1");
+
+            topic1.Name = "FooBarBaz";
+            topic1.SaveChanges();
+
+            sampleGroup.GetAllTopics().Satisfy(
+                ts => !ts.Any(t => t.Name == "Topic1") 
+                    && ts.Any(t => t.Name == "FooBarBaz"));
+        }
     }
 }

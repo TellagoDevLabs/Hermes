@@ -12,17 +12,18 @@ namespace TellagoStudios.Hermes.Client
         #region Constructors
 
         public HermesClient(string hermesAddress)
-        {
-            Guard.Instance.ArgumentNotNullOrEmpty(() => hermesAddress, hermesAddress);
+            : this(new Uri(hermesAddress), null)
+        { }
 
-            var address = new Uri(hermesAddress);
-            restClient = new RestClient(address);
-        }
 
-        public HermesClient(Uri hermesAddress)
+        public HermesClient(string hermesAddress, string proxy)
+            : this(new Uri(hermesAddress), proxy)
+        {}
+
+        public HermesClient(Uri hermesAddress, string proxy)
         {
             Guard.Instance.ArgumentNotNull(() => hermesAddress, hermesAddress);
-            restClient = new RestClient(hermesAddress);
+            restClient = proxy != null ? new RestClient(hermesAddress, new Uri(proxy)) : new RestClient(hermesAddress);
         }
 
         #endregion
