@@ -9,7 +9,6 @@ namespace TellagoStudios.Hermes.RestService
         public HermesMediaTypeFormatter()
         {
             XmlSerializerNamespaces.Add("", XmlNamespaces.Default);
-            //SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/vnd.hermes+xml") { CharSet = "utf-8" });
         }
     }
 }

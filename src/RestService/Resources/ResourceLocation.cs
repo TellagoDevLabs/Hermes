@@ -14,6 +14,11 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return new Uri(BaseAddress, resource);            
         }
 
+        public static Uri OfTopics()
+        {
+            return CreateUri("/" + Constants.Routes.Topics  );
+        }
+
         public static Uri OfTopic(Identity id)
         {
             return CreateUri( "/" + Constants.Routes.Topics + "/" + id);

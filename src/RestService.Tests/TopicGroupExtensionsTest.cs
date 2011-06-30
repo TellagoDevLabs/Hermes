@@ -1,4 +1,5 @@
 ﻿using System;
+using SharpTestsEx;
 using TellagoStudios.Hermes.Business;
 using TellagoStudios.Hermes.RestService.Extensions;
 using TellagoStudios.Hermes.RestService.Resources;
@@ -79,9 +80,8 @@ namespace RestService.Tests
             Assert.That(facade.Description, Is.EqualTo(_description));
             Assert.That(facade.Name, Is.EqualTo(_name));
             Assert.That(facade.Id, Is.EqualTo(_id));
-            Assert.That(facade.Parent, Is.Not.Null);
-            Assert.That(facade.Parent.Rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Parent));
-            Assert.That(facade.Parent.HRef, Is.EqualTo(ResourceLocation.OfGroup(_parentId.ToModel())));
+            facade.Links.Should().Contain(new Link(ResourceLocation.OfGroup(_parentId.ToModel()),
+                                                   TellagoStudios.Hermes.RestService.Constants.Relationships.Parent));
         }
 
         [Test]
@@ -90,8 +90,8 @@ namespace RestService.Tests
             var group = new Group { Id = _id };
             var link = group.Id.ToModel().ToLink(TellagoStudios.Hermes.RestService.Constants.Relationships.Group);
 
-            Assert.That(link.Rel, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Group));
-            Assert.That(link.HRef, Is.EqualTo(ResourceLocation.OfGroup(_id.ToModel())));
+            Assert.That(link.Relation, Is.EqualTo(TellagoStudios.Hermes.RestService.Constants.Relationships.Group));
+            Assert.That(link.Uri, Is.EqualTo(ResourceLocation.OfGroup(_id.ToModel())));
         }
     }
 }

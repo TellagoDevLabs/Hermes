@@ -29,26 +29,29 @@ namespace TellagoStudios.Hermes.Client
 
         #region Topic Groups
 
-        public void CreateGroup(Group group)
+        public Group CreateGroup(string name, string description)
         {
-            Guard.Instance.ArgumentNotNull(() => group, group);
-            if(group.IsPersisted)
-            {
-                throw new InvalidOperationException("The group is already persisted.");
-            }
+            Guard.Instance.ArgumentNotNullOrEmpty(() => name, name);
+
             var location = restClient.Post(Operations.Groups, new GroupPost
             {
-                Name = group.Name,
-                Description = group.Description
+                Name = name,
+                Description = description
             });
             var createdGroup = restClient.GetFromUrl<Facade.Group>(location);
-            group.Id = createdGroup.Id.ToString();
+
+            return new Group(createdGroup, restClient);
+        }
+
+        public Group CreateGroup(string name)
+        {
+            return CreateGroup(name, string.Empty);
         }
 
         public Group[] GetGroups()
         {
             return restClient.Get<Facade.Group[]>(Operations.Groups)
-                            .Select(g => new Group(g.Name , g.Description))
+                            .Select(g => new Group(g, restClient))
                             .ToArray();
         }
 
@@ -67,48 +70,43 @@ namespace TellagoStudios.Hermes.Client
         #endregion
 
 
-        #region Topic
-        public void CreateTopic(Topic topic)
-        {
-            Guard.Instance.ArgumentNotNull(() => topic, topic);
-            if (topic.IsPersisted)
-            {
-                throw new InvalidOperationException();
-            }
+        //#region Topic
+        //public void CreateTopic(Topic topic)
+        //{
+        //    Guard.Instance.ArgumentNotNull(() => topic, topic);
+        //    //if (!topic.Group.IsPersisted)
+        //    //{
+        //    //    CreateGroup(topic.Group);
+        //    //}
 
-            if (!topic.Group.IsPersisted)
-            {
-                CreateGroup(topic.Group);
-            }
+        //    var location = restClient.Post(Operations.Topics, new TopicPost
+        //    {
+        //        Name = topic.Name,
+        //        Description = topic.Description,
+        //        GroupId = (Identity)topic.Group.Id
+        //    });
 
-            var location = restClient.Post(Operations.Topics, new TopicPost
-            {
-                Name = topic.Name,
-                Description = topic.Description,
-                GroupId = (Identity)topic.Group.Id
-            });
+        //    var createdTopic = restClient.GetFromUrl<Facade.Topic>(location);
+        //    topic.Id = createdTopic.Id.ToString();
+        //}
 
-            var createdTopic = restClient.GetFromUrl<Facade.Topic>(location);
-            topic.Id = createdTopic.Id.ToString();
-        }
+        //public Topic[] GetTopicsByGroup(string groupId)
+        //{
+        //    return restClient.Get<Topic[]>(Operations.GetTopicsByGroup((Identity) groupId));
+        //}
 
-        public Topic[] GetTopicsByGroup(string groupId)
-        {
-            return restClient.Get<Topic[]>(Operations.GetTopicsByGroup((Identity) groupId));
-        }
+        //public void UpdateTopic(TopicPut topicPut)
+        //{
+        //    Guard.Instance.ArgumentNotNull(() => topicPut, topicPut);
 
-        public void UpdateTopic(TopicPut topicPut)
-        {
-            Guard.Instance.ArgumentNotNull(() => topicPut, topicPut);
+        //    restClient.Put(Operations.Topics, topicPut);
+        //}
 
-            restClient.Put(Operations.Topics, topicPut);
-        }
-
-        public void DeleteTopic(string topicId)
-        {
-            restClient.Delete(Operations.DeleteTopic((Identity) topicId));
-        } 
-        #endregion
+        //public void DeleteTopic(string topicId)
+        //{
+        //    restClient.Delete(Operations.DeleteTopic((Identity) topicId));
+        //} 
+        //#endregion
 
 
 
@@ -148,5 +146,7 @@ namespace TellagoStudios.Hermes.Client
         }
 
         #endregion
+
+       
     }
 }

@@ -85,22 +85,11 @@ namespace TellagoStudios.Hermes.RestService.Extensions
             switch(from.TargetKind)
             {
                 case TargetKind.Topic:
-                    subscription.Target = new Facade.Link
-                                              {
-                                                  Rel = Constants.Relationships.Topic, 
-// ReSharper disable PossibleInvalidOperationException
-                                                  HRef = Resources.ResourceLocation.OfTopic(from.TargetId.Value)
-// ReSharper restore PossibleInvalidOperationException
-                                              };
+                    subscription.Target = new Facade.Link(ResourceLocation.OfTopic(from.TargetId.Value),
+                                                          Constants.Relationships.Topic);
                     break;
                 case TargetKind.Group:
-                    subscription.Target = new Facade.Link
-                                              {
-                                                  Rel = Constants.Relationships.Group, 
-// ReSharper disable PossibleInvalidOperationException
-                                                  HRef = Resources.ResourceLocation.OfGroup(from.TargetId.Value)
-// ReSharper restore PossibleInvalidOperationException
-                                              };
+                    subscription.Target = new Facade.Link(ResourceLocation.OfGroup(from.TargetId.Value),Constants.Relationships.Group);
                     break;
                 default:
                     throw new InvalidOperationException(string.Format(Messages.TargetKindUnknown, from.TargetKind));

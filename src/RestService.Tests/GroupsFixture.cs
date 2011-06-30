@@ -65,9 +65,11 @@ namespace RestService.Tests
             Assert.AreEqual(group.Description, result.Description);
             Assert.AreEqual(group.Id, result.Id.ToModel());
             Assert.AreEqual(group.Name, result.Name);
-            Assert.IsNotNull(result.Parent);
-            Assert.AreEqual(TellagoStudios.Hermes.RestService.Constants.Relationships.Parent, result.Parent.Rel);
-            Assert.AreEqual(ResourceLocation.OfGroup(parent.Id.Value), result.Parent.HRef);
+            Assert.IsNotEmpty(result.Links);
+
+            result.Links.Satisfy(ls => ls.Any(l =>
+                                              l.Relation == TellagoStudios.Hermes.RestService.Constants.Relationships.Parent
+                                              && l.Uri == ResourceLocation.OfGroup(parent.Id.Value).ToString()));
         }
 
         [Test]

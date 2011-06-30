@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using NUnit.Framework;
 using SharpTestsEx;
@@ -13,59 +12,38 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         private readonly HermesClient client = new HermesClient("http://localhost:40403");
 
         [Test]
-        public void WhenGroupIsCreated_ThenIsPersistedShouldBeTrue()
+        public void CanCreateGroup()
         {
-            var group = new Group("TestGroup", "TestDescription");
-            client.CreateGroup(group);
-            group.IsPersisted.Should().Be.True();
+            var group = client.CreateGroup("TestGroup", "TestDescription");
+            group.Satisfy(g => g.Name == "TestGroup" && g.Description == "TestDescription");
         }
 
-
         [Test]
-        public void WhenGroupIsCreated_ThenTheIdShouldNotBeEmpty()
+        public void CanCreateGroupWithoutDescription()
         {
-            var group = new Group("TestGroup", "TestDescription");
-            client.CreateGroup(group);
-            group.Id.Should().Not.Be.NullOrEmpty();
+            var group = client.CreateGroup("TestGroup");
+            group.Satisfy(g => g.Name == "TestGroup" && string.IsNullOrEmpty(g.Description));
         }
 
         [Test]
         public void WhenCreatingTwoGroupsWithSameName_ThenFail()
         {
-            var group1 = new Group("TestGroup", "TestDescription");
-            client.CreateGroup(group1);
-
-            var group2 = new Group("TestGroup", "TestDescription");
-            client.Executing(c => c.CreateGroup(group2))
+            client.CreateGroup("TestGroup", "TestDescription");
+            client.Executing(c => c.CreateGroup("TestGroup", "TestDescription"))
                   .Throws<WebException>();
         }
-
-        [Test]
-        public void WhenCallingCreateTwoTimesWithSameGroup_ThenFail()
-        {
-            var group = new Group("Test", "Foo");
-            client.CreateGroup(group);
-            client.Executing(c => c.CreateGroup(group))
-                .Throws<InvalidOperationException>();
-        }
-
+        
         [Test]
         public void CanDeleteAGroup()
         {
-            var group = new Group("Test", "Foo");
-            client.CreateGroup(group);
-
+            var group = client.CreateGroup("Test");
             client.DeleteGroup(group.Id);
         }
-
 
         [Test]
         public void CanGetAGroup()
         {
-            var group = new Group("Test", "Foo");
-            
-            client.CreateGroup(group);
-
+            client.CreateGroup("Test", "Foo");
             client.GetGroups()
                   .Satisfy(gs => gs.Any(g => g.Name == "Test" && g.Description == "Foo")); 
         }

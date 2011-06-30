@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using NUnit.Framework;
 
@@ -9,7 +8,7 @@ namespace TellagoStudios.Hermes.Client.Tests.Util
 {
     public class IntegrationTestBase
     {
-        [TearDown] 
+        [SetUp] 
         public void TearDown()
         {
             var db = GetDatabase(ConfigurationManager.ConnectionStrings["db.connectionString"].ConnectionString);

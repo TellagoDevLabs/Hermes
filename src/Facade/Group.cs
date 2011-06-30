@@ -1,9 +1,10 @@
 ﻿using System.Xml.Serialization;
+using TellagoStudios.Hermes.Facade.Base;
 
 namespace TellagoStudios.Hermes.Facade
 {
     [XmlRoot(ElementName = "Group", Namespace = XmlNamespaces.Default)]
-    public class Group
+    public class Group : RepresentationBase
     {
         [XmlElement(ElementName = "id", Order = 0)]
         public Identity Id { get; set; }
@@ -13,10 +14,5 @@ namespace TellagoStudios.Hermes.Facade
 
         [XmlElement(ElementName = "description", Order = 2)]
         public string Description { get; set; }
-
-        [XmlElement(Order = 3, ElementName = "link")]
-        public Link Parent { get; set; }
-        
-        
     }
 }

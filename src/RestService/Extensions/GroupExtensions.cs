@@ -1,6 +1,10 @@
 ﻿using System;
-using TellagoStudios.Hermes.Business.Model;
+using System.Collections.Generic;
+using System.Linq;
+using TellagoStudios.Hermes.Facade;
 using TellagoStudios.Hermes.RestService.Resources;
+using Group = TellagoStudios.Hermes.Business.Model.Group;
+using Identity = TellagoStudios.Hermes.Business.Model.Identity;
 
 namespace TellagoStudios.Hermes.RestService.Extensions
 {
@@ -42,11 +46,7 @@ namespace TellagoStudios.Hermes.RestService.Extensions
 
         static public Facade.Link ToLink(this Identity id, string rel)
         {
-            return new Facade.Link
-            {
-                Rel = rel,
-                HRef = Resources.ResourceLocation.OfGroup(id)
-            };
+            return new Facade.Link(ResourceLocation.OfGroup(id).ToString(), rel);
         }
 
         static public Facade.Group ToFacade(this Group from)
@@ -58,8 +58,17 @@ namespace TellagoStudios.Hermes.RestService.Extensions
                 Id = from.Id.Value.ToFacade(),
                 Name = from.Name,
                 Description = from.Description,
-                Parent = from.ParentId.ToLink(Constants.Relationships.Parent) 
+                Links = GetLinks(from).ToList()
             };
+        }
+
+        private static IEnumerable<Link> GetLinks(Group group)
+        {
+            if(group.ParentId != null)
+            {
+                yield return group.ParentId.ToLink(Constants.Relationships.Parent);
+            }
+            yield return new Link(ResourceLocation.OfTopics(), "Create Topics");
         }
     }
 }

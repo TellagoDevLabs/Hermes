@@ -1,14 +1,17 @@
-﻿namespace TellagoStudios.Hermes.Client
+﻿using System;
+using TellagoStudios.Hermes.Facade;
+
+namespace TellagoStudios.Hermes.Client
 {
     public class ModelBase
     {
-        public string Id { get; internal set; }
-
-        public bool IsPersisted
+        public ModelBase(string id)
         {
-            get { return !string.IsNullOrEmpty(Id); }
+            Id = id;
         }
 
+        public string Id { get; internal set; }
+        
         public bool Equals(ModelBase other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -32,40 +35,50 @@
 
     public class Group : ModelBase
     {
-        public Group(string name, string description)
+        private readonly Facade.Group @group;
+        private readonly RestClient restClient;
+
+        internal Group(Facade.Group group, RestClient restClient)
+            : base((string) group.Id)
         {
-            Name = name;
-            Description = description;
+            this.@group = @group;
+            this.restClient = restClient;
         }
 
-        public Group(string name)
-            : this(name, string.Empty)
-        {
-        }
+        public string Name { get { return group.Name; } }
+        public string Description { get { return group.Description; } }
 
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public Topic CreateTopic(string name, string description)
+        {
+            var topicPost = new Facade.TopicPost {Name = name, Description = description, GroupId = (Identity) this.Id};
+            var location = restClient.Post(group.GetLinkForRelation("Create Topic"), topicPost);
+            var topicCreated = restClient.Get<Facade.Topic>(location.ToString());
+
+            return new Topic(topicCreated, this, restClient);
+        }
     }
 
 
     public class Topic : ModelBase
     {
+        private readonly Facade.Topic topic;
+        private readonly Group @group;
+        private readonly RestClient restClient;
+
         public Topic(
-            string name, 
-            string description, 
-            Group @group)
+            Facade.Topic topic, 
+            Group group,
+            RestClient restClient)
+            : base((string) topic.Id)
         {
-            Name = name;
-            Description = description;
-            Group = @group;
+            this.topic = topic;
+            @group = @group;
+            this.restClient = restClient;
         }
 
-        public Topic(string name, Group @group)
-            : this(name, string.Empty, @group)
-        {}
 
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public Group Group { get; set; }
+        public string Name { get { return topic.Name; } }
+        public string Description { get { return topic.Description; } }
+        public Group Group { get { return group; } }
     }
 }
