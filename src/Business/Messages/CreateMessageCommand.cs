@@ -30,6 +30,8 @@ namespace TellagoStudios.Hermes.Business.Messages
             if (!entityById.Exist<Topic>(instance.TopicId)) throw new EntityNotFoundException(typeof(Topic), instance.TopicId);
 
             repository.MakePersistent(instance);
-                        eventAggregator.Raise(new NewMessageEvent {Message = instance});        }
+            
+            eventAggregator.Raise(new NewMessageEvent {Message = instance});
+        }
     }
 }

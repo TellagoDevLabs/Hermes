@@ -1,4 +1,7 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Autofac;
 using TellagoStudios.Hermes.Business.Events;
 namespace TellagoStudios.Hermes.RestService.Modules
 {
@@ -7,10 +10,13 @@ namespace TellagoStudios.Hermes.RestService.Modules
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
-
-            builder.RegisterType<EventAggregator>()
-                .AsImplementedInterfaces()
-                .SingleInstance();
+            builder.Register(cc =>
+                                 {
+                                     Func<Type, IEnumerable> handlerFactory = t => (IEnumerable) cc.Resolve(typeof (IEnumerable<>).MakeGenericType(t));
+                                     return new EventAggregator(handlerFactory);
+                                 })
+                    .As<IEventAggregator>()
+                    .SingleInstance();
         }
     }
 }

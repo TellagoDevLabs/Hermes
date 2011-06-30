@@ -14,6 +14,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
             public const string Topics = "topics";
             public const string Groups = "groups";
             public const string Retries = "retries";
+            public const string Feeds = "feeds";
         }
 
         public static MongoCollection<TEntity> GetCollectionByType<TEntity>(this MongoDatabase db)
@@ -40,6 +41,10 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB
             else if (typeof(TEntityType) == typeof(Retry))
             {
                 collectionName = Collections.Retries;
+            }
+            else if(typeof(TEntityType) == typeof(Feed))
+            {
+                collectionName = Collections.Feeds;
             }
             else
             {

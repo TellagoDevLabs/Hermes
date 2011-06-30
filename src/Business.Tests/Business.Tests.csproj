@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Domains\GroupTests.cs" />
+    <Compile Include="Feeds\AddMessageToFeedHandlerTests.cs" />
     <Compile Include="Groups\DeleteGroupCommandTests.cs" />
     <Compile Include="Groups\UpdateGroupCommandTests.cs" />
     <Compile Include="Groups\CreateGroupCommandTests.cs" />
@@ -86,7 +87,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="NewFolder1\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Queries\IGetWorkingFeedForTopic.cs" />
     <Compile Include="Data\Queries\IGroupsSortedByName.cs" />
     <Compile Include="Data\Queries\IQueryValidator.cs" />
     <Compile Include="Data\Commands\IMessageRepository.cs" />
@@ -87,11 +88,13 @@
     <Compile Include="Extensions\ModelExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsExtensions.cs" />
     <Compile Include="Extensions\SystemCollectionsGenericExtensions.cs" />
+    <Compile Include="Feeds\AddMessageToFeedHandler.cs" />
     <Compile Include="Groups\CreateGroupCommand.cs" />
     <Compile Include="Groups\DeleteGroupCommand.cs" />
     <Compile Include="Groups\Interfaces.cs" />
     <Compile Include="Groups\UpdateGroupCommand.cs" />
     <Compile Include="Guard.cs" />
+    <Compile Include="Model\Feed.cs" />
     <Compile Include="Model\Retry.cs" />
     <Compile Include="Retries\CreateRetryCommand.cs" />
     <Compile Include="Retries\DeleteRetryCommand.cs" />
