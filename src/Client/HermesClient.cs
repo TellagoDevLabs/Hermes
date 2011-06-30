@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using TellagoStudios.Hermes.Client.Util;
 using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client

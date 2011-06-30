@@ -51,8 +51,8 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return ProcessGet(() => entityById.Get<Group>(id).ToFacade());
         }
 
-        [WebInvoke(UriTemplate = "", Method = "PUT")]
-        public HttpResponseMessage Update(Facade.GroupPut group)
+        [WebInvoke(UriTemplate = "{id}", Method = "PUT")]
+        public HttpResponseMessage Update(Identity id, Facade.GroupPut group)
         {
             return ProcessPut(() =>
                                {

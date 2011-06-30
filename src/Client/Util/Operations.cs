@@ -1,6 +1,6 @@
 ﻿using TellagoStudios.Hermes.Facade;
 
-namespace TellagoStudios.Hermes.Client
+namespace TellagoStudios.Hermes.Client.Util
 {
     public static class Operations
     {

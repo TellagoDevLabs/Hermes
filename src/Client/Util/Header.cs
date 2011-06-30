@@ -1,4 +1,4 @@
-﻿namespace TellagoStudios.Hermes.Client
+﻿namespace TellagoStudios.Hermes.Client.Util
 {
     public class Header
     {

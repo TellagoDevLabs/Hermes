@@ -70,6 +70,8 @@ namespace TellagoStudios.Hermes.RestService.Extensions
             }
             yield return new Link(ResourceLocation.OfTopics(), "Create Topic");
             yield return new Link(ResourceLocation.OfTopics(), "All Topics");
+            yield return new Link(ResourceLocation.OfGroup(group.Id.Value), "Delete");
+            yield return new Link(ResourceLocation.OfGroup(group.Id.Value), "Update");
         }
     }
 }

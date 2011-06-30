@@ -38,14 +38,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="Header.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="Guard.cs" />
-    <Compile Include="Messages.cs">
+    <Compile Include="Topic.cs" />
+    <Compile Include="Util\Constants.cs" />
+    <Compile Include="Util\Header.cs" />
+    <Compile Include="Util\Message.cs" />
+    <Compile Include="Util\Guard.cs" />
+    <Compile Include="Util\Messages.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Operations.cs" />
+    <Compile Include="Util\Operations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HermesClient.cs" />
     <Compile Include="RestClient.cs" />
@@ -56,6 +57,7 @@
       <Name>Facade</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

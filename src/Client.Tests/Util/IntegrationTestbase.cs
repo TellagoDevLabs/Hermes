@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Linq;
 using MongoDB.Driver;
 using NUnit.Framework;
+using TellagoStudios.Hermes.Client.Util;
 
 namespace TellagoStudios.Hermes.Client.Tests.Util
 {

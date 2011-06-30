@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Xml;
 using System.Xml.Serialization;
+using TellagoStudios.Hermes.Client.Util;
 
 namespace TellagoStudios.Hermes.Client
 {

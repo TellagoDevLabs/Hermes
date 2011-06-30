@@ -2,7 +2,7 @@
 using System.IO;
 using TellagoStudios.Hermes.Facade;
 
-namespace TellagoStudios.Hermes.Client
+namespace TellagoStudios.Hermes.Client.Util
 {
     public class Message
     {

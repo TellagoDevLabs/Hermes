@@ -47,5 +47,29 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
             client.GetGroups()
                   .Satisfy(gs => gs.Any(g => g.Name == "Test" && g.Description == "Foo")); 
         }
+
+        [Test]
+        public void CanDeleteGroup()
+        {
+            var group = client.CreateGroup("Test");
+            group.Delete();
+
+            client.GetGroups().Should().Be.Empty();
+        }
+
+        [Test]
+        public void CanUpdateGroup()
+        {
+            var group = client.CreateGroup("Test");
+
+            group.Name = "FooBar";
+            group.SaveChanges();
+
+            var groups = client.GetGroups();
+
+            groups.Should().Have.Count.EqualTo(1);
+            groups.First().Name.Should().Be.EqualTo("FooBar");
+
+        }
     }
 }
