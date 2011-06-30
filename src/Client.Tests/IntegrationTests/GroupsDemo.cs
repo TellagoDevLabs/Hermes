@@ -32,13 +32,7 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
             client.Executing(c => c.CreateGroup("TestGroup", "TestDescription"))
                   .Throws<WebException>();
         }
-        
-        [Test]
-        public void CanDeleteAGroup()
-        {
-            var group = client.CreateGroup("Test");
-            client.DeleteGroup(group.Id);
-        }
+       
 
         [Test]
         public void CanGetGroups()
@@ -70,6 +64,17 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
             groups.Should().Have.Count.EqualTo(1);
             groups.First().Name.Should().Be.EqualTo("FooBar");
 
+        }
+
+        [Test]
+        public void CanGetGroupById()
+        {
+            var group = client.CreateGroup("Test");
+            var result = client.GetGroup(group.Id);
+
+            result.Satisfy(r =>
+                           r.Name == group.Name
+                           && r.Description == group.Description);
         }
     }
 }
