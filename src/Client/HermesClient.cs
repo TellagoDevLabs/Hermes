@@ -25,30 +25,6 @@ namespace TellagoStudios.Hermes.Client
             restClient = new RestClient(hermesAddress);
         }
 
-        public void CreateTopic(TopicPost topicPost)
-        {
-            Guard.Instance.ArgumentNotNull(() => topicPost, topicPost);
-
-            restClient.Post(Operations.Topics, topicPost);
-        }
-
-        public Topic[] GetTopicsByGroup(Identity groupId)
-        {
-            return restClient.Get<Topic[]>(Operations.GetTopicsByGroup(groupId));
-        }
-
-        public void UpdateTopic(TopicPut topicPut)
-        {
-            Guard.Instance.ArgumentNotNull(() => topicPut, topicPut);
-
-            restClient.Put(Operations.Topics, topicPut);
-        }
-
-        public void DeleteTopic(Identity topicId)
-        {
-            restClient.Delete(Operations.DeleteTopic(topicId));
-        }
-
         #endregion
 
         #region Topic Groups
@@ -90,43 +66,51 @@ namespace TellagoStudios.Hermes.Client
 
         #endregion
 
-        #region Subscriptions
 
-        public void CreateSubscription(SubscriptionPost post)
+        #region Topic
+        public void CreateTopic(Topic topic)
         {
-            Guard.Instance.ArgumentNotNull(() => post, post);
+            Guard.Instance.ArgumentNotNull(() => topic, topic);
+            if (topic.IsPersisted)
+            {
+                throw new InvalidOperationException();
+            }
 
-            restClient.Post(Operations.Subscriptions, post);
+            if (!topic.Group.IsPersisted)
+            {
+                CreateGroup(topic.Group);
+            }
+
+            var location = restClient.Post(Operations.Topics, new TopicPost
+            {
+                Name = topic.Name,
+                Description = topic.Description,
+                GroupId = (Identity)topic.Group.Id
+            });
+
+            var createdTopic = restClient.GetFromUrl<Facade.Topic>(location);
+            topic.Id = createdTopic.Id.ToString();
         }
 
-        public Subscription[] GetSubscriptions()
+        public Topic[] GetTopicsByGroup(string groupId)
         {
-            return restClient.Get<Subscription[]>(Operations.Subscriptions);
+            return restClient.Get<Topic[]>(Operations.GetTopicsByGroup((Identity) groupId));
         }
 
-        public Subscription[] GetSubscriptionsByTopic(Identity topicId)
+        public void UpdateTopic(TopicPut topicPut)
         {
-            return restClient.Get<Subscription[]>(Operations.Subscriptions + "/topic/" + topicId);
+            Guard.Instance.ArgumentNotNull(() => topicPut, topicPut);
+
+            restClient.Put(Operations.Topics, topicPut);
         }
 
-        public Subscription[] GetSubscriptionsByGroup(Identity groupId)
+        public void DeleteTopic(string topicId)
         {
-            return restClient.Get<Subscription[]>(Operations.Subscriptions + "/topicgroup/" + groupId);
-        }
-
-        public void UpdateSubscription(SubscriptionPut put)
-        {
-            Guard.Instance.ArgumentNotNull(() => put, put);
-
-            restClient.Put(Operations.Subscriptions, put);
-        }
-
-        public void DeleteSubscription(Identity subscriptionId)
-        {
-            restClient.Delete(Operations.DeleteSubscription(subscriptionId));
-        }
-
+            restClient.Delete(Operations.DeleteTopic((Identity) topicId));
+        } 
         #endregion
+
+
 
         #region Messages
 

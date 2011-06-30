@@ -16,5 +16,7 @@ namespace TellagoStudios.Hermes.Facade
 
         [XmlElement(Order = 3, ElementName = "link")]
         public Link Parent { get; set; }
+        
+        
     }
 }
