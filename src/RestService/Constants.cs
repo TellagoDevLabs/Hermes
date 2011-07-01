@@ -17,6 +17,7 @@
 
         public static class Routes
         {
+            public const string Feed = "feed";
             public const string Messages = "messages";
             public const string Topics = "topics";
             public const string Groups = "groups";

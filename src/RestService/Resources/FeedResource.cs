@@ -1,13 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Syndication;
 using System.ServiceModel.Web;
-using System.Xml;
+using Microsoft.ApplicationServer.Http;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
 
@@ -29,24 +28,58 @@ namespace TellagoStudios.Hermes.RestService.Resources
         [WebGet(UriTemplate = "{topicId}")]
         public HttpResponseMessage Current(Identity topicId)
         {
+            var workingFeed = getWorkingFeedForTopic.Execute(topicId);
+            var syndicationFeed = CreateSyndicationFromFeed(topicId, workingFeed);
+            return new HttpResponseMessage<SyndicationFeed>(syndicationFeed, HttpStatusCode.OK)
+                       {
+                           Content = { Headers = { ContentType = new MediaTypeHeaderValue("application/atom+xml") } }
+                       };
+        }
+
+        [WebGet(UriTemplate = "{topicId}/history/{feedId}")]
+        public HttpResponseMessage History(Identity topicId, Identity feedId)
+        {
+            var workingFeed = entityById.Get<Feed>(feedId);
+            var syndicationFeed = CreateSyndicationFromFeed(topicId, workingFeed);
+            return new HttpResponseMessage<SyndicationFeed>(syndicationFeed, HttpStatusCode.OK)
+            {
+                Content = { Headers = { ContentType = new MediaTypeHeaderValue("application/atom+xml") } }
+            };
+        }
+
+        private SyndicationFeed CreateSyndicationFromFeed(Identity topicId, Feed currentFeed)
+        {
             var topic = entityById.Get<Topic>(topicId);
-            var currentFeed = getWorkingFeedForTopic.Execute(topicId);
-            
-            var feed = new SyndicationFeed(topic.Name, topic.Description, new Uri("http://www.google.com"));
-            feed.Items = currentFeed.Entries.Select(e =>
-                                                    new SyndicationItem(string.Format("Message {0}", e.MessageId),
-                                                                        new TextSyndicationContent("hello"),
-                                                                        ResourceLocation.OfMessageByTopic(topicId,e.MessageId),
-                                                                        e.MessageId.ToString(), e.TimeStamp)).ToList();
+            var feed = new SyndicationFeed(topic.Name, topic.Description, null)
+                           {
+                               Items = currentFeed.Entries.Select(e => MapEntryToSyndicationItem(topicId, e)).ToList()
+                           };
 
-            var response = new HttpResponseMessage(HttpStatusCode.OK, "OK");
-            response.Headers.Add("Content-Type", "application/atom+xml");
+            if (currentFeed.PreviousFeed.HasValue)
+            {
+                feed.Links.Add(new SyndicationLink(ResourceLocation.OfTopicFeed(topicId, currentFeed.PreviousFeed.Value))
+                                   {
+                                       RelationshipType = "prev"
+                                   });
+            }
 
-            var formatter = new Atom10FeedFormatter(feed);
-            var memoryStream = new MemoryStream();
-            formatter.WriteTo(XmlWriter.Create(memoryStream));
-            response.Content = new StreamContent(memoryStream);
-            return response;
+            if (currentFeed.NextFeed.HasValue)
+            {
+                feed.Links.Add(new SyndicationLink(ResourceLocation.OfTopicFeed(topicId, currentFeed.NextFeed.Value))
+                                   {
+                                       RelationshipType = "next"
+                                   });
+            }
+            return feed;
+        }
+
+
+        private static SyndicationItem MapEntryToSyndicationItem(Identity topicId, FeedEntry e)
+        {
+            return new SyndicationItem(string.Format("Message {0}", e.MessageId),
+                                       new UrlSyndicationContent(ResourceLocation.OfMessageByTopic(topicId, e.MessageId), "application/xml"),
+                                       null,
+                                       e.MessageId.ToString(), e.TimeStamp);
         }
     }
    

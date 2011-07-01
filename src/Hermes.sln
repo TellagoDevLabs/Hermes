@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{E00FF1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Tests", "Client.Tests\Client.Tests.csproj", "{E6CABAAF-B770-499A-976B-8A83CD09A84E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePublisher", "ExamplePublisher\ExamplePublisher.csproj", "{D128CB57-C799-465F-B8F1-87C488724599}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,6 +124,16 @@ Global
 		{E6CABAAF-B770-499A-976B-8A83CD09A84E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E6CABAAF-B770-499A-976B-8A83CD09A84E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E6CABAAF-B770-499A-976B-8A83CD09A84E}.Release|x86.ActiveCfg = Release|Any CPU
+		{D128CB57-C799-465F-B8F1-87C488724599}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D128CB57-C799-465F-B8F1-87C488724599}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{D128CB57-C799-465F-B8F1-87C488724599}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{D128CB57-C799-465F-B8F1-87C488724599}.Debug|x86.ActiveCfg = Debug|x86
+		{D128CB57-C799-465F-B8F1-87C488724599}.Debug|x86.Build.0 = Debug|x86
+		{D128CB57-C799-465F-B8F1-87C488724599}.Release|Any CPU.ActiveCfg = Release|x86
+		{D128CB57-C799-465F-B8F1-87C488724599}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{D128CB57-C799-465F-B8F1-87C488724599}.Release|Mixed Platforms.Build.0 = Release|x86
+		{D128CB57-C799-465F-B8F1-87C488724599}.Release|x86.ActiveCfg = Release|x86
+		{D128CB57-C799-465F-B8F1-87C488724599}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,5 +141,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{36B7ADBD-E9A0-4B0A-AC1A-9FB83A7664BA} = {E00FF13C-9677-409A-B26B-A53BC93C36D4}
 		{E6CABAAF-B770-499A-976B-8A83CD09A84E} = {E00FF13C-9677-409A-B26B-A53BC93C36D4}
+		{D128CB57-C799-465F-B8F1-87C488724599} = {E00FF13C-9677-409A-B26B-A53BC93C36D4}
 	EndGlobalSection
 EndGlobal

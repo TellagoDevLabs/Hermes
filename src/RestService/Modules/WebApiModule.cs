@@ -1,6 +1,7 @@
 using Autofac;
 using Microsoft.ApplicationServer.Http;
 using Microsoft.ApplicationServer.Http.Description;
+using TellagoStudios.Hermes.RestService.Formatters;
 
 namespace TellagoStudios.Hermes.RestService.Modules
 {
@@ -8,12 +9,16 @@ namespace TellagoStudios.Hermes.RestService.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterAssemblyTypes(typeof(WebApiModule).Assembly)
-                .Where(t => typeof(MediaTypeFormatter).IsAssignableFrom(t))
-                .As<MediaTypeFormatter>();
-
+            //builder.RegisterType<HermesMediaTypeFormatter>().As<MediaTypeFormatter>();
+            
+            //builder.RegisterType<AtomMediaTypeFormatter>().As<MediaTypeFormatter>();
+            
             builder.RegisterType<HttpOperationHandlerFactory>()
-                   .AsSelf()
+                   .AsSelf().WithParameter("formatters", new MediaTypeFormatter[]
+                                                             {
+                                                                 new AtomMediaTypeFormatter(), 
+                                                                 new HermesMediaTypeFormatter()
+                                                             })
                    .SingleInstance();
         }
     }

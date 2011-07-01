@@ -121,6 +121,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Formatters\AtomMediaTypeFormatter.cs" />
     <Compile Include="AutofacResourceFactory.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -134,7 +135,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="HermesMediaTypeFormatter.cs" />
+    <Compile Include="Formatters\HermesMediaTypeFormatter.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\GroupCreateModel.cs">

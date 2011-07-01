@@ -13,6 +13,9 @@ namespace TellagoStudios.Hermes.Business.Model
         public Identity TopicId { get; set; }
         public DateTime Updated { get; set; }
         public List<FeedEntry> Entries { get; set; }
+
+        public Identity? PreviousFeed { get; set; }
+        public Identity? NextFeed     { get; set; }
     }
 
     public class FeedEntry

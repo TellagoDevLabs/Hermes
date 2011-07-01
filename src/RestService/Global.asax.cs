@@ -76,6 +76,7 @@ namespace TellagoStudios.Hermes.RestService
             RouteTable.Routes.MapServiceRoute<MessageResource>(Constants.Routes.Messages, config);
             RouteTable.Routes.MapServiceRoute<GroupsResource>(Constants.Routes.Groups, config);
             RouteTable.Routes.MapServiceRoute<SubscriptionResource>(Constants.Routes.Subscriptions, config);
+            RouteTable.Routes.MapServiceRoute<FeedResource>(Constants.Routes.Feed, config);
 
             #endregion
 

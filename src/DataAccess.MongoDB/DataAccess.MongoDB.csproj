@@ -61,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\ChildGroupsOfGroup.cs" />
     <Compile Include="Commands\MessageRepository.cs" />
+    <Compile Include="Queries\GetWorkingFeedForTopic.cs" />
     <Compile Include="Queries\GroupsSortedByName.cs" />
     <Compile Include="Queries\MessageKeysByGroup.cs" />
     <Compile Include="Queries\MessageKeysBySubscription.cs" />

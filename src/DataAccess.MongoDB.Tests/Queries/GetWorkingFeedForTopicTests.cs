@@ -3,12 +3,11 @@ using System.Linq;
 using DataAccess.Tests.Util;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 using NUnit.Framework;
 using SharpTestsEx;
-using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.DataAccess.MongoDB;
+using TellagoStudios.Hermes.DataAccess.MongoDB.Queries;
 
 namespace DataAccess.Tests.Queries
 {
@@ -38,7 +37,7 @@ namespace DataAccess.Tests.Queries
         {
             var getWorkingFeedForTopic = new GetWorkingFeedForTopic(connectionString);
             var feed = getWorkingFeedForTopic.Execute(topic.Id.Value);
-            feed.Satisfy(t => t.TopicId == topic.Id && t.Entries.Count == 0);
+            feed.Satisfy(t => t.TopicId == topic.Id && t.Entries.Count == 0 && !t.PreviousFeed.HasValue);
         }
 
 
@@ -87,41 +86,12 @@ namespace DataAccess.Tests.Queries
             var read = getWorkingFeedForTopic.Execute(topic.Id.Value);
 
             read.Should().Not.Be.EqualTo(currentFeed);
+            read.PreviousFeed.ToString().Should().Be.EqualTo(currentFeed.Id.ToString());
+
+            mongoDb.GetCollectionByType<Feed>() 
+                .FindById(currentFeed.Id.Value)
+                .NextFeed.ToString().Should().Be.EqualTo(read.Id.ToString());
         }
          
-    }
-
-    public class GetWorkingFeedForTopic : MongoDbRepository, IGetWorkingFeedForTopic
-    {
-        private readonly MongoCollection<Feed> feeds;
-        private object lck = new object();
-
-        public GetWorkingFeedForTopic(string connectionString) : base(connectionString)
-        {
-            feeds = DB.GetCollectionByType<Feed>();
-
-        }
-
-        public Feed Execute(Identity topicId)
-        {
-            Feed result;
-            lock (lck)
-            {
-                result = feeds.Find(Query.EQ("TopicId", topicId.ToBson()))
-                     .SetSortOrder(SortBy.Descending("Updated"))
-                     .SetLimit(1).FirstOrDefault();
-
-                if (result == null || result.Entries.Count >= 10)
-                {
-                    result = new Feed
-                    {
-                        TopicId = topicId
-                    };
-
-                    feeds.Insert(result);
-                }    
-            }
-            return result;
-        }
     }
 }

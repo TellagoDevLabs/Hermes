@@ -34,6 +34,11 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return CreateUri( "/" + Constants.Routes.Topics + "/" + id);
         }
 
+        public static Uri OfTopicFeed(Identity topicId, Identity feedId)
+        {
+            return CreateUri(string.Format("/{0}/{1}/history/{2}", Constants.Routes.Feed, topicId, feedId));
+        }
+
         public static Uri  OfGroup(Identity id)
         {
             return CreateUri( "/" + Constants.Routes.Groups + "/" + id);
@@ -86,6 +91,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return LinkToMessage(message.TopicId, message.Id.Value);
         }
 
-        
+
+
     }
 }
