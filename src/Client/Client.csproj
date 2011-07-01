@@ -41,7 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model.cs" />
+    <Compile Include="Group.cs" />
+    <Compile Include="ModelBase.cs" />
     <Compile Include="SubscriptionToFeed.cs" />
     <Compile Include="Topic.cs" />
     <Compile Include="Util\Constants.cs" />

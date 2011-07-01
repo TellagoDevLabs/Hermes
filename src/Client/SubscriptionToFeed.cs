@@ -10,16 +10,15 @@ namespace TellagoStudios.Hermes.Client
 {
     public class SubscriptionToFeed : IObservable<string>
     {
-        private readonly Facade.Topic topic;
         private readonly RestClient restClient;
         private readonly ISubject<string> subject;
         private string lastRead;
-        private Stack<Tuple<string, string>> stack = new Stack<Tuple<string, string>>();
-        private object lck = new object();
+        private readonly Stack<Tuple<string, string>> stack 
+                = new Stack<Tuple<string, string>>();
+        private readonly object lck = new object();
 
         public SubscriptionToFeed(Facade.Topic topic, RestClient restClient, int seconds = 10)
         {
-            this.topic = topic;
             this.restClient = restClient;
             subject = new Subject<string>();
             Observable.Timer(TimeSpan.FromSeconds(seconds))

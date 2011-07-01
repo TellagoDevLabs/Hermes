@@ -88,7 +88,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
             {
                 feed.Links.Add(new SyndicationLink(ResourceLocation.OfTopicFeed(topicId, currentFeed.NextFeed.Value))
                                    {
-                                       RelationshipType = "prev-next",
+                                       RelationshipType = "next-archive",
                                        MediaType = "application/atom+xml"
                                    });
             }

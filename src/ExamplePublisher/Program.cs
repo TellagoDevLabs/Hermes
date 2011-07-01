@@ -21,7 +21,7 @@ namespace ExamplePublisher
             while (!string.IsNullOrEmpty(read = Console.ReadLine()))
             {
                 
-                var location = topic.PostMessage(new MemoryStream(Encoding.UTF8.GetBytes(read)), "text/plain");
+                var location = topic.PostStringMessage(read);
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Posted message {0}.", read);
@@ -40,10 +40,7 @@ namespace ExamplePublisher
                 var chatTopic = result.GetAllTopics().FirstOrDefault(t => t.Name == "Chat");
                 return chatTopic;
             }
-            else
-            {
-                return hermesClient.CreateGroup("Test").CreateTopic("Chat");
-            }
+            return hermesClient.CreateGroup("Test").CreateTopic("Chat");
         }
     }
 }
