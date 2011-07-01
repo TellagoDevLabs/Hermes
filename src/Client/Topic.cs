@@ -59,5 +59,11 @@ namespace TellagoStudios.Hermes.Client
             var location = restClient.Post(topic.GetLinkForRelation("Post Message"), data);
             return location.ToString();
         }
+
+        public string PostMessage(MemoryStream data, string contentType)
+        {
+            var location = restClient.Post(topic.GetLinkForRelation("Post Message"), data,contentType: contentType);
+            return location.ToString();
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Syndication;
 using System.ServiceModel.Web;
+using System.Text;
 using Microsoft.ApplicationServer.Http;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
@@ -18,11 +19,16 @@ namespace TellagoStudios.Hermes.RestService.Resources
     {
         private readonly IGetWorkingFeedForTopic getWorkingFeedForTopic;
         private readonly IEntityById entityById;
+        private readonly IMessageByMessageKey messageByMessageKey;
 
-        public FeedResource(IGetWorkingFeedForTopic getWorkingFeedForTopic, IEntityById entityById)
+        public FeedResource(
+            IGetWorkingFeedForTopic getWorkingFeedForTopic, 
+            IEntityById entityById,
+            IMessageByMessageKey messageByMessageKey)
         {
             this.getWorkingFeedForTopic = getWorkingFeedForTopic;
             this.entityById = entityById;
+            this.messageByMessageKey = messageByMessageKey;
         }
 
         [WebGet(UriTemplate = "{topicId}")]
@@ -52,14 +58,29 @@ namespace TellagoStudios.Hermes.RestService.Resources
             var topic = entityById.Get<Topic>(topicId);
             var feed = new SyndicationFeed(topic.Name, topic.Description, null)
                            {
-                               Items = currentFeed.Entries.Select(e => MapEntryToSyndicationItem(topicId, e)).ToList()
+                               Items = currentFeed.Entries.Select(e => MapEntryToSyndicationItem(topicId, e)).ToList(),
+                               LastUpdatedTime = currentFeed.Updated,
+                               Id = currentFeed.Id.ToString()
                            };
+
+            feed.Links.Add(new SyndicationLink(ResourceLocation.OfCurrentTopicFeed(topicId))
+                                {
+                                    RelationshipType = "current",
+                                    MediaType = "application/atom+xml"
+                                });
+
+            feed.Links.Add(new SyndicationLink(ResourceLocation.OfTopicFeed(topicId, currentFeed.Id.Value))
+                               {
+                                   RelationshipType = "self",
+                                   MediaType = "application/atom+xml"
+                               });
 
             if (currentFeed.PreviousFeed.HasValue)
             {
                 feed.Links.Add(new SyndicationLink(ResourceLocation.OfTopicFeed(topicId, currentFeed.PreviousFeed.Value))
                                    {
-                                       RelationshipType = "prev"
+                                       RelationshipType = "prev-archive",
+                                       MediaType = "application/atom+xml"
                                    });
             }
 
@@ -67,19 +88,39 @@ namespace TellagoStudios.Hermes.RestService.Resources
             {
                 feed.Links.Add(new SyndicationLink(ResourceLocation.OfTopicFeed(topicId, currentFeed.NextFeed.Value))
                                    {
-                                       RelationshipType = "next"
+                                       RelationshipType = "prev-next",
+                                       MediaType = "application/atom+xml"
                                    });
             }
             return feed;
         }
 
 
-        private static SyndicationItem MapEntryToSyndicationItem(Identity topicId, FeedEntry e)
+        private SyndicationItem MapEntryToSyndicationItem(Identity topicId, FeedEntry e)
         {
+            var messageLink = ResourceLocation.OfMessageByTopic(topicId, e.MessageId);
+            var message = messageByMessageKey.Get(new MessageKey {TopicId = topicId, MessageId = e.MessageId});
+            var isPlainText = message.Headers.Any(h => h.Key == "Content-Type" && h.Value.Contains("text/plain"));
+            SyndicationContent content;
+            
+            if (isPlainText)
+            {
+                content = new TextSyndicationContent(Encoding.UTF8.GetString(message.Payload));
+            }
+            else
+            {
+                //TODO
+                content = new UrlSyndicationContent(messageLink, "application/xml");
+            }
+
             return new SyndicationItem(string.Format("Message {0}", e.MessageId),
-                                       new UrlSyndicationContent(ResourceLocation.OfMessageByTopic(topicId, e.MessageId), "application/xml"),
+                                       content,
                                        null,
-                                       e.MessageId.ToString(), e.TimeStamp);
+                                       e.MessageId.ToString(), e.TimeStamp)
+                       {
+                           Links = { new SyndicationLink(messageLink) },
+                           LastUpdatedTime = e.TimeStamp
+                       };
         }
     }
    

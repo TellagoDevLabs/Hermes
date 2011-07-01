@@ -39,6 +39,11 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return CreateUri(string.Format("/{0}/{1}/history/{2}", Constants.Routes.Feed, topicId, feedId));
         }
 
+        public static Uri OfCurrentTopicFeed(Identity topicId)
+        {
+            return CreateUri(string.Format("/{0}/{1}", Constants.Routes.Feed, topicId));
+        }
+
         public static Uri  OfGroup(Identity id)
         {
             return CreateUri( "/" + Constants.Routes.Groups + "/" + id);

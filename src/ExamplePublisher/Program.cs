@@ -21,7 +21,7 @@ namespace ExamplePublisher
             while (!string.IsNullOrEmpty(read = Console.ReadLine()))
             {
                 
-                var location = topic.PostMessage(new MemoryStream(Encoding.UTF8.GetBytes(read)));
+                var location = topic.PostMessage(new MemoryStream(Encoding.UTF8.GetBytes(read)), "text/plain");
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Posted message {0}.", read);

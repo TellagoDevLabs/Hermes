@@ -64,9 +64,13 @@ namespace TellagoStudios.Hermes.Client
                 .Send(webExceptionHandler);
         }
 
-        public Uri Post<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
+        public Uri Post<T>(string operation, T data, 
+                           IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null,
+                           string contentType = null )
         {
-            return Client(operation, "POST", headers)
+            var httpWebRequest = Client(operation, "POST", headers);
+            if (contentType != null) httpWebRequest.ContentType = contentType;
+            return httpWebRequest
                 .Serialize(data)
                 .Send(webExceptionHandler)
                 .GetLocation();
@@ -224,7 +228,6 @@ namespace TellagoStudios.Hermes.Client
             }
 
             var stream = request.GetRequestStream();
-
             var dataAsStream = data as Stream;
             if (dataAsStream != null)
             {
