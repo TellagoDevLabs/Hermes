@@ -1,4 +1,7 @@
+using System;
 using System.IO;
+using System.Reactive;
+using System.Text;
 using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client
@@ -65,5 +68,17 @@ namespace TellagoStudios.Hermes.Client
             var location = restClient.Post(topic.GetLinkForRelation("Post Message"), data,contentType: contentType);
             return location.ToString();
         }
+
+        public string PostStringMessage(string message)
+        {
+            var data = new MemoryStream(Encoding.UTF8.GetBytes(message));
+            return PostMessage(data, "text/plain");
+        }
+
+        public IObservable<string> GetCurrentFeed(int interval = 10)
+        {
+            return new SubscriptionToFeed(topic, restClient, interval);
+        }
+
     }
 }

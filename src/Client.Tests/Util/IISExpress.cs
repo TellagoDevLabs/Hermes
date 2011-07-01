@@ -89,7 +89,7 @@ namespace TellagoStudios.Hermes.Client.Tests.Util
             return new IISExpress(path, port , clr ,sysTray );
         }
 
-        public void Stop()
+        public void Stop()  
         {
             SendStopMessageToProcess(process.Id);
             process.Close();

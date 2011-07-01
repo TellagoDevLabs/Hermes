@@ -39,7 +39,7 @@ namespace TellagoStudios.Hermes.Client
                 Name = name,
                 Description = description
             });
-            var createdGroup = restClient.GetFromUrl<Facade.Group>(location);
+            var createdGroup = restClient.Get<Facade.Group>(location.ToString());
 
             return new Group(createdGroup, restClient);
         }

@@ -47,7 +47,8 @@ namespace TellagoStudios.Hermes.RestService.Extensions
                         from.GroupId.ToLink(Constants.Relationships.Group),
                         new Link(ResourceLocation.OfTopic(from.Id.Value), "Delete"),
                         new Link(ResourceLocation.OfTopic(from.Id.Value), "Update"),
-                        new Link(ResourceLocation.OfCreateMessageIngTopic(from.Id.Value), "Post Message")
+                        new Link(ResourceLocation.OfCreateMessageIngTopic(from.Id.Value), "Post Message"),
+                        new Link(ResourceLocation.OfCurrentTopicFeed(from.Id.Value), "Current Feed")
                     }
             };
         }

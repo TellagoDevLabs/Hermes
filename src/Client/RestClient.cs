@@ -144,6 +144,13 @@ namespace TellagoStudios.Hermes.Client
             }
             return request;
         }
+
+        public Stream GetStream(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        {
+            return Client(operation, "GET", headers)
+                .Send(webExceptionHandler)
+                .GetResponseStream();
+        }
     }
 
     static class RestClientExtensions
