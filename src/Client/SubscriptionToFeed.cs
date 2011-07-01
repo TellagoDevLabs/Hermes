@@ -15,6 +15,7 @@ namespace TellagoStudios.Hermes.Client
         private readonly ISubject<string> subject;
         private string lastRead;
         private Stack<Tuple<string, string>> stack = new Stack<Tuple<string, string>>();
+        private object lck = new object();
 
         public SubscriptionToFeed(Facade.Topic topic, RestClient restClient, int seconds = 10)
         {
@@ -22,7 +23,14 @@ namespace TellagoStudios.Hermes.Client
             this.restClient = restClient;
             subject = new Subject<string>();
             Observable.Timer(TimeSpan.FromSeconds(seconds))
-                .Subscribe(u => FetchFeed(topic.GetLinkForRelation("Current Feed")));
+                .Repeat()
+                .Subscribe(u =>
+                               {
+                                   lock(lck)
+                                   {
+                                       FetchFeed(topic.GetLinkForRelation("Current Feed"));
+                                   }
+                               });
         }
 
         public void FetchFeed(string feedUrl)
@@ -34,12 +42,15 @@ namespace TellagoStudios.Hermes.Client
             {
                 formatter.ReadFrom(xmlReader);
                 var feed = formatter.Feed;
-                var entriesToPush = feed.Items
-                    .Where(item => item.Id != lastRead);
-
+                var entriesToPush = feed.Items;
+                bool foundLastOne = false;
                 foreach (var entry in entriesToPush)
                 {
-                    
+                    if(entry.Id == lastRead)
+                    {
+                        foundLastOne = true;
+                        break;
+                    }
                     var textSyndicationContent = entry.Content as TextSyndicationContent;
                     if(textSyndicationContent != null)
                     {
@@ -47,7 +58,7 @@ namespace TellagoStudios.Hermes.Client
                     }
                 }
 
-                if (!feed.Items.Any()|| feed.Items.Last().Id != lastRead)
+                if (lastRead == null || !foundLastOne)
                 {
                     var prev = feed.Links.FirstOrDefault(l => l.RelationshipType == "prev-archive");
                     if(prev != null)
