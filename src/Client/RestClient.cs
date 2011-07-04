@@ -45,9 +45,13 @@ namespace TellagoStudios.Hermes.Client
 
         public T Get<T>(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
-            return Client(operation, "GET", headers)
-                .Send(webExceptionHandler)
-                .Deserialize<T>();
+            using(var httpWebResponse = Client(operation, "GET", headers).Send(webExceptionHandler))
+            {
+                var deserialized = httpWebResponse.Deserialize<T>();
+                httpWebResponse.Close();
+                return deserialized;
+            }
+            
         }
 
         public T GetFromUrl<T>(Uri url, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
@@ -70,10 +74,23 @@ namespace TellagoStudios.Hermes.Client
         {
             var httpWebRequest = Client(operation, "POST", headers);
             if (contentType != null) httpWebRequest.ContentType = contentType;
-            return httpWebRequest
-                .Serialize(data)
-                .Send(webExceptionHandler)
-                .GetLocation();
+            HttpWebResponse httpWebResponse;
+            Uri location;
+            using(httpWebResponse = httpWebRequest.Serialize(data).Send(webExceptionHandler))
+            {
+                location = httpWebResponse.GetLocation();
+
+                var responseStream = httpWebResponse.GetResponseStream();
+                if (responseStream != null)
+                {
+                    responseStream.Close();
+                    responseStream.Dispose();
+                }
+                httpWebResponse.Close();
+            }
+            httpWebRequest.Abort();
+            GC.Collect();
+            return location;
         }
 
         public void Delete(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
@@ -233,23 +250,27 @@ namespace TellagoStudios.Hermes.Client
             {
                 request.ContentType = "application/xml"; // TODO: Replace. We should support many content types
             }
-
-            var stream = request.GetRequestStream();
-            var dataAsStream = data as Stream;
-            if (dataAsStream != null)
+            using(var stream = request.GetRequestStream())
             {
-                dataAsStream.CopyTo(stream);
-            }
-            else
-            {
-                var settings = new XmlWriterSettings { OmitXmlDeclaration = true };
-                var writer = XmlWriter.Create(stream, settings);
+                var dataAsStream = data as Stream;
+                if (dataAsStream != null)
+                {
+                    dataAsStream.CopyTo(stream);
+                }
+                else
+                {
+                    var settings = new XmlWriterSettings { OmitXmlDeclaration = true };
+                    using(var writer = XmlWriter.Create(stream, settings))
+                    {
+                        var ns = new XmlSerializerNamespaces();
+                        ns.Add("", "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade");
 
-                var ns = new XmlSerializerNamespaces();
-                ns.Add("", "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade");
-
-                var serializer = new XmlSerializer(typeof(T));
-                serializer.Serialize(writer, data, ns);
+                        var serializer = new XmlSerializer(typeof(T));
+                        serializer.Serialize(writer, data, ns);    
+                        writer.Close();
+                    }
+                }
+                stream.Close();
             }
             return request;
         }
@@ -279,6 +300,9 @@ namespace TellagoStudios.Hermes.Client
                 var reader = XmlReader.Create(stream);
                 var serializer = new XmlSerializer(typeof(T));
                 var entity = (T)serializer.Deserialize(reader);
+                
+                stream.Close();
+
                 return entity;
             }
         }

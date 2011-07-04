@@ -1,44 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace TellagoStudios.Hermes.Client.Tests.Util
 {
     public class IISExpress
     {
-        internal class NativeMethods
-        {
-            // Methods
-            [DllImport("user32.dll", SetLastError = true)]
-            internal static extern IntPtr GetTopWindow(IntPtr hWnd);
-            [DllImport("user32.dll", SetLastError = true)]
-            internal static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
-            [DllImport("user32.dll", SetLastError = true)]
-            internal static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint lpdwProcessId);
-            [DllImport("user32.dll", SetLastError = true)]
-            internal static extern bool PostMessage(HandleRef hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-        }
-
-        public static void SendStopMessageToProcess(int PID)
-        {
-            try
-            {
-                for (var ptr = NativeMethods.GetTopWindow(IntPtr.Zero); ptr != IntPtr.Zero; ptr = NativeMethods.GetWindow(ptr, 2))
-                {
-                    uint num;
-                    NativeMethods.GetWindowThreadProcessId(ptr, out num);
-                    if (PID != num) continue;
-                    var hWnd = new HandleRef(null, ptr);
-                    NativeMethods.PostMessage(hWnd, 0x12, IntPtr.Zero, IntPtr.Zero);
-                    return;
-                }
-            }
-            catch (ArgumentException)
-            {
-            }
-        }
-
+       
         private string IIS_EXPRESS = string.Format(
                     @"{0}\IIS Express\iisexpress.exe", 
                     Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86));
@@ -91,8 +59,10 @@ namespace TellagoStudios.Hermes.Client.Tests.Util
 
         public void Stop()  
         {
-            SendStopMessageToProcess(process.Id);
-            process.Close();
+            process.Kill();
+            process.WaitForExit();
+            //process.Close();
+            
         }
     }
 }
