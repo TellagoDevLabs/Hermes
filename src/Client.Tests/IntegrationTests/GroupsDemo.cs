@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using NUnit.Framework;
 using SharpTestsEx;
@@ -10,6 +11,21 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
     public class GroupsDemo : IntegrationTestBase
     {
         private readonly HermesClient client = new HermesClient("http://localhost:40403");
+
+
+        [Test(Description = "I wrote this test because we have a problem not disposing HttpWebRequest properly. And running out of connections in iisexpress.")]
+        public void CanCreate15Groups()
+        {
+            var messages = Enumerable.Range(0, 15);
+            foreach (var groupNumber in messages)
+            {
+                var groupName = string.Format("Group {0}", groupNumber);
+                Console.WriteLine("Creating group \"{0}\"", groupName);
+                
+                client.CreateGroup(groupName);
+            }
+        }
+
 
         [Test]
         public void CanCreateGroup()
