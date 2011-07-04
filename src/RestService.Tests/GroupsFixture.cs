@@ -229,7 +229,7 @@ namespace RestService.Tests
 
             mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())); //.Returns(group);
 
-            client.ExecutePut<F.GroupPut>("", groupPut);
+            client.ExecutePut<F.GroupPut>(groupPut.Id.ToString(), groupPut);
 
             mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
             mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPut.Description)));
@@ -250,7 +250,7 @@ namespace RestService.Tests
 
             mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())).Throws(new ValidationException("foo"));
 
-            var result = client.ExecutePut<F.GroupPut, F.Group>("", groupPut, HttpStatusCode.BadRequest);
+            var result = client.ExecutePut<F.GroupPut, F.Group>(groupPut.Id.ToString(), groupPut, HttpStatusCode.BadRequest);
 
             Assert.IsNull(result);
 
@@ -274,7 +274,7 @@ namespace RestService.Tests
 
             mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())).Throws<EntityNotFoundException>();
 
-            var result = client.ExecutePut<F.GroupPut, F.Group>("", groupPut, HttpStatusCode.NotFound);
+            var result = client.ExecutePut<F.GroupPut, F.Group>(groupPut.Id.ToString(), groupPut, HttpStatusCode.NotFound);
 
             Assert.IsNull(result);
 
