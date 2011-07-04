@@ -44,7 +44,7 @@ namespace RestService.Tests.Controllers
         [Test]
         public void WhenTopicExist_ThenReturnViewResultWithTopicAsModel()
         {
-            var expected = new Topic {Name = "Topic 1", Description = "Foo", GroupId = SampleGroup.Id.Value};
+            var expected = new Topic {Name = "Topic 1", Description = "Foo", GroupId = SampleGroup.Id.Value, Id = Identity.Random()};
             var entityById = Mock.Of<IEntityById>(e => e.Get<Topic>(It.IsAny<Identity>() ) == expected);
             
             var topicsController = CreateController(entityById: entityById);
