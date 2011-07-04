@@ -176,19 +176,9 @@ namespace RestService.Tests
                 Name = "test"
             };
 
-            var group = new M.Group { Id = M.Identity.Random() };
-            var topic = new M.Topic()
-            {
-                Description = topicPut.Description,
-                GroupId = group.Id.Value,
-                Id = topicPut.Id.ToModel(),
-                Name = topicPut.Name
-            };
-
-
             mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Topic>()));
 
-            client.ExecutePut("", topicPut);
+            client.ExecutePut(topicPut.Id.ToString(), topicPut);
 
             mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t != null)));
             mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.Description == topicPut.Description)));
