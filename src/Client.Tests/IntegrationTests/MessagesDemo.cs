@@ -56,18 +56,17 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         public void CanSubscribeToTopicFeedAndReceiveMoreThan15MEssagesInOrder()
         {
             var read = new List<string>();
-            using (topic.GetCurrentFeed()
-                        .ObserveOn(Scheduler.CurrentThread)
+            var messages = Enumerable.Range(0, 20)
+                .Select(m => m.ToString()).ToList();
+            using (topic.GetCurrentFeed(1)
+                        .ObserveOn(Scheduler.NewThread)
                         .Subscribe(read.Add))
             {
-                var expected = Enumerable.Range(0, 10)
-                            .Select(m => m.ToString()).ToList();
+                messages.ForEach(m => topic.PostStringMessage(m));
                 
-                expected.ForEach(m => topic.PostStringMessage(m));
-                
-                while (read.Count < expected.Count) { }
+                Thread.Sleep(TimeSpan.FromSeconds(5));
 
-                read.Should().Have.SameSequenceAs(expected);
+                read.Should().Have.SameSequenceAs(messages);
             }
         }
     }

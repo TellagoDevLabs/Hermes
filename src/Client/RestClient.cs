@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Xml;
 using System.Xml.Serialization;
@@ -45,13 +44,13 @@ namespace TellagoStudios.Hermes.Client
 
         public T Get<T>(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
-            using(var httpWebResponse = Client(operation, "GET", headers).Send(webExceptionHandler))
+            var httpWebRequest = Client(operation, "GET", headers);
+            using(var httpWebResponse = httpWebRequest.Send(webExceptionHandler))
             {
                 var deserialized = httpWebResponse.Deserialize<T>();
                 httpWebResponse.Close();
                 return deserialized;
             }
-            
         }
 
         public T GetFromUrl<T>(Uri url, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
@@ -74,22 +73,21 @@ namespace TellagoStudios.Hermes.Client
         {
             var httpWebRequest = Client(operation, "POST", headers);
             if (contentType != null) httpWebRequest.ContentType = contentType;
-            HttpWebResponse httpWebResponse;
             Uri location;
-            using(httpWebResponse = httpWebRequest.Serialize(data).Send(webExceptionHandler))
+
+            using(var httpWebResponse = httpWebRequest.Serialize(data).Send(webExceptionHandler))
             {
                 location = httpWebResponse.GetLocation();
 
-                var responseStream = httpWebResponse.GetResponseStream();
-                if (responseStream != null)
-                {
-                    responseStream.Close();
-                    responseStream.Dispose();
-                }
-                httpWebResponse.Close();
+                //var responseStream = httpWebResponse.GetResponseStream();
+                //if (responseStream != null)
+                //{
+                //    responseStream.Close();
+                //    responseStream.Dispose();
+                //}
+                //httpWebResponse.Close();
             }
-            httpWebRequest.Abort();
-            GC.Collect();
+
             return location;
         }
 
@@ -250,27 +248,40 @@ namespace TellagoStudios.Hermes.Client
             {
                 request.ContentType = "application/xml"; // TODO: Replace. We should support many content types
             }
-            using(var stream = request.GetRequestStream())
+            var dataAsStream = data as Stream;
+            if (dataAsStream != null)
             {
-                var dataAsStream = data as Stream;
-                if (dataAsStream != null)
+                using (var stream = request.GetRequestStream())
                 {
                     dataAsStream.CopyTo(stream);
+                    stream.Close();
                 }
-                else
+            }
+            else
+            {
+                var settings = new XmlWriterSettings { OmitXmlDeclaration = true };
+                using (var ms = new MemoryStream())
+                using (var writer = XmlWriter.Create(ms, settings))
                 {
-                    var settings = new XmlWriterSettings { OmitXmlDeclaration = true };
-                    using(var writer = XmlWriter.Create(stream, settings))
-                    {
-                        var ns = new XmlSerializerNamespaces();
-                        ns.Add("", "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade");
+                    var ns = new XmlSerializerNamespaces();
+                    ns.Add("", "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade");
 
-                        var serializer = new XmlSerializer(typeof(T));
-                        serializer.Serialize(writer, data, ns);    
-                        writer.Close();
+                    var serializer = new XmlSerializer(typeof(T));
+                    serializer.Serialize(writer, data, ns);
+
+                    writer.Close();
+
+                    ms.Position = 0;
+                    request.ContentLength = ms.Length;
+                    using (var stream = request.GetRequestStream())
+                    {
+                        ms.CopyTo(stream);
+                        stream.Flush();
+                        stream.Close();
                     }
+                    writer.Close();
+                    ms.Close();
                 }
-                stream.Close();
             }
             return request;
         }

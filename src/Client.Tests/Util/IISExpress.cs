@@ -41,10 +41,6 @@ namespace TellagoStudios.Hermes.Client.Tests.Util
                                         {
                                             FileName = IIS_EXPRESS,
                                             Arguments = arguments.ToString(),
-                                            RedirectStandardOutput = true,
-                                            UseShellExecute = false,
-                                            //WindowStyle = ProcessWindowStyle.Minimized,
-                                            CreateNoWindow = true
                                         });
         }
 
