@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Reactive;
 using System.Text;
 using TellagoStudios.Hermes.Facade;
 
@@ -45,8 +44,8 @@ namespace TellagoStudios.Hermes.Client
         {
             var topicPut = new TopicPut
                                {
-                                   Description = this.Description,
-                                   Name = this.Name,
+                                   Description = Description,
+                                   Name = Name,
                                    GroupId = (Identity) group.Id,
                                    Id = (Identity) Id
                                };
@@ -75,10 +74,24 @@ namespace TellagoStudios.Hermes.Client
             return PostMessage(data, "text/plain");
         }
 
-        public IObservable<string> GetCurrentFeed(int interval = 10)
+        /// <summary>
+        /// Poll the feed of recent events.
+        /// </summary>
+        /// <param name="interval">polling interval in seconds</param>
+        /// <returns>an observable sequence of messages</returns>
+        public IObservable<string> PollFeed(int interval = 10)
         {
-            return new SubscriptionToFeed(topic, restClient, interval);
+            return PollFeed(TimeSpan.FromSeconds(interval));
         }
 
+        /// <summary>
+        /// Poll the feed of recent events.
+        /// </summary>
+        /// <param name="timeSpan">polling interval</param>
+        /// <returns>an observable sequence of messages</returns>
+        public IObservable<string> PollFeed(TimeSpan timeSpan)
+        {
+            return new SubscriptionToFeed(topic, restClient, timeSpan);
+        }
     }
 }

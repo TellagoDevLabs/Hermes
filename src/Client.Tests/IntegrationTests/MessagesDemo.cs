@@ -40,7 +40,7 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         public void CanSubscribeToTopicFeed()
         {
             var read = new List<string>();
-            using (topic.GetCurrentFeed(1)
+            using (topic.PollFeed(1)
                         .ObserveOn(Scheduler.CurrentThread)
                         .Subscribe(read.Add))
             {
@@ -58,7 +58,7 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
             var read = new List<string>();
             var messages = Enumerable.Range(0, 20)
                 .Select(m => m.ToString()).ToList();
-            using (topic.GetCurrentFeed(1)
+            using (topic.PollFeed(1)
                         .ObserveOn(Scheduler.NewThread)
                         .Subscribe(read.Add))
             {

@@ -17,11 +17,11 @@ namespace TellagoStudios.Hermes.Client
                 = new Stack<Tuple<string, string>>();
         private readonly object lck = new object();
 
-        public SubscriptionToFeed(Facade.Topic topic, RestClient restClient, int seconds = 10)
+        public SubscriptionToFeed(Facade.Topic topic, RestClient restClient, TimeSpan interval)
         {
             this.restClient = restClient;
             subject = new Subject<string>();
-            Observable.Timer(TimeSpan.FromSeconds(seconds))
+            Observable.Timer(interval)
                 .Repeat()
                 .Subscribe(u =>
                                {

@@ -15,7 +15,7 @@ namespace ExampleSubscriber
             
             var hermesClient = new HermesClient(uri);
             var topic = CreateOrGetTopic(hermesClient);
-            var subscription = topic.GetCurrentFeed(2)
+            var subscription = topic.PollFeed(2)
                                     .Subscribe(Console.WriteLine);
 
             Console.ForegroundColor = ConsoleColor.Green;
