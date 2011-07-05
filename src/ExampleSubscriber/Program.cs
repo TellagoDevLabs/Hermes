@@ -31,7 +31,7 @@ namespace ExampleSubscriber
             var result = hermesClient.GetGroups().FirstOrDefault(g => g.Name == "Test");
             if (result != null)
             {
-                var chatTopic = result.GetAllTopics().FirstOrDefault(t => t.Name == "Chat");
+                var chatTopic = result.GetTopics().FirstOrDefault(t => t.Name == "Chat");
                 return chatTopic;
             }
             else

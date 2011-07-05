@@ -18,14 +18,14 @@ namespace ExamplePublisher
             Console.WriteLine("Publishing in topic \"{0}\" from group \"{1}\"", topic.Name, topic.Group.Name);
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine();
-            string read;
-            while (!string.IsNullOrEmpty(read = Console.ReadLine()))
+            string input;
+            while (!string.IsNullOrEmpty(input = Console.ReadLine()))
             {
 
-                var location = topic.PostStringMessage(read);
+                var location = topic.PostStringMessage(input);
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Posted message {0}.", read);
+                Console.WriteLine("Posted message {0}.", input);
                 Console.WriteLine("You can get the message in:");
                 Console.WriteLine(location);
                 Console.ForegroundColor = ConsoleColor.White;
@@ -38,7 +38,7 @@ namespace ExamplePublisher
             var result = hermesClient.GetGroups().FirstOrDefault(g => g.Name == "Test");
             if (result != null)
             {
-                var chatTopic = result.GetAllTopics().FirstOrDefault(t => t.Name == "Chat");
+                var chatTopic = result.GetTopics().FirstOrDefault(t => t.Name == "Chat");
                 return chatTopic;
             }
             return hermesClient.CreateGroup("Test").CreateTopic("Chat");

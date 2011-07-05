@@ -40,7 +40,7 @@ namespace TellagoStudios.Hermes.Client
             return new Topic(topicCreated, this, restClient);
         }
 
-        public IEnumerable<Topic> GetAllTopics()
+        public IEnumerable<Topic> GetTopics()
         {
             var topics = restClient.Get<Facade.Topic[]>(group.GetLinkForRelation("All Topics"));
             return topics.Select(tf => new Topic(tf, this, restClient)).ToList();
@@ -59,6 +59,12 @@ namespace TellagoStudios.Hermes.Client
                                                                        Name = Name,
                                                                        Id = (Identity) Id
                                                                    });
+        }
+
+        public Topic TryCreateTopic(string name, string description = "")
+        {
+            var topic = GetTopics().FirstOrDefault(t => t.Name == name);
+            return topic ?? CreateTopic(name, description);
         }
     }
 }

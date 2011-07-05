@@ -83,6 +83,21 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         }
 
         [Test]
+        public void WhenCreatingAGroupWithSameNameThanOtherThenTryCreateReturnSame()
+        {
+            var group = client.CreateGroup("Test");
+            var newGroup = client.TryCreateGroup("Test");
+            newGroup.Should().Be.EqualTo(group);
+        }
+
+        [Test]
+        public void WhenUsingTryCreateWithAGroupNameThatDoesnotExistThenCreateAndReturnNewOne()
+        {
+            var group = client.TryCreateGroup("Test");
+            group.Id.Should().Not.Be.NullOrEmpty();
+        }
+
+        [Test]
         public void CanGetGroupById()
         {
             var group = client.CreateGroup("Test");

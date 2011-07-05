@@ -62,10 +62,19 @@ namespace TellagoStudios.Hermes.Client
                             .ToArray();
         }
 
+        public Group TryCreateGroup(string name)
+        {
+            var group = GetGroups().FirstOrDefault(g => g.Name == name);
+            return group ?? CreateGroup(name);
+        }
+
+        public Group TryCreateGroup(string name, string description)
+        {
+            var group = GetGroups().FirstOrDefault(g => g.Name == name);
+            if (group != null) return group;
+            return CreateGroup(name, description);
+        }
+
         #endregion
-
-
-
-
     }
 }

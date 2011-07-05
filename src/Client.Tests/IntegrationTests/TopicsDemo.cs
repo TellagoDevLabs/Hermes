@@ -35,13 +35,21 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         }
         
         [Test]
+        public void WhenCallingTryCreateTopicWithTopicNameThatAlreadyExistThenReturnTopic()
+        {
+            var topic = sampleGroup.CreateTopic("Test topic", "Test description");
+            var tryTopic = sampleGroup.TryCreateTopic("Test topic", "Test description");
+            tryTopic.Should().Be.EqualTo(topic);
+        }
+
+        [Test]
         public void CanGetAllTopicsForAGroup()
         {
             var topic1 = sampleGroup.CreateTopic("Topic1");
             var topic2 = sampleGroup.CreateTopic("Topic2");
             var topic3 = client.CreateGroup("AnotherGroup").CreateTopic("Topic3");
 
-            sampleGroup.GetAllTopics()
+            sampleGroup.GetTopics()
                 .Should()
                         .Contain(topic1)
                         .And.Contain(topic2)
@@ -56,7 +64,7 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
             
             topic1.Delete();
 
-            sampleGroup.GetAllTopics().Should().Be.Empty();
+            sampleGroup.GetTopics().Should().Be.Empty();
         }
 
         [Test]
@@ -67,7 +75,7 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
             topic1.Name = "FooBarBaz";
             topic1.SaveChanges();
 
-            sampleGroup.GetAllTopics().Satisfy(
+            sampleGroup.GetTopics().Satisfy(
                 ts => !ts.Any(t => t.Name == "Topic1") 
                     && ts.Any(t => t.Name == "FooBarBaz"));
         }
