@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
 using TellagoStudios.Hermes.Client;
 
 namespace ExamplePublisher
@@ -13,7 +10,9 @@ namespace ExamplePublisher
             const string uri = "http://localhost:6156";
             var hermesClient = new HermesClient(uri);
 
-            var topic = CreateOrGetTopic(hermesClient);
+            var topic = hermesClient.TryCreateGroup("Chat Server")
+                                    .TryCreateTopic("Weather Channel");
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Publishing in topic \"{0}\" from group \"{1}\"", topic.Name, topic.Group.Name);
             Console.ForegroundColor = ConsoleColor.White;
@@ -31,17 +30,6 @@ namespace ExamplePublisher
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine();
             }
-        }
-
-        public static Topic CreateOrGetTopic(HermesClient hermesClient)
-        {
-            var result = hermesClient.GetGroups().FirstOrDefault(g => g.Name == "Test");
-            if (result != null)
-            {
-                var chatTopic = result.GetTopics().FirstOrDefault(t => t.Name == "Chat");
-                return chatTopic;
-            }
-            return hermesClient.CreateGroup("Test").CreateTopic("Chat");
         }
     }
 }

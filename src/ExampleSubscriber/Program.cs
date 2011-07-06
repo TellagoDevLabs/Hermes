@@ -14,30 +14,17 @@ namespace ExampleSubscriber
             const string uri = "http://localhost:6156";
             
             var hermesClient = new HermesClient(uri);
-            var topic = CreateOrGetTopic(hermesClient);
-            var subscription = topic.PollFeed(2)
-                                    .Subscribe(Console.WriteLine);
+            
+            var topic = hermesClient.TryCreateGroup("Chat Server")
+                                    .TryCreateTopic("Weather Channel");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Subscribed to topic \"{0}\" from group \"{1}\"", topic.Name, topic.Group.Name);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine();
-            Console.ReadLine();
-            subscription.Dispose();
-        }
-
-        public static Topic CreateOrGetTopic(HermesClient hermesClient)
-        {
-            var result = hermesClient.GetGroups().FirstOrDefault(g => g.Name == "Test");
-            if (result != null)
+            using(var subscription = topic.PollFeed(2).Subscribe(Console.WriteLine))
             {
-                var chatTopic = result.GetTopics().FirstOrDefault(t => t.Name == "Chat");
-                return chatTopic;
-            }
-            else
-            {
-                return hermesClient.CreateGroup("Test").CreateTopic("Chat");
+                Console.ReadLine();
+                subscription.Dispose();    
             }
         }
+
+        
     }
 }
