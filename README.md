@@ -1,7 +1,6 @@
 What is Hermes?
 ===============
-
-Hermes is a simple opensource middleware for communicating applications. Hermes follows the Publish/Subscribe messaging pattern where senders (Publishers) instead of send the messages directly to receivers (Subscribers), they publish the messages to a centralized repository (Hermes in this case) characterized into topics. Subscribers express in one or more topics.
+Hermes is a simple opensource middleware for communicating applications. Hermes follows the Publish/Subscribe messaging pattern where senders (Publishers) instead of send the messages directly to receivers (Subscribers), they publish the messages to a centralized repository (Hermes in this case) characterized into topics. Subscribers express interest in one or more topics.
 
 How is Hermes different than any other Pub/Sub application?
 ===========================================================
