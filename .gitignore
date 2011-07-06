@@ -15,9 +15,9 @@ thumbs.db
 _ReSharper.*
 *.resharper
 *.orig
-Packages\*
+src/[pP]ackages/*
 *.log*
 *.svclog
-glob:src/packages/*
+
 
 /README.html
