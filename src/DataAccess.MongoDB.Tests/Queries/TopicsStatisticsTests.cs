@@ -72,5 +72,15 @@ namespace DataAccess.Tests.Queries
                 .Satisfy(mostActives => mostActives.Any(ma => ma.Name == "FooTopic" && ma.MessageCount == 3)
                                      && mostActives.Any(ma => ma.Name == "BarTopic" && ma.MessageCount == 2));
         }
+
+        [Test]
+        public void WhenCollectionDoesNotExist_ThenReturnEmpty()
+        {
+            base.mongoDb.DropCollection(MongoDbConstants.Collections.Topics);
+            base.mongoDb.DropCollection(MongoDbConstants.Collections.Groups);
+            var query = new TopicsStatistics(base.connectionString);
+            var result = query.Execute();
+            result.MostActiveAllTime.Should().Be.Empty();
+        }
     }
 }

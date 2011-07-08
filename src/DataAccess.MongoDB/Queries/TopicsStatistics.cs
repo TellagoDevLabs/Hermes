@@ -15,9 +15,21 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
 
         public TopicsStatisticsResults Execute()
         {
-            var queryResult = DB.GetCollectionByType<Topic>()
+            
+            
+            //var 
+            if (!DB.CollectionExists(MongoDbConstants.Collections.Topics))
+            {
+                return new TopicsStatisticsResults(
+                            Enumerable.Empty<TopicStatisticsSingleResults>(), 
+                            Enumerable.Empty<TopicStatisticsSingleResults>());
+            }
+
+            var topicCollection = DB.GetCollectionByType<Topic>();
+            var queryResult = topicCollection
                 .MapReduce("function() { var getCount = 'db.msg_' + this._id + '.count()'; emit( this._id, { name: this.Name, count: eval(getCount) } );}", 
                            "function(key, vals) { var ret = { name: vals[0].name, count: vals[0].count }; return ret; }");
+
             var result = queryResult.InlineResults.SelectMany(b => b.Values
                                                                        .OfType<BsonDocument>()
                                                                        .Select(bd => new TopicStatisticsSingleResults
