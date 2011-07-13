@@ -79,7 +79,7 @@ function HermesClient(serviceUrl) {
             })
             .done(function (data) {
                 console.log('Group ' + name + ' created.');
-                return buildGroupFromXml($(data));
+                result.resolve(buildGroupFromXml($(data)));
             });
 
         return result.promise();

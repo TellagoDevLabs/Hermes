@@ -42,7 +42,6 @@ $(document).ready(function () {
         stop();
 
         promise.done(function (groups) {
-            start();
             action(groups);
         })
             .fail(function () {
@@ -53,12 +52,14 @@ $(document).ready(function () {
 
     test("when hermes.GetGroups completes, it returns groups", function () {
         whenGetGroupsCompletes(function (groups) {
+            start();
             ok(groups[0] instanceof Group, "groups should be an array of Groups");
         });
     });
 
     test("GetGroups new groups should have id", function () {
         whenGetGroupsCompletes(function (groups) {
+            start();
             var id = groups[0].getId();
             notEqual(id, null, 'Group Id should not be null');
             notEqual(id, '', 'Group Id should not be an empty string');
@@ -67,6 +68,7 @@ $(document).ready(function () {
 
     test("GetGroups new groups should have name", function () {
         whenGetGroupsCompletes(function (groups) {
+            start();
             var name = groups[0].getName();
             notEqual(name, null, 'Group name should not be null');
             notEqual(name, '', 'Group name should not be an empty string');
@@ -75,6 +77,7 @@ $(document).ready(function () {
 
     test("GetGroups new groups should have description", function () {
         whenGetGroupsCompletes(function (groups) {
+            start();
             var description = groups[0].getDescription();
             notEqual(description, null, 'Group description should not be null');
         });
@@ -82,6 +85,7 @@ $(document).ready(function () {
 
     test("GetGroups new groups should have link to create topic", function () {
         whenGetGroupsCompletes(function (groups) {
+            start();
             var links = groups[0].getLinks();
             ok('Create Topic' in links);
             notEqual(links['Create Topic'], null);
@@ -91,6 +95,7 @@ $(document).ready(function () {
 
     test("GetGroups new groups should have link to all topics", function () {
         whenGetGroupsCompletes(function (groups) {
+            start();
             var links = groups[0].getLinks();
             ok('All Topics' in links);
             notEqual(links['All Topics'], null);
@@ -100,6 +105,7 @@ $(document).ready(function () {
 
     test("GetGroups new groups should have link to delete", function () {
         whenGetGroupsCompletes(function (groups) {
+            start();
             var links = groups[0].getLinks();
             ok('Delete' in links);
             notEqual(links['Delete'], null);
@@ -109,6 +115,7 @@ $(document).ready(function () {
 
     test("GetGroups new groups should have link to update", function () {
         whenGetGroupsCompletes(function (groups) {
+            start();
             var links = groups[0].getLinks();
             ok('Update' in links);
             notEqual(links['Update'], null);
@@ -121,23 +128,39 @@ $(document).ready(function () {
     var removeGroupBeforeTest = function (groupName, action) {
         var client = new HermesClient(serviceUrl);
         stop();
+
+        var deferred = $.Deferred();
+
         client.GetGroupByName(groupName)
-            .pipe(function (group) {
-                if (group != null)
-                    return group.Delete();
+            .done(function(group) {
+                if (group == null) {
+                    deferred.resolve();
+                    return;
+                };
+                group.Delete()
+                    .done(deferred.resolve)
+                    .fail(function() {
+                        console.log(groupName + ' could not be deleted. Test setup failed.');
+                        deferred.reject();
+                    });
             })
-            .pipe(function () {
-                start();
-                action();
-            }, function () {
-                start();
-                ok(false, 'Failed to delete the group before running the test.');
+            .fail(function() {
+                console.log('Unable to get ' + groupName + ' group.');
+                deferred.reject();
             });
+
+        deferred.done(action)
+        .fail(function () {
+            console.log(groupName + ' test setup failed.');
+            start();
+            ok(false, 'Failed to delete the group before running the test.');
+        });
     };
 
     test("hermes.CreateGroup returns a promise", function () {
         var groupName = 'hermes.CreateGroup returns a promise';
         removeGroupBeforeTest(groupName, function () {
+            start();
             var client = new HermesClient(serviceUrl);
             var createGroupPromise = client.CreateGroup('hermes.CreateGroup returns a promise');
             ok(createGroupPromise != null && 'done' in createGroupPromise && 'fail' in createGroupPromise, 'CreateGroup should return a promise');
@@ -161,11 +184,10 @@ $(document).ready(function () {
 
     var whenCreateGroupCompletes = function (name, description, action) {
         removeGroupBeforeTest(name, function () {
-            stop();
+            console.log('Now creating group ' + name);
             var client = new HermesClient(serviceUrl);
             client.CreateGroup(name, description)
                 .done(function (group) {
-                    start();
                     action(group);
                 })
                 .fail(function () {
@@ -176,13 +198,15 @@ $(document).ready(function () {
     };
 
     test("hermes.CreateGroup completes", function () {
-        whenCreateGroupCompletes('hermes.CreateGroup completes', '', function (group) {
+        whenCreateGroupCompletes('{hermes.CreateGroup completes}', '', function (group) {
+            start();
             ok(true, 'Group created.');
         });
     });
 
     test("hermes.CreateGroup returns a Group", function () {
-        whenCreateGroupCompletes('hermes.CreateGroup returns a Group', '', function (group) {
+        whenCreateGroupCompletes('{hermes.CreateGroup returns a Group}', '', function (group) {
+            start();
             ok(group instanceof Group);
         });
     });
