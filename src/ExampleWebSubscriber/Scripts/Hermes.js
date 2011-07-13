@@ -9,17 +9,24 @@ function HermesClient(serviceUrl) {
         if (name == null || name == '')
             throw 'Group name is null or empty';
 
-        var data = {
-            name: name,
-            description: description
-        };
+        console.log('Creating group ' + name);
 
+        var template = $('<ignore><Group><name/><description/><parentId/></Group></ignore>');
+        $(template).find('name').text(name);
+        if (typeof description != 'undefined' && description != null && description != '')
+            $(template).find('description').text(description);
+        var data = $(template).html();
         var action = restClient.Post(restClient.Operations.Groups, null, data);
         var result = $.Deferred();
 
         action
-            .fail(function(msg) { result.reject(msg); })
-            .done(function(data) {
+            .fail(function (ex) {
+                console.log('Error creating group ' + name + ': ');
+                console.log(ex);
+                result.reject(ex);
+            })
+            .done(function (data) {
+                console.log('Group ' + name + ' created.');
                 console.log(data);
                 throw "Not implemented: deserializing data in to a group object.";
             });
@@ -45,13 +52,22 @@ function HermesClient(serviceUrl) {
             return buildRequest(url, method, headers);
         };
 
-        var buildRequest = function(url, method, headers) {
-            return function(data) {
-                return $.ajax(url, {
+        var buildRequest = function (url, method, headers) {
+            console.log('Building ' + method + ' request to ' + url);
+            console.log(headers);
+
+            return function (data) {
+                console.log('Sending ' + method + ' request to ' + url);
+                var requestSettings = {
                     type: method,
+                    url: url,
                     data: data,
+                    contentType: "application/xml",
+                    processData: false,
                     headers: headers
-                });
+                };
+                console.log(requestSettings);
+                return $.ajax(requestSettings);
             };
         };
         
@@ -76,13 +92,18 @@ function HermesClient(serviceUrl) {
             var createGroupRequest = client(operation, "POST", headers)(data);
             var promise = $.Deferred();
 
-            createGroupRequest.error(function(msg) {
-                promise.reject(msg);
-            }).success(function(data, status, xhr) {
+            createGroupRequest.fail(function (xhr, status) {
+                console.log('POST for operation ' + operation + ' failed.');
+                console.log(xhr);
+                console.log(createGroupRequest.getAllResponseHeaders());
+                promise.reject(xhr, status);
+            }).done(function (data, status, xhr) {
+                console.log('POST for operation ' + operation + ' completed successfully.');
                 var location = xhr.getResponseHeader('Location');
-                $.get(location).error(function(msg) {
-                    promise.reject(msg);
-                }).success(function(data) {
+                console.log('GET result from ' + location);
+                $.get(location).fail(function (xhr, status) {
+                    promise.reject(xhr, status);
+                }).done(function (data) {
                     promise.resolve(data);
                 });
             });

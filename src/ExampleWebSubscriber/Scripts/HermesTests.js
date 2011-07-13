@@ -53,7 +53,11 @@ test("hermes.CreateGroup completes", function () {
 
     client.CreateGroup('hermes.CreateGroup completes')
         .done(function (group) {
-            ok(true);
+            ok(true, 'It worked!');
+            start();
+        })
+        .fail(function (xhr, status) {
+            ok(true, 'It completes, even if it failed.');
             start();
         });
 });
