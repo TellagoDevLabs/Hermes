@@ -33,7 +33,6 @@ $(document).ready(function () {
     test("Call hermes.GetGroups returns a promise", function () {
         var client = new HermesClient(serviceUrl);
         var actual = client.GetGroups();
-
         ok(actual != null && 'done' in actual && 'fail' in actual, 'result of client.GetGroups() should have done and fail methods');
     });
 
@@ -108,8 +107,8 @@ $(document).ready(function () {
         });
     });
 
-    test("GetGroups new groups should have link to update", function() {
-        whenGetGroupsCompletes(function(groups) {
+    test("GetGroups new groups should have link to update", function () {
+        whenGetGroupsCompletes(function (groups) {
             var links = groups[0].getLinks();
             ok('Update' in links);
             notEqual(links['Update'], null);
@@ -117,14 +116,32 @@ $(document).ready(function () {
         });
     });
 
-
-
     module("HermesClient.CreateGroup");
 
-    test("hermes.CreateGroup returns a promise", function () {
+    var removeGroupBeforeTest = function (groupName, action) {
         var client = new HermesClient(serviceUrl);
-        var createGroupPromise = client.CreateGroup('junk');
-        ok(createGroupPromise != null && 'done' in createGroupPromise && 'fail' in createGroupPromise, 'CreateGroup should return a promise');
+        stop();
+        client.GetGroupByName(groupName)
+            .pipe(function (group) {
+                if (group != null)
+                    return group.Delete();
+            })
+            .pipe(function () {
+                start();
+                action();
+            }, function () {
+                start();
+                ok(false, 'Failed to delete the group before running the test.');
+            });
+    };
+
+    test("hermes.CreateGroup returns a promise", function () {
+        var groupName = 'hermes.CreateGroup returns a promise';
+        removeGroupBeforeTest(groupName, function () {
+            var client = new HermesClient(serviceUrl);
+            var createGroupPromise = client.CreateGroup('hermes.CreateGroup returns a promise');
+            ok(createGroupPromise != null && 'done' in createGroupPromise && 'fail' in createGroupPromise, 'CreateGroup should return a promise');
+        });
     });
 
     test("hermes.CreateGroup with no name", function () {
@@ -142,19 +159,32 @@ $(document).ready(function () {
         raises(function () { client.CreateGroup(''); }, "Calling CreateGroup with empty name should throw an exception");
     });
 
-    test("hermes.CreateGroup completes", function () {
-        var client = new HermesClient(serviceUrl);
-        stop();
+    var whenCreateGroupCompletes = function (name, description, action) {
+        removeGroupBeforeTest(name, function () {
+            stop();
+            var client = new HermesClient(serviceUrl);
+            client.CreateGroup(name, description)
+                .done(function (group) {
+                    start();
+                    action(group);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'Failed to create ' + name + ' group.');
+                });
+        });
+    };
 
-        client.CreateGroup('hermes.CreateGroup completes')
-            .done(function (group) {
-                ok(true, 'It worked!');
-                start();
-            })
-            .fail(function (xhr, status) {
-                ok(true, 'It completes, even if it failed.');
-                start();
-            });
+    test("hermes.CreateGroup completes", function () {
+        whenCreateGroupCompletes('hermes.CreateGroup completes', '', function (group) {
+            ok(true, 'Group created.');
+        });
+    });
+
+    test("hermes.CreateGroup returns a Group", function () {
+        whenCreateGroupCompletes('hermes.CreateGroup returns a Group', '', function (group) {
+            ok(group instanceof Group);
+        });
     });
 
 });

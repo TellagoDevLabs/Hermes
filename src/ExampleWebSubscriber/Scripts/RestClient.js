@@ -2,14 +2,13 @@
     if (!(this instanceof RestClient))
         return new RestClient(serviceUrl);
 
-    var makeAbsolute = function (base, relativeUrl) {
-        if (relativeUrl == null || relativeUrl == '')
-            return base;
-        return base + relativeUrl;
+    this.getUrl = function (operation) {
+        if (operation == null || operation == '')
+            return serviceUrl;
+        return serviceUrl + operation;
     };
 
-    var makeRequest = function (operation, method, headers, data) {
-        var url = makeAbsolute(serviceUrl, operation);
+    var makeRequest = function (url, method, headers, data) {
         var settings = {
             type: method,
             url: url,
@@ -20,33 +19,30 @@
         return $.ajax(settings);
     };
 
-    this.Get = function(operation, headers) {
-        return makeRequest(operation, 'GET', headers, '');
+    this.Get = function(url, headers) {
+        return makeRequest(url, 'GET', headers, '');
     };
 
-    this.Put = function (operation, headers, data) {
+    this.Put = function (url, headers, data) {
         throw "Not Implemented";
     };
 
-    this.Post = function (operation, headers, data) {
-        throw "Not Implemented";
-        //        var url = makeAbsolute(serviceUrl, operation);
-        //        var settings = {
-        //            type: 'POST',
-        //            url: url,
-        //            data: data,
-        //            dataType: 'xml',
-        //            contentType: 'application/xml'
-        //        };
-        //        console.log(settings);
-        //        return $.ajax(settings)
-        //            .fail(function (xhr, status, errorThrown) {
-        //                console.log('POST to ' + operation + ' failed: ' + status);
-        //                console.log(xhr.getAllResponseHeaders());
-        //            });
+    this.Post = function (url, headers, data) {
+        var deferred = $.Deferred();
+
+        makeRequest(url, 'POST', headers, data)
+            .done(function(data, status, xhr) {
+                var location = xhr.getResponseHeader('Location');
+                makeRequest(location, 'GET')
+                    .done(deferred.resolve)
+                    .fail(deferred.reject);
+            })
+            .fail(deferred.reject);
+
+        return deferred.promise();
     };
 
-    this.Delete = function (operation, headers, data) {
-        throw "Not Implemented";
+    this.Delete = function (url, headers) {
+        return makeRequest(url, 'DELETE', headers);
     };
 };

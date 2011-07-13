@@ -17,26 +17,32 @@ function HermesClient(serviceUrl) {
         }
     };
 
+    var buildGroupFromXml = function(groupElement) {
+        var linkElements = groupElement.find('links > link');
+        var linkMap = { };
+        for (var linkIndex = 0; linkIndex < linkElements.length; linkIndex++) {
+            var linkElement = $(linkElements[linkIndex]);
+            linkMap[linkElement.attr('rel')] = linkElement.attr('uri');
+        };
+        var id = groupElement.find("id").text();
+        var name = groupElement.find("name").text();
+        var description = groupElement.find("description").text();
+        return new Group(restClient, id, name, description, linkMap);
+    };
+
     this.GetGroups = function () {
         var deferred = $.Deferred();
-        var request = restClient.Get(operations.Groups);
+        var url = restClient.getUrl(operations.Groups);
+        var request = restClient.Get(url);
         request.done(function (data, status, xhr) {
             var groups = [];
             var doc = $(data);
             var groupElements = doc.find("Group");
             for (var groupIndex = 0; groupIndex < groupElements.length; groupIndex++) {
                 var groupElement = $(groupElements[groupIndex]);
-                var linkElements = groupElement.find('links > link');
-                var linkMap = {};
-                for (var linkIndex = 0; linkIndex < linkElements.length; linkIndex++) {
-                    var linkElement = $(linkElements[linkIndex]);
-                    linkMap[linkElement.attr('rel')] = linkElement.attr('uri');
-                };
-                var id = groupElement.find("id").text();
-                var name = groupElement.find("name").text();
-                var description = groupElement.find("description").text();
-                groups.push(new Group(id, name, description, linkMap));
+                groups.push(buildGroupFromXml(groupElement));
             };
+            console.log('Returning ' + groups.length + ' groups.');
             deferred.resolve(groups);
         })
         .fail(function (xhr, status, ex) {
@@ -44,7 +50,7 @@ function HermesClient(serviceUrl) {
         });
         return deferred.promise();
     };
-    
+
     this.CreateGroup = function (name, description) {
         if (name == null || name == '')
             throw 'Group name is null or empty';
@@ -52,40 +58,52 @@ function HermesClient(serviceUrl) {
             description = '';
 
         console.log('Creating group ' + name);
-        
+
         var group = { name: name, description: description };
+        group.xmlns = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade";
         var data = $.json2xml(group, {
             formatOutput: true,
             rootTagName: 'Group',
             nodes: ['name', 'description']
         });
 
-//        var action = restClient.Post(operations.Groups, {}, data);
-//        var result = $.Deferred();
+        var url = restClient.getUrl(operations.Groups);
+        var action = restClient.Post(url, {}, data);
+        var result = $.Deferred();
 
-//        action
-//            .fail(function (ex) {
-//                console.log('Error creating group ' + name + ': ');
-//                console.log(ex);
-//                result.reject(ex);
-//            })
-//            .done(function (data) {
-//                console.log('Group ' + name + ' created.');
-//                console.log(data);
-//                throw "Not implemented: deserializing data in to a group object.";
-//            });
+        action
+            .fail(function (ex) {
+                console.log('Error creating group ' + name + ': ');
+                console.log(ex);
+                result.reject(ex);
+            })
+            .done(function (data) {
+                console.log('Group ' + name + ' created.');
+                return buildGroupFromXml($(data));
+            });
 
-//        return result.promise();
+        return result.promise();
+    };
+
+    this.GetGroupByName = function(name) {
+        return this.GetGroups().pipe(function(groups) {
+            for (var i = 0; i < groups.length; i++) {
+                var group = groups[i];
+                if (group.getName() == name)
+                    return group;
+            }
+            return null;
+        });
     };
 
 }
 
-function Group(id, groupName, groupDescription, linkMap) {
+function Group(restClient, id, groupName, groupDescription, linkMap) {
     if (!(this instanceof Group))
         return new Group(groupName, groupDescription);
     if (groupName == null || groupName == '')
         throw new "name should not be null or empty";
-
+    
     this.getId = function () { return id; };
     this.getName = function () { return groupName; };
     this.getDescription = function () { return groupDescription; };
@@ -95,6 +113,13 @@ function Group(id, groupName, groupDescription, linkMap) {
             links[key] = linkMap[key];
         return links;
     };
+
+    this.Delete = function () {
+        console.log('Deleting ' + groupName + ' group.');
+        var url = linkMap['Delete'];
+        return restClient.Delete(url);
+    };
+    
 }
 
 function Topic(topicName, topicDescription) {
