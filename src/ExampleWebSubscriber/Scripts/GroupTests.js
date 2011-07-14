@@ -148,6 +148,41 @@ $(document).ready(function () {
         });
     });
 
+    module('group.TryCreateTopic');
+
+    test('TryCreateTopic returns a newly created topic', function () {
+        var groupName = 'TryCreateTopic returns a newly created topic';
+        var topicName = groupName;
+        usingGroupWithoutTopics(groupName, function (group) {
+            group.TryCreateTopic(topicName)
+                .done(function (topic) {
+                    start();
+                    equal(topic.Name, topicName);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'TryCreateTopic failed.');
+                });
+        });
+    });
+
+    test('TryCreateTopic returns an existing topic', function () {
+        var groupName = 'TryCreateTopic returns an existing topic';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            group.TryCreateTopic(topicName)
+                .done(function (topic) {
+                    start();
+                    equal(topic.Name, topicName);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'TryCreateTopic failed.');
+                });
+        });
+    });
+
+
     module('Deserializing topics');
 
     test("new topics should have id", function () {

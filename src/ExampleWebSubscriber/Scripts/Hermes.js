@@ -220,6 +220,23 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
             return null;
         });
     };
+
+    this.TryCreateTopic = function (name, description) {
+        var deferred = $.Deferred();
+        thisGroup.GetTopicByName(name)
+            .done(function (topic) {
+                if (topic != null) {
+                    deferred.resolve(topic);
+                } else {
+                    thisGroup.CreateTopic(name, description)
+                        .done(deferred.resolve)
+                        .fail(deferred.reject);
+                }
+            })
+            .fail(deferred.reject);
+
+        return deferred.promise();
+    };
     
 }
 
