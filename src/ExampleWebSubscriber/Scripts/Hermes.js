@@ -1,4 +1,5 @@
-﻿///<reference path="jquery.json2xml.js" />
+﻿///<reference path="jquery-1.6.2.js" />
+///<reference path="jquery.json2xml.js" />
 ///<reference path="RestClient.js" />
 
 function HermesClient(serviceUrl) {
@@ -129,6 +130,20 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
         return new Group(groupName, groupDescription);
     if (groupName == null || groupName == '')
         throw new "name should not be null or empty";
+
+    var buildTopicFromXml = function (topicElement) {
+        var linkElements = topicElement.find('links > link');
+        var linkMap = {};
+        for (var linkIndex = 0; linkIndex < linkElements.length; linkIndex++) {
+            var linkElement = $(linkElements[linkIndex]);
+            linkMap[linkElement.attr('rel')] = linkElement.attr('uri');
+        };
+        var id = topicElement.find("id").text();
+        var name = topicElement.find("name").text();
+        var description = topicElement.find("description").text();
+        return new Topic(restClient, id, name, description, linkMap);
+    };
+
     
     this.getId = function () { return id; };
     this.Name = groupName;
@@ -156,8 +171,54 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
         var url = linkMap['Update'];
         return restClient.Put(url, null, data);
     };
+
+    this.GetTopics = function () {
+        var deferred = $.Deferred();
+        var url = linkMap['All Topics'];
+        restClient.Get(url, null)
+                    .done(function (data, status, xhr) {
+                        var topics = [];
+                        var doc = $(data);
+                        var topicElements = doc.find("Topic");
+                        for (var topicIndex = 0; topicIndex < topicElements.length; topicIndex++) {
+                            var topicElement = $(topicElements[topicIndex]);
+                            topics.push(buildTopicFromXml(topicElement));
+                        };
+                        deferred.resolve(topics);
+                    })
+                    .fail(deferred.reject);
+        return deferred.promise();
+    };
+
+    this.CreateTopic = function (topicName, topicDescription) {
+        var deferred = $.Deferred();
+        var url = linkMap['Create Topic'];
+        var topic = { name: topicName, description: topicDescription, groupId: this.getId() };
+        topic.xmlns = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade";
+        var data = $.json2xml(topic, {
+            formatOutput: true,
+            rootTagName: 'Topic',
+            nodes: ['name', 'description','groupId']
+        });
+
+        restClient.Post(url, null, data)
+            .done(function(data, status, xhr) {
+                deferred.resolve(buildTopicFromXml($(data)));
+            }).fail(deferred.reject);
+        return deferred.promise();
+    };
     
 }
 
-function Topic(topicName, topicDescription) {
+function Topic(restClient, id, topicName, topicDescription, linkMap) {
+    if (!(this instanceof Topic))
+        return new Topic(topicName, topicDescription);
+    if (topicName == null || topicName == '')
+        throw new "name should not be null or empty";
+
+    this.Delete = function () {
+        var url = linkMap['Delete'];
+        return restClient.Delete(url);
+    };
+   
 };

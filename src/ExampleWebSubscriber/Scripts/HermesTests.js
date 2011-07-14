@@ -62,6 +62,7 @@ $(document).ready(function () {
     test("when hermes.GetGroups completes, it returns groups", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
+            ok(groups.length > 0, 'groups array was empty');
             for (var i = 0; i < groups.length; i++)
                 ok(groups[i] instanceof Group);
         });
@@ -296,11 +297,11 @@ $(document).ready(function () {
         whenCreateGroupCompletes(groupName, '', function () {
             var client = new HermesClient(serviceUrl);
             client.TryCreateGroup(groupName)
-                .done(function(group) {
+                .done(function (group) {
                     start();
                     equal(group.Name, groupName);
                 })
-                .fail(function() {
+                .fail(function () {
                     start();
                     ok(false, 'TryCreateGroup failed.');
                 });
@@ -340,10 +341,10 @@ $(document).ready(function () {
                 start();
                 ok(true);
             })
-            .fail(function () {
-                start();
-                ok(false, 'SaveChanges failed.');
-            });
+                .fail(function () {
+                    start();
+                    ok(false, 'SaveChanges failed.');
+                });
         });
     });
 
@@ -366,6 +367,100 @@ $(document).ready(function () {
                     start();
                     ok(false, 'SaveChanges failed.');
                 });
+        });
+    });
+
+    module('group.CreateTopic');
+
+    var usingGroup = function (groupName, action) {
+        stop();
+        var client = new HermesClient(serviceUrl);
+        client.TryCreateGroup(groupName, '')
+            .done(action)
+            .fail(function () {
+                start();
+                ok(false, 'call to GetGroups failed.');
+            });
+    };
+
+    var usingGroupWithoutTopics = function (groupName, action) {
+        usingGroup(groupName, function (group) {
+            group.GetTopics()
+                .done(function (topics) {
+                    var promises = [];
+                    for (var i = 0; i < topics.length; i++)
+                        promises.push(topics[i].Delete());
+                    $.when.apply(this, promises)
+                        .done(function () {
+                            action(group);
+                        })
+                        .fail(function () {
+                            start();
+                            ok(false, 'unable to remove one or more groups');
+                        });
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'call to GetTopics failed.');
+                });
+        });
+    };
+
+    var whenGetTopicsCompletes = function (groupName, action) {
+        usingGroup(groupName, function (group) {
+            group.GetTopics()
+                .done(action)
+                .fail(function () {
+                    start();
+                    ok(false, 'call to GetTopics failed.');
+                });
+        });
+    };
+
+    test('group.CreateTopic returns a promise', function () {
+        var groupName = 'group.CreateTopic returns a promise';
+        usingGroup(groupName, function (group) {
+            start();
+            var actual = group.CreateTopic('group.CreateTopic returns a promise', '');
+            ok('done' in actual && 'fail' in actual);
+        });
+    });
+
+    test('when group.CreateTopic completes, it returns a topic', function () {
+        var groupName = 'when group.CreateTopic completes, it returns a topic';
+        var topicName = groupName;
+        usingGroupWithoutTopics(groupName, function (group) {
+            start();
+            group.CreateTopic(topicName, '')
+                .done(function (topic) {
+                    start();
+                    ok(topic instanceof Topic);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'CreateTopic failed.');
+                });
+        });
+    });
+
+    module('group.GetTopics');
+
+    test("group.GetTopics returns a promise", function () {
+        var groupName = "group.GetTopics returns a promise";
+        usingGroup(groupName, function (group) {
+            start();
+            var actual = group.GetTopics();
+            ok('done' in actual && 'fail' in actual);
+        });
+    });
+
+    test("when group.GetTopics completes, it returns topics", function () {
+        var groupName = "when group.GetTopics completes, it returns topics";
+        whenGetTopicsCompletes(groupName, function (topics) {
+            start();
+            ok(topics.length > 0, 'topics array was empty');
+            for (var i = 0; i < topics.length; i++)
+                ok(topics[i] instanceof Topic);
         });
     });
 
