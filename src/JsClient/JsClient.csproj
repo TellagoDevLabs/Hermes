@@ -51,6 +51,11 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\jquery.jfeed.js" />
+    <Content Include="Scripts\jquery.jfeed.js.gpl.license.txt" />
+    <Content Include="Scripts\jquery.jfeed.js.mit.license.txt" />
+    <Content Include="Scripts\jquery.jfeed.js.notes.txt" />
+    <Content Include="Scripts\jquery.jfeed.pack.js" />
     <Content Include="Scripts\rx.js" />
     <Content Include="Scripts\rx.js.license.txt" />
     <Content Include="Scripts\Tests\AsyncTestHelpers.js" />
