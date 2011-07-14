@@ -51,19 +51,14 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\AsyncTestHelpers.js" />
-    <Content Include="Scripts\GroupTests.js" />
-    <Content Include="Scripts\HermesClientTests.js" />
+    <Content Include="Scripts\Tests\AsyncTestHelpers.js" />
+    <Content Include="Scripts\Tests\GroupTests.js" />
+    <Content Include="Scripts\Tests\HermesClientTests.js" />
     <Content Include="Scripts\Hermes.js" />
     <Content Include="default.htm" />
-    <Content Include="Scripts\jquery-1.6.2-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.6.2.js" />
-    <Content Include="Scripts\jquery-1.6.2.min.js" />
     <Content Include="Scripts\jquery.json2xml.js" />
-    <Content Include="Scripts\jQuery.tmpl.js" />
-    <Content Include="Scripts\jQuery.tmpl.min.js" />
     <Content Include="Scripts\RestClient.js" />
-    <Content Include="Scripts\TopicTests.js" />
+    <Content Include="Scripts\Tests\TopicTests.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -74,9 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
