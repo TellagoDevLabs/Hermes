@@ -6,26 +6,26 @@ $(document).ready(function () {
     var serviceUrl = 'http://localhost:6156/';
 
     test("Always passes", function () {
-        ok(true, "Passes");
+        ok(true);
     });
 
     module("HermesClient");
 
     test("Call HermesClient constructor without new", function () {
         var hermes = HermesClient(serviceUrl);
-        ok(hermes instanceof HermesClient, "The returned value should be an instance of Hermes");
+        ok(hermes instanceof HermesClient);
     });
 
     test("Call HermesClient constructor without serviceUrl", function () {
-        raises(function () { HermesClient(); }, "Calling constructor without a serviceUrl should raise an exception.");
+        raises(function () { HermesClient(); });
     });
 
     test("Call HermesClient constructor with null serviceUrl", function () {
-        raises(function () { HermesClient(null); }, "Calling constructor a null serviceUrl should raise an exception.");
+        raises(function () { HermesClient(null); });
     });
 
     test("Call HermesClient constructor with empty serviceUrl", function () {
-        raises(function () { HermesClient(''); }, "Calling constructor with an empty serviceUrl should raise an exception.");
+        raises(function () { HermesClient(''); });
     });
 
     module("HermesClient.GetGroups");
@@ -33,27 +33,36 @@ $(document).ready(function () {
     test("Call hermes.GetGroups returns a promise", function () {
         var client = new HermesClient(serviceUrl);
         var actual = client.GetGroups();
-        ok(actual != null && 'done' in actual && 'fail' in actual, 'result of client.GetGroups() should have done and fail methods');
+        ok(actual != null && 'done' in actual && 'fail' in actual);
     });
 
-    var whenGetGroupsCompletes = function (action) {
+    var ensureAtLeastOneGroupExists = function (action) {
+        // Yes, atempt to create this group before each test.
         var client = new HermesClient(serviceUrl);
-        var promise = client.GetGroups();
+        client.CreateGroup('junk', '').done(action).fail(action);
         stop();
-
-        promise.done(function (groups) {
-            action(groups);
-        })
-            .fail(function () {
-                start();
-                ok(false, 'call to GetGroups failed.');
-            });
     };
+
+    var whenGetGroupsCompletes = function (action) {
+        ensureAtLeastOneGroupExists(function () {
+            var client = new HermesClient(serviceUrl);
+            var promise = client.GetGroups();
+
+            promise.done(function (groups) {
+                action(groups);
+            })
+                .fail(function () {
+                    start();
+                    ok(false, 'call to GetGroups failed.');
+                });
+        });
+    };
+
 
     test("when hermes.GetGroups completes, it returns groups", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
-            ok(groups[0] instanceof Group, "groups should be an array of Groups");
+            ok(groups[0] instanceof Group);
         });
     });
 
@@ -61,8 +70,8 @@ $(document).ready(function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var id = groups[0].getId();
-            notEqual(id, null, 'Group Id should not be null');
-            notEqual(id, '', 'Group Id should not be an empty string');
+            notEqual(id, null);
+            notEqual(id, '');
         });
     });
 
@@ -70,8 +79,8 @@ $(document).ready(function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var name = groups[0].getName();
-            notEqual(name, null, 'Group name should not be null');
-            notEqual(name, '', 'Group name should not be an empty string');
+            notEqual(name, null);
+            notEqual(name, '');
         });
     });
 
@@ -79,7 +88,7 @@ $(document).ready(function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var description = groups[0].getDescription();
-            notEqual(description, null, 'Group description should not be null');
+            notEqual(description, null);
         });
     });
 
@@ -125,65 +134,65 @@ $(document).ready(function () {
 
     module("HermesClient.CreateGroup");
 
-    var removeGroupBeforeTest = function (groupName, action) {
+    var removeGroup = function (groupName, action) {
         var client = new HermesClient(serviceUrl);
         stop();
 
         var deferred = $.Deferred();
 
         client.GetGroupByName(groupName)
-            .done(function(group) {
+            .done(function (group) {
                 if (group == null) {
                     deferred.resolve();
                     return;
                 };
                 group.Delete()
                     .done(deferred.resolve)
-                    .fail(function() {
+                    .fail(function () {
                         console.log(groupName + ' could not be deleted. Test setup failed.');
                         deferred.reject();
                     });
             })
-            .fail(function() {
+            .fail(function () {
                 console.log('Unable to get ' + groupName + ' group.');
                 deferred.reject();
             });
 
         deferred.done(action)
-        .fail(function () {
-            console.log(groupName + ' test setup failed.');
-            start();
-            ok(false, 'Failed to delete the group before running the test.');
-        });
+            .fail(function () {
+                console.log(groupName + ' test setup failed.');
+                start();
+                ok(false, 'Failed to delete the group before running the test.');
+            });
     };
 
     test("hermes.CreateGroup returns a promise", function () {
         var groupName = 'hermes.CreateGroup returns a promise';
-        removeGroupBeforeTest(groupName, function () {
+        removeGroup(groupName, function () {
             start();
             var client = new HermesClient(serviceUrl);
             var createGroupPromise = client.CreateGroup('hermes.CreateGroup returns a promise');
-            ok(createGroupPromise != null && 'done' in createGroupPromise && 'fail' in createGroupPromise, 'CreateGroup should return a promise');
+            ok(createGroupPromise != null && 'done' in createGroupPromise && 'fail' in createGroupPromise);
         });
     });
 
     test("hermes.CreateGroup with no name", function () {
         var client = new HermesClient(serviceUrl);
-        raises(function () { client.CreateGroup(); }, "Calling CreateGroup with no name should throw an exception");
+        raises(function () { client.CreateGroup(); });
     });
 
     test("hermes.CreateGroup with null name", function () {
         var client = new HermesClient(serviceUrl);
-        raises(function () { client.CreateGroup(null); }, "Calling CreateGroup with null name should throw an exception");
+        raises(function () { client.CreateGroup(null); });
     });
 
     test("hermes.CreateGroup with empty name", function () {
         var client = new HermesClient(serviceUrl);
-        raises(function () { client.CreateGroup(''); }, "Calling CreateGroup with empty name should throw an exception");
+        raises(function () { client.CreateGroup(''); });
     });
 
     var whenCreateGroupCompletes = function (name, description, action) {
-        removeGroupBeforeTest(name, function () {
+        removeGroup(name, function () {
             console.log('Now creating group ' + name);
             var client = new HermesClient(serviceUrl);
             client.CreateGroup(name, description)
@@ -208,6 +217,63 @@ $(document).ready(function () {
         whenCreateGroupCompletes('{hermes.CreateGroup returns a Group}', '', function (group) {
             start();
             ok(group instanceof Group);
+        });
+    });
+
+    module('group.Delete');
+
+    test('Delete returns promise', function () {
+        whenCreateGroupCompletes('Delete returns promise', '', function (group) {
+            start();
+            var actual = group.Delete();
+            ok('done' in actual && 'fail' in actual);
+        });
+    });
+
+    test('Delete completes successfully', function () {
+        whenCreateGroupCompletes('Delete returns promise', '', function (group) {
+            group.Delete()
+                .done(function () {
+                    start();
+                    ok(true);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'Delete failed.');
+                });
+        });
+    });
+
+    module('client.GetGroupByName');
+
+    test('GetGroupByName returns group', function () {
+        whenCreateGroupCompletes('GetGroupByName returns group', '', function () {
+            var client = new HermesClient(serviceUrl);
+            client.GetGroupByName('GetGroupByName returns group')
+                .done(function (group) {
+                    start();
+                    ok(group != null);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'GetGroupByName failed');
+                });
+        });
+    });
+
+    test('GetGroupByName returns null when group doesnt exist', function () {
+        removeGroup('GetGroupByName returns null when group doesnt exist', function () {
+            console.log('Running asdfg');
+            var client = new HermesClient(serviceUrl);
+            client.GetGroupByName('GetGroupByName returns null when group doesnt exist')
+                .done(function (group) {
+                    start();
+                    ok(group == null);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'GetGroupByName failed');
+                });
         });
     });
 
