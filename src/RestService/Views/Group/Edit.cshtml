@@ -13,21 +13,19 @@
         <legend>Group</legend>
         @Html.ValidationSummary(true)
         @Html.HiddenFor(m => m.Group.Id)
-        <ul>
-            <li>
-                @Html.LabelFor(m => m.Group.Name)
-                @Html.EditorFor(m => m.Group.Name)
-                @Html.ValidationMessageFor(m => m.Group.Name)
-            </li>
-            <li>
-                @Html.LabelFor(m => m.Group.Description)
-                @Html.EditorFor(m => m.Group.Description)
-            </li>
-            <li>
-                @Html.LabelFor(m => m.Group.ParentId, "Parent")
-                @Html.DropDownListFor(m => m.Group.ParentId, new SelectList(Model.GroupList, "Id", "Name"))
-            </li>
-        </ul>
+        <div>
+            @Html.LabelFor(m => m.Group.Name)
+            @Html.EditorFor(m => m.Group.Name)
+            @Html.ValidationMessageFor(m => m.Group.Name)
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Group.Description)
+            @Html.EditorFor(m => m.Group.Description)
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Group.ParentId, "Parent")
+            @Html.DropDownListFor(m => m.Group.ParentId, new SelectList(Model.GroupList, "Id", "Name"))
+        </div>
     </fieldset>
     <input type="submit" value="Save changes" />
     @Ajax.ActionLink("Back to List of Groups", "Index", "Group", new AjaxOptions())

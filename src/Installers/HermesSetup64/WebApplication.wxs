@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension" xmlns:sql="http://schemas.microsoft.com/wix/SqlExtension">
+  <Fragment>
+    <Condition Message="IIS Required for running this product">
+      IISVERSION &gt;= "#6"
+    </Condition>
+    <Property Id="TARGETVDIR" Value="Hermes" />
+    <Property Id="WEBSITE_DESCRIPTION">
+      <RegistrySearch Id="WebSiteDescription" Name="WebSiteDescription" Root="HKLM" Key="SOFTWARE\TellagoStudios\Hermes\Install" Type="raw" />
+    </Property>
+    <Property Id="WEBSITE_PORT">
+      <RegistrySearch Id="WebSitePort" Name="WebSitePort" Root="HKLM" Key="SOFTWARE\TellagoStudios\Hermes\Install" Type="raw" />
+    </Property>
+    <Property Id="WEBSITE_IP">
+      <RegistrySearch Id="WebSiteIP" Name="WebSiteIP" Root="HKLM" Key="SOFTWARE\TellagoStudios\Hermes\Install" Type="raw" />
+    </Property>
+    <Property Id="WEBSITE_HEADER">
+      <RegistrySearch Id="WebSiteHeader" Name="WebSiteHeader" Root="HKLM" Key="SOFTWARE\TellagoStudios\Hermes\Install" Type="raw" />
+    </Property>
+    <Property Id="IISVERSION">
+      <RegistrySearch Id="IISVersionSearch" Key="SYSTEM\CurrentControlSet\Services\W3SVC\Parameters" Root="HKLM" Name="MajorVersion" Type="raw" />
+    </Property>
+    <CustomAction Id="GetIISWebSites" BinaryKey="Hermes_CA" DllEntry="GetWebSites" Execute="immediate" Return="check" Impersonate="no"/>
+    <Feature Id="ProductFeature" Title="Hermes service and administration web site" Level="1" Absent="disallow" AllowAdvertise="no">
+      <ComponentRef Id="StartMenuFolder" />
+      <ComponentRef Id="IISApplication" />
+      <ComponentRef Id="PersistWebSiteValues" />
+      <ComponentGroupRef Id="allWeb" />
+    </Feature>
+    <DirectoryRef Id="HermesStartMenuFolder">
+      <Component Id="StartMenuFolder" Guid="291bdf8e-664d-4e36-bf7c-43b69091ca51">
+        <util:InternetShortcut Id="HermesWebAppShortcut" Name="Hermes administration Portal" Target="http://localhost:[WEBSITE_PORT]/[TARGETVDIR]/Admin" Type="url" Directory="HermesStartMenuFolder" />
+        <util:InternetShortcut Id="HermesResourcesWebAppShortcut" Name="Hermes at GitHub" Target="http://github.com/TellagoDevLabs/Hermes" Type="url" Directory="HermesStartMenuFolder" />
+        <RemoveFolder Id="RemoveStartMenuFolder1" On="uninstall" Directory="HermesStartMenuFolder" />
+        <RemoveFolder Id="RemoveTellagoStudiosStartMenuFolder1" On="uninstall" Directory="TellagoStudiosStartMenuFolder" />
+        <RegistryKey Root="HKCU" Key="SOFTWARE\TellagoStudios\Hermes\HermesWebAppShortcut">
+          <RegistryValue Type="string" Value="Default Value" />
+        </RegistryKey>
+        <RegistryKey Root="HKCU" Key="SOFTWARE\TellagoStudios\Hermes\HermesResourcesWebAppShortcut">
+          <RegistryValue Type="string" Value="Default Value" />
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="TARGETDIR">
+      <Component Id="IISApplication" Guid="0940f3b7-5fc5-4533-9bc0-0678a619c523">
+        <iis:WebAppPool Id="HermesAppPool" Name="HermesAppPool" />
+        <iis:WebVirtualDir Id="VirtualDir" Alias="[TARGETVDIR]" Directory="web" WebSite="SelectedWebSite">
+          <iis:WebApplication Id="SimpleWebAppApp" Name="[TARGETVDIR]" WebAppPool="HermesAppPool" />
+          <iis:WebDirProperties Id="WebVirtualDirProperties" Execute="yes" Script="yes" Read="yes" WindowsAuthentication="no" AnonymousAccess="yes" IIsControlledPassword="no" />
+        </iis:WebVirtualDir>
+      </Component>
+      <Component Id="PersistWebSiteValues" Guid="702cf40b-3de9-40c6-86e2-95ef77fc8473">
+        <RegistryKey Root="HKLM" Key="SOFTWARE\TellagoStudios\Hermes\Install">
+          <RegistryValue Name="WebSiteDescription" Type="string" Value="[WEBSITE_DESCRIPTION]" />
+          <RegistryValue Name="WebSitePort" Type="string" Value="[WEBSITE_PORT]" />
+          <RegistryValue Name="WebSiteIP" Type="string" Value="[WEBSITE_IP]" />
+          <RegistryValue Name="WebSiteHeader" Type="string" Value="[WEBSITE_HEADER]" />
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+    <ComponentGroup Id="allWeb">
+      <ComponentRef Id="global.asax" />
+      <ComponentRef Id="Web.config" />
+      <ComponentRef Id="Autofac.Configuration.dll" />
+      <ComponentRef Id="Autofac.dll" />
+      <ComponentRef Id="Autofac.Integration.Mvc.dll" />
+      <ComponentRef Id="Autofac.xml" />
+      <ComponentRef Id="dotless.Core.dll" />
+      <ComponentRef Id="Microsoft.ApplicationServer.Common.dll" />
+      <ComponentRef Id="Microsoft.ApplicationServer.Http.dll" />
+      <ComponentRef Id="Microsoft.ApplicationServer.HttpEnhancements.dll" />
+      <ComponentRef Id="Microsoft.ApplicationServer.Serialization.dll" />
+      <ComponentRef Id="Microsoft.ApplicationServer.ServiceModel.dll" />
+      <ComponentRef Id="Microsoft.Net.Http.dll" />
+      <ComponentRef Id="Microsoft.QueryComposition.dll" />
+      <ComponentRef Id="Microsoft.Runtime.Serialization.Json.dll" />
+      <ComponentRef Id="Microsoft.Runtime.Serialization.Json.xml" />
+      <ComponentRef Id="Microsoft.ServiceModel.Web.jQuery.dll" />
+      <ComponentRef Id="Microsoft.ServiceModel.Web.jQuery.xml" />
+      <ComponentRef Id="MongoDB.Bson.dll" />
+      <ComponentRef Id="MongoDB.Driver.dll" />
+      <ComponentRef Id="System.Reactive.dll" />
+      <ComponentRef Id="System.Reactive.xml" />
+      <ComponentRef Id="TellagoStudios.Hermes.Business.dll" />
+      <ComponentRef Id="TellagoStudios.Hermes.DataAccess.MongoDB.dll" />
+      <ComponentRef Id="TellagoStudios.Hermes.Facade.dll" />
+      <ComponentRef Id="TellagoStudios.Hermes.RestService.dll" />
+      <ComponentRef Id="WebActivator.dll" />
+      <ComponentRef Id="default.less" />
+      <ComponentRef Id="jquery.unobtrusive.ajax.js" />
+      <ComponentRef Id="jquery.unobtrusive.ajax.min.js" />
+      <ComponentRef Id="jquery.validate.js" />
+      <ComponentRef Id="jquery.validate.min.js" />
+      <ComponentRef Id="jquery.validate.unobtrusive.js" />
+      <ComponentRef Id="jquery.validate.unobtrusive.min.js" />
+      <ComponentRef Id="jquery.validate.vsdoc.js" />
+      <ComponentRef Id="jquery.1.4.4.js" />
+      <ComponentRef Id="jquery.1.4.4.min.js" />
+      <ComponentRef Id="jquery.1.4.4.vsdoc.js" />
+      <ComponentRef Id="jquery.ui.js" />
+      <ComponentRef Id="jquery.ui.min.js" />
+      <ComponentRef Id="MicrosoftAjax.debug.js" />
+      <ComponentRef Id="MicrosoftAjax.js" />
+      <ComponentRef Id="MicrosoftMvcAjax.debug.js" />
+      <ComponentRef Id="MicrosoftMvcAjax.js" />
+      <ComponentRef Id="MicrosoftMvcValidation.debug.js" />
+      <ComponentRef Id="MicrosoftMvcValidation.js" />
+      <ComponentRef Id="Views.Web.config" />
+      <ComponentRef Id="_ViewStart.cshtml" />
+      <ComponentRef Id="ChangePassword.cshtml" />
+      <ComponentRef Id="ChangePasswordSuccess.cshtml" />
+      <ComponentRef Id="LogOn.cshtml" />
+      <ComponentRef Id="Register.cshtml" />
+      <ComponentRef Id="Group.Create.cshtml" />
+      <ComponentRef Id="Group.Edit.cshtml" />
+      <ComponentRef Id="GroupDoesNotExist.cshtml" />
+      <ComponentRef Id="Group.Index.cshtml" />
+      <ComponentRef Id="About.cshtml" />
+      <ComponentRef Id="Home.Index.cshtml" />
+      <ComponentRef Id="_Layout.cshtml" />
+      <ComponentRef Id="_LogOnPartial.cshtml" />
+      <ComponentRef Id="Error.cshtml" />
+      <ComponentRef Id="Create.cshtml" />
+      <ComponentRef Id="Edit.cshtml" />
+      <ComponentRef Id="Index.cshtml" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>

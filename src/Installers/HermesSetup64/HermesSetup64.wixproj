@@ -23,10 +23,13 @@
   <ItemGroup>
     <Compile Include="Conditions.wxs" />
     <Compile Include="FeaturesDlgCustom.wxs" />
+    <Compile Include="MongoDB.wxs" />
     <Compile Include="MongoDB64.wxs" />
+    <Compile Include="Product.wxs" />
     <Compile Include="Product64.wxs" />
     <Compile Include="SelectWebSiteDlg.wxs" />
     <Compile Include="UI.wxs" />
+    <Compile Include="WebApplication.wxs" />
     <Compile Include="WebApplication64.wxs" />
   </ItemGroup>
   <ItemGroup>
@@ -34,8 +37,8 @@
     <Folder Include="Images\" />
     <Folder Include="MongoDbFiles64" />
     <Folder Include="MongoDbFiles64\bin" />
-    <Folder Include="MongoDbFiles64\bin\data" />
-    <Folder Include="MongoDbFiles64\bin\logs" />
+    <Folder Include="MongoDbFiles64\data\" />
+    <Folder Include="MongoDbFiles64\logs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Documents\EULA.rtf" />
@@ -46,8 +49,6 @@
     <Content Include="Images\hermesIcon.ico" />
     <Content Include="MongoDbFiles64\bin\APACHE-2.0.txt" />
     <Content Include="MongoDbFiles64\bin\bsondump.exe" />
-    <Content Include="MongoDbFiles64\bin\data\DoNotDelete.txt" />
-    <Content Include="MongoDbFiles64\bin\logs\service.log" />
     <Content Include="MongoDbFiles64\bin\mongo.exe" />
     <Content Include="MongoDbFiles64\bin\mongod.exe" />
     <Content Include="MongoDbFiles64\bin\mongodump.exe" />
@@ -57,6 +58,8 @@
     <Content Include="MongoDbFiles64\bin\mongorestore.exe" />
     <Content Include="MongoDbFiles64\bin\mongos.exe" />
     <Content Include="MongoDbFiles64\bin\mongostat.exe" />
+    <Content Include="MongoDbFiles64\data\DoNotDelete.txt" />
+    <Content Include="MongoDbFiles64\logs\service.log" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">

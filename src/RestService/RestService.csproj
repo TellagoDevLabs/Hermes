@@ -230,9 +230,6 @@
     <Content Include="Views\Group\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Group\EmptyGroups.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Group\GroupDoesNotExist.cshtml" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment>
-    <Condition Message="You need to be an administrator to install this product."><![CDATA[Privileged]]></Condition>
+    <Condition Message="You need to be an administrator to install this product."><![CDATA[MSIREALADMINDETECTION]]></Condition>
     <Condition Message="This application requires .NET Framework 4.0 Please install the .NET Framework then run this installer again."><![CDATA[Installed OR NETFRAMEWORK40FULL]]></Condition>
     <Condition Message="A later version of [ProductName] is already installed. Setup will now exit."><![CDATA[NOT NEWERVERSIONDETECTED OR Installed]]></Condition>
   </Fragment>

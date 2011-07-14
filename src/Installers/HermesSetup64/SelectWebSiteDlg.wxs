@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-    <CustomAction Id="UpdatePropsWithSelectedWebSite" BinaryKey="Hermes_CA" DllEntry="UpdatePropsWithSelectedWebSite" Execute="immediate" Return="check" />
+    <CustomAction Id="UpdatePropsWithSelectedWebSite" BinaryKey="Hermes_CA" DllEntry="UpdatePropsWithSelectedWebSite" Execute="immediate" Return="check"  Impersonate="no"/>
   </Fragment>
   <Fragment>
     <UI>

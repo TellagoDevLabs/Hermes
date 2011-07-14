@@ -36,10 +36,7 @@ namespace TellagoStudios.Hermes.RestService.Controllers
         {
             var groups = genericJsonPagedQuery.Execute<Group>(null, null, null);
             
-            if (groups.Any())
-                return View(groups);
-            
-            return View("EmptyGroups");
+            return View(groups);
         }
 
         [HttpGet]

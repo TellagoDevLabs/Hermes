@@ -2,12 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension" xmlns:sql="http://schemas.microsoft.com/wix/SqlExtension">
   <Product Id="3c3fce1e-5b26-4db4-b7de-fbd790859f53" Name="Hermes 32bits" Language="1033" Version="1.0.0.0" Manufacturer="Tellago Studios" UpgradeCode="714c018b-b311-443b-b793-13e0186f7d76">
     <Package InstallerVersion="200" Compressed="yes" Platform="x86" />
-    <Icon Id="ProductIcon" SourceFile="Images/hermesIcon.ico" />
-    <Property Id="ARPPRODUCTICON">ProductIcon</Property>
-    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
-    <PropertyRef Id="NETFRAMEWORK40FULL" />
     <Condition Message="This instaler is for 32 bit versions of Windows Vista, Windows Server 2008, Windows 7 or higher."><![CDATA[NOT VersionNT64]]></Condition>
-    <Binary Id="Hermes_CA" SourceFile="$(var.SolutionDir)CustomActions\bin\CustomActions.CA.dll" />
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="d_tellagoStudios" Name="Tellago Studios">
@@ -20,35 +15,8 @@
         </Directory>
       </Directory>
     </Directory>
-    <CustomTable Id="AvailableWebSites">
-      <Column Id="WebSiteNo" Category="Identifier" PrimaryKey="yes" Type="int" Width="4" />
-      <Column Id="WebSiteDescription" Category="Text" Type="string" PrimaryKey="no" />
-      <Column Id="WebSitePort" Category="Text" Type="string" PrimaryKey="no" />
-      <Column Id="WebSiteIP" Category="Text" Type="string" PrimaryKey="no" Nullable="yes" />
-      <Column Id="WebSiteHeader" Category="Text" Type="string" PrimaryKey="no" Nullable="yes" />
-      <Row>
-        <Data Column="WebSiteNo">0</Data>
-        <Data Column="WebSiteDescription">Hermes</Data>
-        <Data Column="WebSitePort">0</Data>
-        <Data Column="WebSiteIP"></Data>
-        <Data Column="WebSiteHeader"></Data>
-      </Row>
-    </CustomTable>
-    <iis:WebSite Id="SelectedWebSite" Description="[WEBSITE_DESCRIPTION]">
-      <iis:WebAddress Id="AllUnassigned" Port="[WEBSITE_PORT]" IP="[WEBSITE_IP]" Header="[WEBSITE_HEADER]" />
-    </iis:WebSite>
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
-    <UIRef Id="UI" />
-    <InstallUISequence>
-      <Custom Action="GetIISWebSites" After="CostFinalize" Overridable="yes">NOT Installed</Custom>
-    </InstallUISequence>
     <InstallExecuteSequence>
       <Custom Action="ConfigureAppPools" Before="InstallFinalize"><![CDATA[NOT Installed AND NOT VersionNT64]]></Custom>
-      <Custom Action="ca_SET_MONGO_LOG_FILE" After="InstallFinalize" />
-      <Custom Action="ca_SET_MONGO_DATA_FOLDER" After="ca_SET_MONGO_LOG_FILE" />
-      <Custom Action="ca_InstallMongoAsService" After="ca_SET_MONGO_DATA_FOLDER"><![CDATA[NOT MONGO_SERVER_REG AND NOT Installed AND &feature_MongoDB=3]]></Custom>
-      <Custom Action="ca_StartMongoService" After="ca_InstallMongoAsService"><![CDATA[NOT MONGO_SERVER_REG AND NOT Installed AND &feature_MongoDB=3]]></Custom>
-      <Custom Action="ca_RemoveMongoAsService" After="CostFinalize"><![CDATA[Installed AND &feature_MongoDB=3]]></Custom>
     </InstallExecuteSequence>
   </Product>
 </Wix>

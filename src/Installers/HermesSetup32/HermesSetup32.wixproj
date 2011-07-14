@@ -27,11 +27,20 @@
     <Compile Include="..\HermesSetup64\FeaturesDlgCustom.wxs">
       <Link>FeaturesDlgCustom.wxs</Link>
     </Compile>
+    <Compile Include="..\HermesSetup64\MongoDB.wxs">
+      <Link>MongoDB.wxs</Link>
+    </Compile>
+    <Compile Include="..\HermesSetup64\Product.wxs">
+      <Link>Product.wxs</Link>
+    </Compile>
     <Compile Include="..\HermesSetup64\SelectWebSiteDlg.wxs">
-      <Link>MongoDbFiles32\SelectWebSiteDlg.wxs</Link>
+      <Link>SelectWebSiteDlg.wxs</Link>
     </Compile>
     <Compile Include="..\HermesSetup64\UI.wxs">
       <Link>UI.wxs</Link>
+    </Compile>
+    <Compile Include="..\HermesSetup64\WebApplication.wxs">
+      <Link>WebApplication.wxs</Link>
     </Compile>
     <Compile Include="MongoDB32.wxs" />
     <Compile Include="Product32.wxs" />
@@ -42,8 +51,8 @@
     <Folder Include="Images" />
     <Folder Include="MongoDbFiles32" />
     <Folder Include="MongoDbFiles32\bin" />
-    <Folder Include="MongoDbFiles32\bin\data" />
-    <Folder Include="MongoDbFiles32\bin\logs" />
+    <Folder Include="MongoDbFiles32\data\" />
+    <Folder Include="MongoDbFiles32\logs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Documents\EULA.rtf" />
@@ -54,8 +63,6 @@
     <Content Include="Images\icon.jpg" />
     <Content Include="MongoDbFiles32\bin\APACHE-2.0.txt" />
     <Content Include="MongoDbFiles32\bin\bsondump.exe" />
-    <Content Include="MongoDbFiles32\bin\data\DoNotDelete.txt" />
-    <Content Include="MongoDbFiles32\bin\logs\service.log" />
     <Content Include="MongoDbFiles32\bin\mongo.exe" />
     <Content Include="MongoDbFiles32\bin\mongod.exe" />
     <Content Include="MongoDbFiles32\bin\mongodump.exe" />
@@ -65,6 +72,8 @@
     <Content Include="MongoDbFiles32\bin\mongorestore.exe" />
     <Content Include="MongoDbFiles32\bin\mongos.exe" />
     <Content Include="MongoDbFiles32\bin\mongostat.exe" />
+    <Content Include="MongoDbFiles32\data\DoNotDelete.txt" />
+    <Content Include="MongoDbFiles32\logs\service.log" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">
@@ -85,6 +94,9 @@
     </WixExtension>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
+  <PropertyGroup>
+    <PostBuildEvent />
+  </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Wix.targets.

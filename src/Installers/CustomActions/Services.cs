@@ -12,16 +12,33 @@ namespace TellagoStudios.Hermes.CustomActions
             try
             {
                 var serviceName = session["START_SERVICE_NAME"];
-                ServiceController service = new ServiceController(serviceName);
-
-                TimeSpan timeout = TimeSpan.FromSeconds(3);
+                var service = new ServiceController(serviceName);
 
                 service.Start();
-                service.WaitForStatus(ServiceControllerStatus.Running, timeout);
+                service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(30));
             }
             catch (Exception ex)
             {
-                session.Log("CustomActionException: " + ex.ToString());
+                session.Log("CustomActionException: (StartService)" + ex.ToString());
+                return ActionResult.Failure;
+            }
+            return ActionResult.Success;
+        }
+
+        [CustomAction]
+        public static ActionResult StopService(Session session)
+        {
+            try
+            {
+                var serviceName = session["START_SERVICE_NAME"];
+                var service = new ServiceController(serviceName);
+
+                service.Stop();
+                service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(30));
+            }
+            catch (Exception ex)
+            {
+                session.Log("CustomActionException: (StopService)" + ex.ToString());
                 return ActionResult.Failure;
             }
             return ActionResult.Success;
