@@ -89,7 +89,7 @@ function HermesClient(serviceUrl) {
         return this.GetGroups().pipe(function(groups) {
             for (var i = 0; i < groups.length; i++) {
                 var group = groups[i];
-                if (group.getName() == name)
+                if (group.Name == name)
                     return group;
             }
             return null;
@@ -105,8 +105,8 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
         throw new "name should not be null or empty";
     
     this.getId = function () { return id; };
-    this.getName = function () { return groupName; };
-    this.getDescription = function () { return groupDescription; };
+    this.Name = groupName;
+    this.Description = groupDescription;
     this.getLinks = function() {
         var links = { };
         for (var key in linkMap)

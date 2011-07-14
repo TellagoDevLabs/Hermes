@@ -78,7 +78,7 @@ $(document).ready(function () {
     test("GetGroups new groups should have name", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
-            var name = groups[0].getName();
+            var name = groups[0].Name;
             notEqual(name, null);
             notEqual(name, '');
         });
@@ -87,7 +87,7 @@ $(document).ready(function () {
     test("GetGroups new groups should have description", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
-            var description = groups[0].getDescription();
+            var description = groups[0].Description;
             notEqual(description, null);
         });
     });
