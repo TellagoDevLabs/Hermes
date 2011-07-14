@@ -62,11 +62,14 @@ $(document).ready(function () {
     test("when hermes.GetGroups completes, it returns groups", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
-            ok(groups[0] instanceof Group);
+            for (var i = 0; i < groups.length; i++)
+                ok(groups[i] instanceof Group);
         });
     });
 
-    test("GetGroups new groups should have id", function () {
+    module('Deserializing groups');
+
+    test("new groups should have id", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var id = groups[0].getId();
@@ -75,7 +78,7 @@ $(document).ready(function () {
         });
     });
 
-    test("GetGroups new groups should have name", function () {
+    test("new groups should have name", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var name = groups[0].Name;
@@ -84,7 +87,7 @@ $(document).ready(function () {
         });
     });
 
-    test("GetGroups new groups should have description", function () {
+    test("new groups should have description", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var description = groups[0].Description;
@@ -92,7 +95,7 @@ $(document).ready(function () {
         });
     });
 
-    test("GetGroups new groups should have link to create topic", function () {
+    test("new groups should have link to create topic", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var links = groups[0].getLinks();
@@ -102,7 +105,7 @@ $(document).ready(function () {
         });
     });
 
-    test("GetGroups new groups should have link to all topics", function () {
+    test("new groups should have link to all topics", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var links = groups[0].getLinks();
@@ -112,7 +115,7 @@ $(document).ready(function () {
         });
     });
 
-    test("GetGroups new groups should have link to delete", function () {
+    test("new groups should have link to delete", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var links = groups[0].getLinks();
@@ -122,7 +125,7 @@ $(document).ready(function () {
         });
     });
 
-    test("GetGroups new groups should have link to update", function () {
+    test("new groups should have link to update", function () {
         whenGetGroupsCompletes(function (groups) {
             start();
             var links = groups[0].getLinks();
@@ -220,30 +223,6 @@ $(document).ready(function () {
         });
     });
 
-    module('group.Delete');
-
-    test('Delete returns promise', function () {
-        whenCreateGroupCompletes('Delete returns promise', '', function (group) {
-            start();
-            var actual = group.Delete();
-            ok('done' in actual && 'fail' in actual);
-        });
-    });
-
-    test('Delete completes successfully', function () {
-        whenCreateGroupCompletes('Delete returns promise', '', function (group) {
-            group.Delete()
-                .done(function () {
-                    start();
-                    ok(true);
-                })
-                .fail(function () {
-                    start();
-                    ok(false, 'Delete failed.');
-                });
-        });
-    });
-
     module('client.GetGroupByName');
 
     test('GetGroupByName returns group', function () {
@@ -272,6 +251,82 @@ $(document).ready(function () {
                 .fail(function () {
                     start();
                     ok(false, 'GetGroupByName failed');
+                });
+        });
+    });
+
+    module('client.GetGroup');
+
+    test('GetGroup returns group', function () {
+        whenCreateGroupCompletes('GetGroup returns group', '', function (group) {
+            var id = group.getId();
+            var client = new HermesClient(serviceUrl);
+            client.GetGroup(id)
+                .done(function (group) {
+                    start();
+                    ok(group != null);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'GetGroup failed');
+                });
+        });
+    });
+
+    module('client.TryCreateGroup');
+
+    test('TryCreateGroup returns a newly created group', function () {
+        var groupName = 'TryCreateGroup returns a newly created group';
+        removeGroup(groupName, function () {
+            var client = new HermesClient(serviceUrl);
+            client.TryCreateGroup(groupName)
+                .done(function (group) {
+                    start();
+                    equal(group.Name, groupName);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'TryCreateGroup failed.');
+                });
+        });
+    });
+
+    test('TryCreateGroup returns an existing group', function () {
+        var groupName = 'TryCreateGroup returns an existing group';
+        whenCreateGroupCompletes(groupName, '', function () {
+            var client = new HermesClient(serviceUrl);
+            client.TryCreateGroup(groupName)
+                .done(function(group) {
+                    start();
+                    equal(group.Name, groupName);
+                })
+                .fail(function() {
+                    start();
+                    ok(false, 'TryCreateGroup failed.');
+                });
+        });
+    });
+
+    module('group.Delete');
+
+    test('Delete returns promise', function () {
+        whenCreateGroupCompletes('Delete returns promise', '', function (group) {
+            start();
+            var actual = group.Delete();
+            ok('done' in actual && 'fail' in actual);
+        });
+    });
+
+    test('Delete completes successfully', function () {
+        whenCreateGroupCompletes('Delete returns promise', '', function (group) {
+            group.Delete()
+                .done(function () {
+                    start();
+                    ok(true);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'Delete failed.');
                 });
         });
     });

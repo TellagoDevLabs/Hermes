@@ -13,7 +13,7 @@ function HermesClient(serviceUrl) {
         Messages: "messages",
         Subscriptions: "subscriptions",
         GetGroup: function (id) {
-            return Groups + "/" + id;
+            return this.Groups + "/" + id;
         }
     };
 
@@ -66,19 +66,19 @@ function HermesClient(serviceUrl) {
 
         var url = restClient.getUrl(operations.Groups);
         var action = restClient.Post(url, {}, data);
-        var result = $.Deferred();
+        var deferred = $.Deferred();
 
         action
             .fail(function (ex) {
                 console.log('Error creating group ' + name + ': ');
                 console.log(ex);
-                result.reject(ex);
+                deferred.reject(ex);
             })
             .done(function (data) {
-                result.resolve(buildGroupFromXml($(data)));
+                deferred.resolve(buildGroupFromXml($(data)));
             });
 
-        return result.promise();
+        return deferred.promise();
     };
 
     this.GetGroupByName = function(name) {
@@ -90,6 +90,36 @@ function HermesClient(serviceUrl) {
             }
             return null;
         });
+    };
+
+    this.GetGroup = function(id) {
+        var operation = operations.GetGroup(id);
+        var url = restClient.getUrl(operation);
+        var deferred = $.Deferred();
+        restClient.Get(url)
+            .done(function(data) {
+                deferred.resolve(buildGroupFromXml($(data)));
+            })
+            .fail(deferred.reject);
+        return deferred.promise();
+    };
+
+    this.TryCreateGroup = function (name, description) {
+        var deferred = $.Deferred();
+        var createGroup = this.CreateGroup;
+        this.GetGroupByName(name)
+            .done(function (group) {
+                if (group != null) {
+                    deferred.resolve(group);
+                } else {
+                    createGroup(name, description)
+                        .done(deferred.resolve)
+                        .fail(deferred.reject);
+                }
+            })
+            .fail(deferred.reject);
+
+        return deferred.promise();
     };
 
 }
