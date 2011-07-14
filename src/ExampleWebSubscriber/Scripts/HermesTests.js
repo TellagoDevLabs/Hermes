@@ -197,7 +197,6 @@ $(document).ready(function () {
 
     var whenCreateGroupCompletes = function (name, description, action) {
         removeGroup(name, function () {
-            console.log('Now creating group ' + name);
             var client = new HermesClient(serviceUrl);
             client.CreateGroup(name, description)
                 .done(function (group) {
@@ -406,8 +405,21 @@ $(document).ready(function () {
         });
     };
 
+    var usingGroupAndTopic = function (groupName, topicName, action) {
+        usingGroupWithoutTopics(groupName, function (group) {
+            group.CreateTopic(topicName, '')
+                .done(function (topic) {
+                    action(group, topic);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'unable to create topic ' + topicName);
+                });
+        });
+    };
+
     var whenGetTopicsCompletes = function (groupName, action) {
-        usingGroup(groupName, function (group) {
+        usingGroupAndTopic(groupName, groupName, function (group) {
             group.GetTopics()
                 .done(action)
                 .fail(function () {
@@ -461,6 +473,40 @@ $(document).ready(function () {
             ok(topics.length > 0, 'topics array was empty');
             for (var i = 0; i < topics.length; i++)
                 ok(topics[i] instanceof Topic);
+        });
+    });
+
+    module("topic.Delete");
+
+    test("topic.Delete returns promise", function () {
+        var groupName = 'topic.Delete returns promise';
+        usingGroupAndTopic(groupName, groupName, function (group, topic) {
+            var actual = topic.Delete();
+            start();
+            ok('done' in actual && 'fail' in actual);
+        });
+    });
+
+    test("topic.Delete removes topic", function () {
+        var groupName = 'topic.Delete removes topic';
+        usingGroupAndTopic(groupName, groupName, function (group, topic) {
+            topic.Delete()
+                .done(function () {
+                    group.GetTopics()
+                        .done(function (topics) {
+                            start();
+                            equal(topics.length, 0);
+                        })
+                        .fail(function () {
+                            start();
+                            ok(false, 'group.GetTopics failed.');
+                        });
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'topic.Delete failed.');
+                });
+
         });
     });
 

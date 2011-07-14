@@ -197,7 +197,7 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
         topic.xmlns = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade";
         var data = $.json2xml(topic, {
             formatOutput: true,
-            rootTagName: 'Topic',
+            rootTagName: 'topic',
             nodes: ['name', 'description','groupId']
         });
 
