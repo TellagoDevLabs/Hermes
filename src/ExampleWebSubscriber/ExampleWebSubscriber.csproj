@@ -51,7 +51,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\HermesTests.js" />
+    <Content Include="Scripts\AsyncTestHelpers.js" />
+    <Content Include="Scripts\GroupTests.js" />
+    <Content Include="Scripts\HermesClientTests.js" />
     <Content Include="Scripts\Hermes.js" />
     <Content Include="default.htm" />
     <Content Include="Scripts\jquery-1.6.2-vsdoc.js" />
@@ -61,6 +63,7 @@
     <Content Include="Scripts\jQuery.tmpl.js" />
     <Content Include="Scripts\jQuery.tmpl.min.js" />
     <Content Include="Scripts\RestClient.js" />
+    <Content Include="Scripts\TopicTests.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
