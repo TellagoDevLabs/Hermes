@@ -51,6 +51,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\rx.js" />
+    <Content Include="Scripts\rx.js.license.txt" />
     <Content Include="Scripts\Tests\AsyncTestHelpers.js" />
     <Content Include="Scripts\Tests\GroupTests.js" />
     <Content Include="Scripts\Tests\HermesClientTests.js" />
