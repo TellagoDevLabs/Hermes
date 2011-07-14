@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+  <Fragment Id="fragment_MongoDB">
+    <Condition Message="MongoDB service is already installed, the instaler will skip the MongoDB installation."><![CDATA[Installed OR NOT MONGO_SERVER_REG]]></Condition>
+    <DirectoryRef Id="INSTALLLOCATION">
+      <Directory Id="d_mongoDB" Name="MongoDB" FileSource="MongoDbFiles32">
+        <Directory Id="d_bin" Name="bin">
+          <Component Id="c_apache.txt" Guid="3e03ed4d-297a-4c23-b2ef-b62eee34b026">
+            <File Id="f_apache.txt" Name="APACHE-2.0.txt" KeyPath="yes" />
+          </Component>
+          <Component Id="c_bsondump.exe" Guid="73bcd54f-2520-488f-933f-7f156eb8799d">
+            <File Id="f_bsondump.exe" Name="bsondump.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongo.exe" Guid="f2a0e14b-ec2e-45fa-9327-e5b29f2089db">
+            <File Id="f_mongo.exe" Name="mongo.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongod.exe" Guid="ab33db28-242c-490f-b6de-63a65dded051">
+            <File Id="f_mongod.exe" Name="mongod.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongodump.exe" Guid="af6912ea-5d25-4910-8b14-ab144e2273e4">
+            <File Id="f_mongodump.exe" Name="mongodump.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongoexport.exe" Guid="1a73fa49-9445-4448-bd32-33b2a9a61e98">
+            <File Id="f_mongoexport.exe" Name="mongoexport.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongofiles.exe" Guid="b374ba40-5f92-47c0-8a8d-0595186b6217">
+            <File Id="f_mongofiles.exe" Name="mongofiles.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongoimport.exe" Guid="3d632e8b-1a34-4c41-817b-bdd72f54d86f">
+            <File Id="f_mongoimport.exe" Name="mongoimport.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongorestore.exe" Guid="59533ae9-6d41-414c-ac2d-ac4d1372b0f4">
+            <File Id="f_mongorestore.exe" Name="mongorestore.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongos.exe" Guid="0941e621-e38f-4147-ab56-d8632a1bcab9">
+            <File Id="f_mongos.exe" Name="mongos.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongostat.exe" Guid="2ecd8103-82ba-4435-b734-414e60407fd0">
+            <File Id="f_mongostat.exe" Name="mongostat.exe" KeyPath="yes" />
+          </Component>
+          <Directory Id="d_data" Name="data">
+            <Component Id="c_folderData" Guid="063663b4-2936-4c01-aaed-4f3fbd1e3fe9">
+              <CreateFolder />
+            </Component>
+          </Directory>
+          <Directory Id="d_logs" Name="logs">
+            <Component Id="c_service.log" Guid="93c4bb5d-f494-45ae-b648-1afdea7d0ef3">
+              <File Id="f_service.log" Name="service.log" KeyPath="yes" />
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+    <Property Id="MONGO_SERVER_REG">
+      <RegistrySearch Id="rs_Mongo_Server_Reg" Key="SYSTEM\CurrentControlSet\services\MongoDB" Name="ImagePath" Root="HKLM" Type="raw" />
+    </Property>
+    <Property Id="MONGO_IP_ADDRESS" Value="127.0.0.1" />
+    <Property Id="MONGO_IP_PORT" Value="27017" />
+    <Property Id="MONGO_LOG_FILE" Value="empty" />
+    <Property Id="MONGO_DATA_FOLDER" Value="empty" />
+    <Property Id="START_SERVICE_NAME" Value="MongoDB" />
+    <CustomAction Id="ca_SET_MONGO_LOG_FILE" Property="MONGO_LOG_FILE" Value="&quot;[d_logs]service.log&quot;" />
+    <CustomAction Id="ca_SET_MONGO_DATA_FOLDER" Property="MONGO_DATA_FOLDER" Value="&quot;[d_data].&quot;" />
+    <CustomAction Id="ca_InstallMongoAsService" FileKey="f_mongod.exe" ExeCommand="--bind_ip [MONGO_IP_ADDRESS] --port [MONGO_IP_PORT] --logpath [MONGO_LOG_FILE] --logappend --dbpath [MONGO_DATA_FOLDER] --directoryperdb --install" Impersonate="no" />
+    <CustomAction Id="ca_RemoveMongoAsService" FileKey="f_mongod.exe" ExeCommand="--bind_ip [MONGO_IP_ADDRESS] --port [MONGO_IP_PORT] --logpath [MONGO_LOG_FILE] --logappend --dbpath [MONGO_DATA_FOLDER] --directoryperdb --remove" Impersonate="no" />
+    <CustomAction Id="ca_StartMongoService" BinaryKey="Hermes_CA" DllEntry="StartService" Execute="immediate" Return="check" />
+    <Feature Id="feature_MongoDB" Title="Hermes Database (MongoDB service)" Level="1">
+      <ComponentRef Id="c_bsondump.exe" />
+      <ComponentRef Id="c_mongo.exe" />
+      <ComponentRef Id="c_mongod.exe" />
+      <ComponentRef Id="c_mongodump.exe" />
+      <ComponentRef Id="c_mongoexport.exe" />
+      <ComponentRef Id="c_mongofiles.exe" />
+      <ComponentRef Id="c_mongoimport.exe" />
+      <ComponentRef Id="c_mongorestore.exe" />
+      <ComponentRef Id="c_mongos.exe" />
+      <ComponentRef Id="c_mongostat.exe" />
+      <ComponentRef Id="c_service.log" />
+      <ComponentRef Id="c_folderData" />
+      <ComponentRef Id="c_apache.txt" />
+    </Feature>
+    <InstallExecuteSequence></InstallExecuteSequence>
+  </Fragment>
+</Wix>
