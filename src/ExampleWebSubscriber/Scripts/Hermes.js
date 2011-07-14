@@ -229,6 +229,8 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
     if (topicName == null || topicName == '')
         throw new "name should not be null or empty";
 
+    var thisTopic = this;
+    
     this.getGroup = function () {
         return group;
     };
@@ -250,6 +252,23 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
     this.Delete = function () {
         var url = linkMap['Delete'];
         return restClient.Delete(url);
+    };
+
+    this.SaveChanges = function () {
+        var url = linkMap['Update'];
+        var topic = {
+            id: thisTopic.getId(),
+            name: thisTopic.Name,
+            description: thisTopic.Description,
+            groupId: thisTopic.getGroup().getId()
+        };
+        topic.xmlns = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade";
+        var data = $.json2xml(topic, {
+            formatOutput: true,
+            rootTagName: 'topic',
+            nodes: ['id', 'name', 'description', 'groupId']
+        });
+        return restClient.Put(url, null, data);
     };
    
 }

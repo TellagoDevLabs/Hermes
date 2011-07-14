@@ -442,7 +442,6 @@ $(document).ready(function () {
         var groupName = 'when group.CreateTopic completes, it returns a topic';
         var topicName = groupName;
         usingGroupWithoutTopics(groupName, function (group) {
-            start();
             group.CreateTopic(topicName, '')
                 .done(function (topic) {
                     start();
@@ -470,7 +469,7 @@ $(document).ready(function () {
         var groupName = "when group.GetTopics completes, it returns topics";
         whenGetTopicsCompletes(groupName, function (topics) {
             start();
-            ok(topics.length > 0, 'topics array was empty');
+            ok(topics.length > 0, 'topics array should not be empty');
             for (var i = 0; i < topics.length; i++)
                 ok(topics[i] instanceof Topic);
         });
@@ -637,6 +636,48 @@ $(document).ready(function () {
                     ok(false, 'topic.Delete failed.');
                 });
 
+        });
+    });
+
+
+    module('topic.SaveChanges()');
+
+    test('topic.SaveChanges completes', function () {
+        var groupName = 'topic.SaveChanges completes';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            topic.Description = 'This is a new description';
+            topic.SaveChanges().done(function () {
+                start();
+                ok(true);
+            })
+                .fail(function () {
+                    start();
+                    ok(false, 'SaveChanges failed.');
+                });
+        });
+    });
+
+    test('topic.SaveChanges updates description', function() {
+        var groupName = 'topic.SaveChanges updates description';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function(group, topic) {
+            topic.Description = 'new description';
+            topic.SaveChanges().done(function() {
+                group.GetTopicByName(topic.Name)
+                    .done(function(refreshedTopic) {
+                        start();
+                        equal(refreshedTopic.Description, topic.Description);
+                    })
+                    .fail(function() {
+                        start();
+                        ok(false, 'GetTopicByName failed.');
+                    });
+            })
+                .fail(function() {
+                    start();
+                    ok(false, 'SaveChanges failed.');
+                });
         });
     });
 
