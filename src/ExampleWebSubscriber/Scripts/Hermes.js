@@ -131,6 +131,8 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
     if (groupName == null || groupName == '')
         throw new "name should not be null or empty";
 
+    var thisGroup = this;
+
     var buildTopicFromXml = function (topicElement) {
         var linkElements = topicElement.find('links > link');
         var linkMap = {};
@@ -141,7 +143,7 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
         var id = topicElement.find("id").text();
         var name = topicElement.find("name").text();
         var description = topicElement.find("description").text();
-        return new Topic(restClient, id, name, description, linkMap);
+        return new Topic(restClient, thisGroup, id, name, description, linkMap);
     };
 
     
@@ -207,18 +209,47 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
             }).fail(deferred.reject);
         return deferred.promise();
     };
+
+    this.GetTopicByName = function (topicName) {
+        return this.GetTopics().pipe(function (topics) {
+            for (var i = 0; i < topics.length; i++) {
+                var topic = topics[i];
+                if (topic.Name == topicName)
+                    return topic;
+            }
+            return null;
+        });
+    };
     
 }
 
-function Topic(restClient, id, topicName, topicDescription, linkMap) {
+function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
     if (!(this instanceof Topic))
         return new Topic(topicName, topicDescription);
     if (topicName == null || topicName == '')
         throw new "name should not be null or empty";
 
+    this.getGroup = function () {
+        return group;
+    };
+    
+    this.getId = function () {
+        return id;
+    };
+
+    this.Name = topicName;
+    this.Description = topicDescription;
+    
+    this.getLinks = function () {
+        var links = {};
+        for (var key in linkMap)
+            links[key] = linkMap[key];
+        return links;
+    };
+    
     this.Delete = function () {
         var url = linkMap['Delete'];
         return restClient.Delete(url);
     };
    
-};
+}

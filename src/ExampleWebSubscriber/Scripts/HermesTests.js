@@ -476,6 +476,136 @@ $(document).ready(function () {
         });
     });
 
+    module('group.GetTopicByName');
+
+    test('group.GetTopicByName returns promise', function () {
+        var groupName = 'group.GetTopicByName returns promise';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var actual = group.GetTopicByName(topicName);
+            start();
+            ok('done' in actual && 'fail' in actual);
+        });
+    });
+
+    test('group.GetTopicByName returns the topic', function () {
+        var groupName = 'group.GetTopicByName returns the topic';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            group.GetTopicByName(topicName)
+                .done(function (actual) {
+                    start();
+                    notEqual(actual, null);
+                    equal(actual.getId(), topic.getId());
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'GetTopicByName failed.');
+                });
+        });
+    });
+
+    module('Deserializing topics');
+
+    test("new topics should have id", function () {
+        var groupName = 'new topics should have id';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            start();
+            var id = topic.getId();
+            notEqual(id, null);
+            notEqual(id, '');
+        });
+    });
+
+    test("new topics should have name", function () {
+        var groupName = 'new topics should have name';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            start();
+            equal(topic.Name, topicName);
+        });
+    });
+
+    test("new topics should have description", function () {
+        var groupName = 'new topics should have description';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            start();
+            var description = topic.Description;
+            notEqual(description, null);
+        });
+    });
+
+    test("new topics should have a group", function () {
+        var groupName = 'new topics should have a group';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            start();
+            equal(topic.getGroup().getId(), group.getId());
+        });
+    });
+
+    test("new topics should have link to Group", function () {
+        var groupName = 'new topics should have link to Group';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            start();
+            var links = topic.getLinks();
+            ok('Group' in links);
+            notEqual(links['Group'], null);
+            notEqual(links['Group'], '');
+        });
+    });
+
+    test("new topics should have link to Delete", function () {
+        var groupName = 'new topics should have link to Delete';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            start();
+            var links = topic.getLinks();
+            ok('Delete' in links);
+            notEqual(links['Delete'], null);
+            notEqual(links['Delete'], '');
+        });
+    });
+
+    test("new topics should have link to Update", function () {
+        var groupName = 'new topics should have link to Update';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            start();
+            var links = topic.getLinks();
+            ok('Update' in links);
+            notEqual(links['Update'], null);
+            notEqual(links['Update'], '');
+        });
+    });
+
+    test("new topics should have link to Post Message", function () {
+        var groupName = 'new topics should have link to Post Message';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            start();
+            var links = topic.getLinks();
+            ok('Post Message' in links);
+            notEqual(links['Post Message'], null);
+            notEqual(links['Post Message'], '');
+        });
+    });
+
+    test("new topics should have link to Current Feed", function () {
+        var groupName = 'new topics should have link to Current Feed';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            start();
+            var links = topic.getLinks();
+            ok('Current Feed' in links);
+            notEqual(links['Current Feed'], null);
+            notEqual(links['Current Feed'], '');
+        });
+    });
+
     module("topic.Delete");
 
     test("topic.Delete returns promise", function () {
