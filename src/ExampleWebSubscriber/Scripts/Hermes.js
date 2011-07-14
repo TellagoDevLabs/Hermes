@@ -42,7 +42,6 @@ function HermesClient(serviceUrl) {
                 var groupElement = $(groupElements[groupIndex]);
                 groups.push(buildGroupFromXml(groupElement));
             };
-            console.log('Returning ' + groups.length + ' groups.');
             deferred.resolve(groups);
         })
         .fail(function (xhr, status, ex) {
@@ -56,8 +55,6 @@ function HermesClient(serviceUrl) {
             throw 'Group name is null or empty';
         if (typeof description == 'undefined' || description == null)
             description = '';
-
-        console.log('Creating group ' + name);
 
         var group = { name: name, description: description };
         group.xmlns = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade";
@@ -78,7 +75,6 @@ function HermesClient(serviceUrl) {
                 result.reject(ex);
             })
             .done(function (data) {
-                console.log('Group ' + name + ' created.');
                 result.resolve(buildGroupFromXml($(data)));
             });
 
@@ -115,13 +111,23 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
     };
 
     this.Delete = function () {
-        console.log('Deleting ' + groupName + ' group.');
         var url = linkMap['Delete'];
         return restClient.Delete(url);
+    };
+
+    this.SaveChanges = function () {
+        var group = { id: this.getId(), name: this.Name, description: this.Description };
+        group.xmlns = "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade";
+        var data = $.json2xml(group, {
+            formatOutput: true,
+            rootTagName: 'Group',
+            nodes: ['id', 'name', 'description']
+        });
+        var url = linkMap['Update'];
+        return restClient.Put(url, null, data);
     };
     
 }
 
 function Topic(topicName, topicDescription) {
-
 };

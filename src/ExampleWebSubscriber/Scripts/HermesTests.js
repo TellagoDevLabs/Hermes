@@ -263,7 +263,6 @@ $(document).ready(function () {
 
     test('GetGroupByName returns null when group doesnt exist', function () {
         removeGroup('GetGroupByName returns null when group doesnt exist', function () {
-            console.log('Running asdfg');
             var client = new HermesClient(serviceUrl);
             client.GetGroupByName('GetGroupByName returns null when group doesnt exist')
                 .done(function (group) {
@@ -273,6 +272,44 @@ $(document).ready(function () {
                 .fail(function () {
                     start();
                     ok(false, 'GetGroupByName failed');
+                });
+        });
+    });
+
+    module('group.SaveChanges()');
+
+    test('SaveChanges completes', function () {
+        whenCreateGroupCompletes('SaveChanges completes', '', function (group) {
+            group.Description = 'This is a new description';
+            group.SaveChanges().done(function () {
+                start();
+                ok(true);
+            })
+            .fail(function () {
+                start();
+                ok(false, 'SaveChanges failed.');
+            });
+        });
+    });
+
+    test('SaveChanges updates description', function () {
+        whenCreateGroupCompletes('SaveChanges updates description', 'old description', function (group) {
+            group.Description = 'new description';
+            group.SaveChanges().done(function () {
+                var client = new HermesClient(serviceUrl);
+                client.GetGroupByName(group.Name)
+                    .done(function (refreshedGroup) {
+                        start();
+                        equal(refreshedGroup.Description, group.Description);
+                    })
+                    .fail(function () {
+                        start();
+                        ok(false, 'GetGroupByName failed.');
+                    });
+            })
+                .fail(function () {
+                    start();
+                    ok(false, 'SaveChanges failed.');
                 });
         });
     });

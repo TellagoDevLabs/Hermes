@@ -24,7 +24,7 @@
     };
 
     this.Put = function (url, headers, data) {
-        throw "Not Implemented";
+        return makeRequest(url, 'PUT', headers, data);
     };
 
     this.Post = function (url, headers, data) {
