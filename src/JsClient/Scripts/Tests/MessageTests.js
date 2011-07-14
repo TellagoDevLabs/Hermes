@@ -26,7 +26,7 @@ $(document).ready(function () {
                 })
                 .fail(function () {
                     start();
-                    ok(false);
+                    ok(false, 'PostStringMessage failed.');
                 });
         });
 
@@ -45,7 +45,7 @@ $(document).ready(function () {
                 })
                 .fail(function () {
                     start();
-                    ok(false);
+                    ok(false, 'PostMessage failed.');
                 });
         });
 
@@ -59,7 +59,7 @@ $(document).ready(function () {
             timestamp: new Date()
         };
         var message = JSON.stringify(msgObject);
-        
+
         usingGroupAndTopic(groupName, topicName, function (group, topic) {
             topic.PostMessage(message, 'application/json')
                 .done(function (location) {
@@ -69,10 +69,27 @@ $(document).ready(function () {
                 })
                 .fail(function () {
                     start();
-                    ok(false);
+                    ok(false, 'PostMessage failed.');
                 });
         });
 
+    });
+
+    test('Get Feed', function () {
+        var groupName = 'Get Feed';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            topic.GetFeed()
+                .done(function (feed) {
+                    start();
+                    console.log(feed);
+                    ok(true);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'GetFeed failed.');
+                });
+        });
     });
 
 });

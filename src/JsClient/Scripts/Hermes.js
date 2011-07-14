@@ -1,4 +1,5 @@
 ﻿///<reference path="jquery.json2xml.js" />
+///<reference path="jquery.jfeed.js" />
 ///<reference path="RestClient.js" />
 ///<reference path="rx.js" />
 
@@ -303,4 +304,18 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
         return thisTopic.PostMessage(message, 'text/plain');
     };
 
+    this.GetFeed = function () {
+        var url = linkMap['Current Feed'];
+        var deferred = $.Deferred().resolve();
+        jQuery.getFeed({
+            url: url,
+            success: function (feed) {
+                console.log(feed);
+                deferred.resolve(feed);
+            },
+            error: deferred.reject
+        });
+        return deferred.promise();
+    };
+    
 }
