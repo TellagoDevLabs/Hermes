@@ -1,6 +1,6 @@
-﻿///<reference path="jquery.json2xml.js" />
-///<reference path="RestClient.js" />
-///<reference path="Hermes.js" />
+﻿///<reference path="../jquery.json2xml.js" />
+///<reference path="../RestClient.js" />
+///<reference path="../Hermes.js" />
 
 var serviceUrl = 'http://localhost:6156/';
 

@@ -1,9 +1,11 @@
-﻿///<reference path="jquery.json2xml.js" />
-///<reference path="RestClient.js" />
-///<reference path="Hermes.js" />
+﻿///<reference path="../jquery.json2xml.js" />
+///<reference path="../RestClient.js" />
+///<reference path="../Hermes.js" />
 ///<reference path="AsyncTestHelpers.js" />
 
 $(document).ready(function () {
+
+    module('Topic Tests');
 
     var serviceUrl = 'http://localhost:6156/';
 

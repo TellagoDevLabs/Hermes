@@ -8,14 +8,25 @@
         return serviceUrl + operation;
     };
 
+    var hasContentType = function(headers) {
+        if (headers == null)
+            return false;
+        return 'Content-Type' in headers;
+    };
+
     var makeRequest = function (url, method, headers, data) {
         var settings = {
             type: method,
             url: url,
             data: data,
-            dataType: 'xml',
-            contentType: 'application/xml'
+            headers: headers
         };
+
+        if (!hasContentType(headers)) {
+            settings['dataType'] = 'xml';
+            settings['contentType'] = 'application/xml';
+        }
+
         return $.ajax(settings);
     };
 
@@ -31,10 +42,12 @@
         var deferred = $.Deferred();
 
         makeRequest(url, 'POST', headers, data)
-            .done(function(data, status, xhr) {
+            .done(function (data, status, xhr) {
                 var location = xhr.getResponseHeader('Location');
-                makeRequest(location, 'GET')
-                    .done(deferred.resolve)
+                makeRequest(location, 'GET', headers)
+                    .done(function (data, status, xhr) {
+                        deferred.resolve(data, status, xhr, location);
+                    })
                     .fail(deferred.reject);
             })
             .fail(deferred.reject);

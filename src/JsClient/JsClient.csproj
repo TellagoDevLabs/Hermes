@@ -58,6 +58,7 @@
     <Content Include="default.htm" />
     <Content Include="Scripts\jquery.json2xml.js" />
     <Content Include="Scripts\RestClient.js" />
+    <Content Include="Scripts\Tests\MessageTests.js" />
     <Content Include="Scripts\Tests\TopicTests.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

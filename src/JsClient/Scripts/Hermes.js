@@ -287,5 +287,20 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
         });
         return restClient.Put(url, null, data);
     };
-   
+
+    this.PostMessage = function (data, contentType) {
+        var deferred = $.Deferred();
+        var url = linkMap['Post Message'];
+        restClient.Post(url, { 'Content-Type': contentType }, data)
+            .done(function(data, status, xhr, location) {
+                deferred.resolve(location);
+            })
+            .fail(deferred.reject);
+        return deferred.promise();
+    };
+
+    this.PostStringMessage = function(message) {
+        return thisTopic.PostMessage(message, 'text/plain');
+    };
+
 }
