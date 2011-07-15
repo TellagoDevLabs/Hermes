@@ -55,6 +55,7 @@
     <Content Include="Scripts\jquery.jfeed.js.gpl.license.txt" />
     <Content Include="Scripts\jquery.jfeed.js.mit.license.txt" />
     <Content Include="Scripts\jquery.jfeed.js.notes.txt" />
+    <Content Include="Scripts\rx.jQuery.js" />
     <Content Include="Scripts\rx.js" />
     <Content Include="Scripts\rx.js.license.txt" />
     <Content Include="Scripts\Tests\AsyncTestHelpers.js" />

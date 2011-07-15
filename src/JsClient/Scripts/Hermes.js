@@ -1,14 +1,16 @@
-﻿///<reference path="jquery.json2xml.js" />
+﻿///<reference path="http://code.jquery.com/jquery-latest.js" />
+///<reference path="jquery.json2xml.js" />
 ///<reference path="jquery.jfeed.js" />
 ///<reference path="RestClient.js" />
 ///<reference path="rx.js" />
+///<reference path="rx.jQuery.js" />
 
 function HermesClient(serviceUrl) {
     if (!(this instanceof HermesClient))
         return new HermesClient(serviceUrl);
     if (serviceUrl == null || serviceUrl == '')
         throw "serviceUrl should not be null or empty";
-    
+
     var restClient = new RestClient(serviceUrl);
     var operations = {
         Groups: "groups",
@@ -19,9 +21,9 @@ function HermesClient(serviceUrl) {
         }
     };
 
-    var buildGroupFromXml = function(groupElement) {
+    var buildGroupFromXml = function (groupElement) {
         var linkElements = groupElement.find('links > link');
-        var linkMap = { };
+        var linkMap = {};
         for (var linkIndex = 0; linkIndex < linkElements.length; linkIndex++) {
             var linkElement = $(linkElements[linkIndex]);
             linkMap[linkElement.attr('rel')] = linkElement.attr('uri');
@@ -83,8 +85,8 @@ function HermesClient(serviceUrl) {
         return deferred.promise();
     };
 
-    this.GetGroupByName = function(name) {
-        return this.GetGroups().pipe(function(groups) {
+    this.GetGroupByName = function (name) {
+        return this.GetGroups().pipe(function (groups) {
             for (var i = 0; i < groups.length; i++) {
                 var group = groups[i];
                 if (group.Name == name)
@@ -94,12 +96,12 @@ function HermesClient(serviceUrl) {
         });
     };
 
-    this.GetGroup = function(id) {
+    this.GetGroup = function (id) {
         var operation = operations.GetGroup(id);
         var url = restClient.getUrl(operation);
         var deferred = $.Deferred();
         restClient.Get(url)
-            .done(function(data) {
+            .done(function (data) {
                 deferred.resolve(buildGroupFromXml($(data)));
             })
             .fail(deferred.reject);
@@ -147,12 +149,12 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
         return new Topic(restClient, thisGroup, id, name, description, linkMap);
     };
 
-    
+
     this.getId = function () { return id; };
     this.Name = groupName;
     this.Description = groupDescription;
-    this.getLinks = function() {
-        var links = { };
+    this.getLinks = function () {
+        var links = {};
         for (var key in linkMap)
             links[key] = linkMap[key];
         return links;
@@ -201,11 +203,11 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
         var data = $.json2xml(topic, {
             formatOutput: true,
             rootTagName: 'topic',
-            nodes: ['name', 'description','groupId']
+            nodes: ['name', 'description', 'groupId']
         });
 
         restClient.Post(url, null, data)
-            .done(function(data, status, xhr) {
+            .done(function (data, status, xhr) {
                 deferred.resolve(buildTopicFromXml($(data)));
             }).fail(deferred.reject);
         return deferred.promise();
@@ -238,7 +240,7 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
 
         return deferred.promise();
     };
-    
+
 }
 
 function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
@@ -248,25 +250,25 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
         throw new "name should not be null or empty";
 
     var thisTopic = this;
-    
+
     this.getGroup = function () {
         return group;
     };
-    
+
     this.getId = function () {
         return id;
     };
 
     this.Name = topicName;
     this.Description = topicDescription;
-    
+
     this.getLinks = function () {
         var links = {};
         for (var key in linkMap)
             links[key] = linkMap[key];
         return links;
     };
-    
+
     this.Delete = function () {
         var url = linkMap['Delete'];
         return restClient.Delete(url);
@@ -293,14 +295,14 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
         var deferred = $.Deferred();
         var url = linkMap['Post Message'];
         restClient.Post(url, { 'Content-Type': contentType }, data)
-            .done(function(data, status, xhr, location) {
+            .done(function (data, status, xhr, location) {
                 deferred.resolve(location);
             })
             .fail(deferred.reject);
         return deferred.promise();
     };
 
-    this.PostStringMessage = function(message) {
+    this.PostStringMessage = function (message) {
         return thisTopic.PostMessage(message, 'text/plain');
     };
 
@@ -309,37 +311,54 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
         return jQuery.getFeed({ url: url });
     };
 
-    this.GetAllMessages = function () {
-        var getNewItems = function (lastReadMessageId, observer) {
-            var foundLastOne = false;
-            var items = [];
-            var processFeed = function (feed) {
-                for (var i = 0; i < feed.items.length; i++) {
-                    var item = feed.items[i];
-                    foundLastOne = item.id == lastReadMessageId;
-                    if (foundLastOne)
-                        break;
-                    items.push(item);
+    var getNewItems = function (lastReadMessageId, completeObserver, observer) {
+        var foundLastOne = false;
+        var items = [];
+        var processFeed = function (feed) {
+            for (var i = 0; i < feed.items.length; i++) {
+                var item = feed.items[i];
+                foundLastOne = item.id == lastReadMessageId;
+                if (foundLastOne)
+                    break;
+                items.push(item);
+            }
+            if (!foundLastOne && 'prev-archive' in feed.links) {
+                // Need to go back a page...
+                var url = feed.links['prev-archive'];
+                jQuery.getFeed({ url: url }).done(processFeed).fail(observer.OnError);
+            } else {
+                while (items.length > 0) {
+                    observer.OnNext(items.pop());
                 }
-                if (!foundLastOne && 'prev-archive' in feed.links) {
-                    // Need to go back a page...
-                    var url = feed.links['prev-archive'];
-                    jQuery.getFeed({ url: url }).done(processFeed).fail(observer.OnError);
-                } else {
-                    while (items.length > 0) {
-                        observer.OnNext(items.pop());
-                    }
+                if (completeObserver)
                     observer.OnCompleted();
-                }
-            };
-            thisTopic.GetFeed().done(processFeed).fail(observer.OnError);
+            }
         };
+        thisTopic.GetFeed().done(processFeed).fail(observer.OnError);
+    };
 
+    var getAllFeedItems = function () {
         return Rx.Observable.Create(function (observer) {
             var lastRead = null;
-            getNewItems(lastRead, observer);
-            return function() { };
+            getNewItems(lastRead, true, observer);
+            return function () { };
         });
     };
-    
+
+    var getAllMessageUrls = function () {
+        return getAllFeedItems()
+            .Select(function (item) {
+                return item.link;
+            });
+    };
+
+    this.GetAllMessages = function () {
+        return getAllMessageUrls()
+            .Select(function(url) {
+                return $.ajaxAsObservable({ url: url });
+            })
+            .SelectMany(function(d) { return d; })
+            .Select(function(d) { return d.data; });
+    };
+
 }

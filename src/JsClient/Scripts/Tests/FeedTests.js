@@ -60,6 +60,7 @@ $(document).ready(function () {
                 },
                 function () {
                     start();
+                    console.log(items);
                     ok(items.length > 10);
                 }
             );
