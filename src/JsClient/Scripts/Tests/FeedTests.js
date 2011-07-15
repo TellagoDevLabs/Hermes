@@ -87,12 +87,9 @@ $(document).ready(function () {
 
             setTimeout(function () {
                 subscription.Dispose();
-            }, 4000);
-
-            setTimeout(function () {
                 start();
                 ok(items.length == 3);
-            }, 5000);
+            }, 4000);
 
         });
     });
