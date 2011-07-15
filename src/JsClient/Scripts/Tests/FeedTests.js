@@ -51,7 +51,6 @@ $(document).ready(function () {
             var observable = topic.GetAllMessages();
             var observer = Rx.Observer.Create(
                 function (next) {
-                    console.log('Observer got an item');
                     items.push(next);
                 },
                 function (err) {
@@ -60,7 +59,6 @@ $(document).ready(function () {
                     ok(false, 'Observer got an error.');
                 },
                 function () {
-                    console.log('Observer completed');
                     start();
                     ok(items.length > 10);
                 }

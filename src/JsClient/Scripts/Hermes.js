@@ -310,18 +310,10 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
     };
 
     this.GetAllMessages = function () {
-        console.log('Creating observable');
         var getNewItems = function (lastReadMessageId, observer) {
-            var lastReadMessageIdText = lastReadMessageId;
-            if (!lastReadMessageIdText)
-                lastReadMessageIdText = 'forever';
-            console.log('Getting new items since ' + lastReadMessageId);
-
             var foundLastOne = false;
             var items = [];
             var processFeed = function (feed) {
-                console.log('Processing feed ' + feed.links['self']);
-                console.log(feed);
                 for (var i = 0; i < feed.items.length; i++) {
                     var item = feed.items[i];
                     foundLastOne = item.id == lastReadMessageId;
@@ -330,12 +322,10 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
                     items.push(item);
                 }
                 if (!foundLastOne && 'prev-archive' in feed.links) {
-                    console.log('Requesting previous page: ' + feed.links['prev-archive']);
                     // Need to go back a page...
                     var url = feed.links['prev-archive'];
                     jQuery.getFeed({ url: url }).done(processFeed).fail(observer.OnError);
                 } else {
-                    console.log('Done processing messages');
                     while (items.length > 0) {
                         observer.OnNext(items.pop());
                     }
@@ -346,7 +336,6 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
         };
 
         return Rx.Observable.Create(function (observer) {
-            console.log('Subscribed to observable');
             var lastRead = null;
             getNewItems(lastRead, observer);
             return function() { };
