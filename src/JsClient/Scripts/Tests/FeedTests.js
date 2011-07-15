@@ -1,5 +1,6 @@
 ﻿///<reference path="../jquery.json2xml.js" />
 ///<reference path="../Rx.js" />
+///<reference path="../rx.jQuery.js" />
 ///<reference path="../RestClient.js" />
 ///<reference path="../Hermes.js" />
 ///<reference path="AsyncTestHelpers.js" />
