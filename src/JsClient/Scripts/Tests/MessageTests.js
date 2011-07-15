@@ -75,17 +75,17 @@ $(document).ready(function () {
 
     });
 
-    test('Get Feed', function () {
+    test('Get Feed', function() {
         var groupName = 'Get Feed';
         var topicName = groupName;
-        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+        usingTopicWithMessages(groupName, topicName, function(topic) {
             topic.GetFeed()
-                .done(function (feed) {
+                .done(function(feed) {
                     start();
                     console.log(feed);
                     ok(true);
                 })
-                .fail(function () {
+                .fail(function() {
                     start();
                     ok(false, 'GetFeed failed.');
                 });

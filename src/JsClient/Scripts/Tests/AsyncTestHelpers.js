@@ -11,28 +11,28 @@ var ensureAtLeastOneGroupExists = function (action) {
     stop();
 };
 
-var whenGetGroupsCompletes = function(action) {
-    ensureAtLeastOneGroupExists(function() {
+var whenGetGroupsCompletes = function (action) {
+    ensureAtLeastOneGroupExists(function () {
         var client = new HermesClient(serviceUrl);
         var promise = client.GetGroups();
 
-        promise.done(function(groups) {
+        promise.done(function (groups) {
             action(groups);
         })
-            .fail(function() {
+            .fail(function () {
                 start();
                 ok(false, 'call to GetGroups failed.');
             });
     });
 };
 
-    var removeGroup = function (groupName, action) {
-        var client = new HermesClient(serviceUrl);
-        stop();
+var removeGroup = function (groupName, action) {
+    var client = new HermesClient(serviceUrl);
+    stop();
 
-        var deferred = $.Deferred();
+    var deferred = $.Deferred();
 
-        client.GetGroupByName(groupName)
+    client.GetGroupByName(groupName)
             .done(function (group) {
                 if (group == null) {
                     deferred.resolve();
@@ -50,18 +50,18 @@ var whenGetGroupsCompletes = function(action) {
                 deferred.reject();
             });
 
-        deferred.done(action)
+    deferred.done(action)
             .fail(function () {
                 console.log(groupName + ' test setup failed.');
                 start();
                 ok(false, 'Failed to delete the group before running the test.');
             });
-        };
+};
 
-        var whenCreateGroupCompletes = function (name, description, action) {
-            removeGroup(name, function () {
-                var client = new HermesClient(serviceUrl);
-                client.CreateGroup(name, description)
+var whenCreateGroupCompletes = function (name, description, action) {
+    removeGroup(name, function () {
+        var client = new HermesClient(serviceUrl);
+        client.CreateGroup(name, description)
                 .done(function (group) {
                     action(group);
                 })
@@ -69,23 +69,23 @@ var whenGetGroupsCompletes = function(action) {
                     start();
                     ok(false, 'Failed to create ' + name + ' group.');
                 });
-            });
-        };
+    });
+};
 
-        var usingGroup = function (groupName, action) {
-            stop();
-            var client = new HermesClient(serviceUrl);
-            client.TryCreateGroup(groupName, '')
+var usingGroup = function (groupName, action) {
+    stop();
+    var client = new HermesClient(serviceUrl);
+    client.TryCreateGroup(groupName, '')
             .done(action)
             .fail(function () {
                 start();
                 ok(false, 'call to GetGroups failed.');
             });
-        };
+};
 
-        var usingGroupWithoutTopics = function (groupName, action) {
-            usingGroup(groupName, function (group) {
-                group.GetTopics()
+var usingGroupWithoutTopics = function (groupName, action) {
+    usingGroup(groupName, function (group) {
+        group.GetTopics()
                 .done(function (topics) {
                     var promises = [];
                     for (var i = 0; i < topics.length; i++)
@@ -103,12 +103,12 @@ var whenGetGroupsCompletes = function(action) {
                     start();
                     ok(false, 'call to GetTopics failed.');
                 });
-            });
-        };
+    });
+};
 
-        var usingGroupAndTopic = function (groupName, topicName, action) {
-            usingGroupWithoutTopics(groupName, function (group) {
-                group.CreateTopic(topicName, '')
+var usingGroupAndTopic = function (groupName, topicName, action) {
+    usingGroupWithoutTopics(groupName, function (group) {
+        group.CreateTopic(topicName, '')
                 .done(function (topic) {
                     action(group, topic);
                 })
@@ -116,16 +116,34 @@ var whenGetGroupsCompletes = function(action) {
                     start();
                     ok(false, 'unable to create topic ' + topicName);
                 });
-            });
-        };
+    });
+};
 
-        var whenGetTopicsCompletes = function (groupName, action) {
-            usingGroupAndTopic(groupName, groupName, function (group) {
-                group.GetTopics()
-                .done(action)
-                .fail(function () {
-                    start();
-                    ok(false, 'call to GetTopics failed.');
-                });
+var whenGetTopicsCompletes = function (groupName, action) {
+    usingGroupAndTopic(groupName, groupName, function (group) {
+        group.GetTopics()
+                    .done(action)
+                    .fail(function () {
+                        start();
+                        ok(false, 'call to GetTopics failed.');
+                    });
+    });
+};
+
+var usingTopicWithMessages = function(groupName, topicName, action) {
+    usingGroupAndTopic(groupName, topicName, function(group, topic) {
+        var promises = [];
+        for (var i = 0; i < 24; i++) {
+            var msg = 'Message #' + i;
+            promises.push(topic.PostStringMessage(msg));
+        }
+        $.when.apply(this, promises)
+            .done(function() {
+                action(topic);
+            })
+            .fail(function() {
+                start();
+                ok(false, 'Failed to publish one or more messages');
             });
-        };
+    });
+};
