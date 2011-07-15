@@ -4,7 +4,7 @@
  * and GPL (GPL-license.txt) licenses.
  */
 
-jQuery.getFeed = function(options) {
+jQuery.getFeed = function (options) {
 
     options = jQuery.extend({
 
@@ -17,21 +17,24 @@ jQuery.getFeed = function(options) {
     }, options);
 
     if (options.url) {
-
+        var deferred = $.Deferred();
         $.ajax({
             type: 'GET',
             url: options.url,
             data: options.data,
             cache: options.cache,
             dataType: (jQuery.browser.msie) ? "text" : "xml",
-            success: function(xml) {
+            success: function (xml) {
                 var feed = new JFeed(xml);
                 if (jQuery.isFunction(options.success)) options.success(feed);
+                deferred.resolve(feed);
             },
             error: function (xhr, msg, e) {
                 if (jQuery.isFunction(options.failure)) options.failure(msg, e);
+                deferred.reject(msg, e);
             }
         });
+        return deferred;
     }
 };
 
@@ -86,9 +89,9 @@ function JAtom(xml) {
 };
 
 JAtom.prototype = {
-    
-    _parse: function(xml) {
-    
+
+    _parse: function (xml) {
+
         var channel = jQuery('feed', xml).eq(0);
 
         this.version = '1.0';
@@ -97,21 +100,28 @@ JAtom.prototype = {
         this.description = jQuery(channel).find('subtitle:first').text();
         this.language = jQuery(channel).attr('xml:lang');
         this.updated = jQuery(channel).find('updated:first').text();
-        
-        this.items = new Array();
-        
+
         var feed = this;
-        
-        jQuery('entry', xml).each( function() {
-        
+
+        this.links = {};
+        jQuery('feed > link[rel]', xml).each(function () {
+            var rel = jQuery(this).attr('rel');
+            var url = jQuery(this).attr('href');
+            feed.links[rel] = url;
+        });
+
+
+        this.items = new Array();
+        jQuery('entry', xml).each(function () {
+
             var item = new JFeedItem();
-            
+
             item.title = jQuery(this).find('title').eq(0).text();
             item.link = jQuery(this).find('link').eq(0).attr('href');
             item.description = jQuery(this).find('content').eq(0).text();
             item.updated = jQuery(this).find('updated').eq(0).text();
             item.id = jQuery(this).find('id').eq(0).text();
-            
+
             feed.items.push(item);
         });
     }

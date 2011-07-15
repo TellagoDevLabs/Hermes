@@ -74,22 +74,5 @@ $(document).ready(function () {
         });
 
     });
-
-    test('Get Feed', function() {
-        var groupName = 'Get Feed';
-        var topicName = groupName;
-        usingTopicWithMessages(groupName, topicName, function(topic) {
-            topic.GetFeed()
-                .done(function(feed) {
-                    start();
-                    console.log(feed);
-                    ok(true);
-                })
-                .fail(function() {
-                    start();
-                    ok(false, 'GetFeed failed.');
-                });
-        });
-    });
-
+    
 });

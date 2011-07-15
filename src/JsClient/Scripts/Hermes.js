@@ -306,16 +306,51 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
 
     this.GetFeed = function () {
         var url = linkMap['Current Feed'];
-        var deferred = $.Deferred().resolve();
-        jQuery.getFeed({
-            url: url,
-            success: function (feed) {
+        return jQuery.getFeed({ url: url });
+    };
+
+    this.GetAllMessages = function () {
+        console.log('Creating observable');
+        var getNewItems = function (lastReadMessageId, observer) {
+            var lastReadMessageIdText = lastReadMessageId;
+            if (!lastReadMessageIdText)
+                lastReadMessageIdText = 'forever';
+            console.log('Getting new items since ' + lastReadMessageId);
+
+            var foundLastOne = false;
+            var items = [];
+            var processFeed = function (feed) {
+                console.log('Processing feed ' + feed.links['self']);
                 console.log(feed);
-                deferred.resolve(feed);
-            },
-            error: deferred.reject
+                for (var i = 0; i < feed.items.length; i++) {
+                    var item = feed.items[i];
+                    foundLastOne = item.id == lastReadMessageId;
+                    if (foundLastOne)
+                        break;
+                    items.push(item);
+                }
+                if (!foundLastOne && 'prev-archive' in feed.links) {
+                    console.log('Requesting previous page: ' + feed.links['prev-archive']);
+                    // Need to go back a page...
+                    var url = feed.links['prev-archive'];
+                    jQuery.getFeed({ url: url }).done(processFeed).fail(observer.OnError);
+                } else {
+                    console.log('Done processing messages');
+                    while (items.length > 0) {
+                        observer.OnNext(items.pop());
+                    }
+                    observer.OnCompleted();
+                }
+            };
+            thisTopic.GetFeed().done(processFeed).fail(observer.OnError);
+        };
+
+        return Rx.Observable.Create(function (observer) {
+            console.log('Subscribed to observable');
+            var lastRead = null;
+            getNewItems(lastRead, observer);
+            return function() { };
         });
-        return deferred.promise();
     };
     
 }
