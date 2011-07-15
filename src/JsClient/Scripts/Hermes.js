@@ -31,7 +31,7 @@ function HermesClient(serviceUrl) {
         var id = groupElement.find("id").text();
         var name = groupElement.find("name").text();
         var description = groupElement.find("description").text();
-        return new Group(restClient, id, name, description, linkMap);
+        return new Group(restClient, id, name, description, linkMap, createTopicProxy);
     };
 
     this.GetGroups = function () {
@@ -126,7 +126,7 @@ function HermesClient(serviceUrl) {
 
         return createGroupProxy(deferred.promise());
     };
-
+    
     var createGroupProxy = function (promise) {
         var proxy = {
             Delete: function() {
@@ -158,11 +158,14 @@ function HermesClient(serviceUrl) {
         return jQuery.extend(promise, proxy);
     };
 
+    var createTopicProxy = function (promise) {
+        return promise;
+    };
 }
 
-function Group(restClient, id, groupName, groupDescription, linkMap) {
+function Group(restClient, id, groupName, groupDescription, linkMap, createTopicProxy) {
     if (!(this instanceof Group))
-        return new Group(groupName, groupDescription);
+        return new Group(restClient, id, groupName, groupDescription, linkMap, createTopicProxy);
     if (groupName == null || groupName == '')
         throw new "name should not be null or empty";
 
@@ -242,11 +245,11 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
             .done(function (data, status, xhr) {
                 deferred.resolve(buildTopicFromXml($(data)));
             }).fail(deferred.reject);
-        return deferred.promise();
+        return createTopicProxy(deferred.promise());
     };
 
     this.GetTopicByName = function (topicName) {
-        return this.GetTopics().pipe(function (topics) {
+        var promise = this.GetTopics().pipe(function (topics) {
             for (var i = 0; i < topics.length; i++) {
                 var topic = topics[i];
                 if (topic.Name == topicName)
@@ -254,6 +257,7 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
             }
             return null;
         });
+        return createTopicProxy(promise);
     };
 
     this.TryCreateTopic = function (name, description) {
@@ -270,7 +274,7 @@ function Group(restClient, id, groupName, groupDescription, linkMap) {
             })
             .fail(deferred.reject);
 
-        return deferred.promise();
+        return createTopicProxy(deferred.promise());
     };
 
 }
