@@ -311,16 +311,21 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
         return jQuery.getFeed({ url: url });
     };
 
-    var getNewItems = function (lastReadMessageId, completeObserver, observer) {
+    var getNewItems = function (observableData, observer) {
+        if (observableData.isFetchingFeed)
+            return;
+        observableData.isFetchingFeed = true;
+
         var foundLastOne = false;
         var items = [];
+
         var processFeed = function (feed) {
             for (var i = 0; i < feed.items.length; i++) {
-                var item = feed.items[i];
-                foundLastOne = item.id == lastReadMessageId;
+                var feedItem = feed.items[i];
+                foundLastOne = feedItem.id == observableData.lastReadMessageId;
                 if (foundLastOne)
                     break;
-                items.push(item);
+                items.push(feedItem);
             }
             if (!foundLastOne && 'prev-archive' in feed.links) {
                 // Need to go back a page...
@@ -328,9 +333,12 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
                 jQuery.getFeed({ url: url }).done(processFeed).fail(observer.OnError);
             } else {
                 while (items.length > 0) {
-                    observer.OnNext(items.pop());
+                    var stackedItem = items.pop();
+                    observableData.lastReadMessageId = stackedItem.id;
+                    observer.OnNext(stackedItem);
                 }
-                if (completeObserver)
+                observableData.isFetchingFeed = false;
+                if (observableData.pollingInterval == 0)
                     observer.OnCompleted();
             }
         };
@@ -339,8 +347,12 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
 
     var getAllFeedItems = function () {
         return Rx.Observable.Create(function (observer) {
-            var lastRead = null;
-            getNewItems(lastRead, true, observer);
+            var observableData = {
+                lastReadMessageId: null,
+                isFetchingFeed: false,
+                pollingInterval: 0
+            };
+            getNewItems(observableData, observer);
             return function () { };
         });
     };
