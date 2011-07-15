@@ -33,7 +33,6 @@
       <Custom Action="ca_SET_MONGO_LOG_FILE" After="ca_SET_MONGO_DATA_FOLDER" />
       <Custom Action="ca_StopMongoService" After ="ca_SET_MONGO_LOG_FILE"><![CDATA[Installed]]></Custom>
       <Custom Action="ca_RemoveMongoAsService" After="ca_StopMongoService"><![CDATA[Installed]]></Custom>
-
       <Custom Action="ca_InstallMongoAsService" After="InstallFinalize"><![CDATA[NOT MONGO_SERVER_REG AND NOT Installed AND &feature_MongoDB=3]]></Custom>
       <Custom Action="ca_StartMongoService" After="ca_InstallMongoAsService"><![CDATA[NOT MONGO_SERVER_REG AND NOT Installed AND &feature_MongoDB=3]]></Custom>
     </InstallExecuteSequence>

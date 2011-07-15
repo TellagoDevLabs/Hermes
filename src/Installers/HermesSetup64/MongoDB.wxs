@@ -12,10 +12,10 @@
     <Property Id="START_SERVICE_NAME" Value="MongoDB" />
     <CustomAction Id="ca_SET_MONGO_LOG_FILE" Property="MONGO_LOG_FILE" Value="&quot;[d_logs]service.log&quot;" />
     <CustomAction Id="ca_SET_MONGO_DATA_FOLDER" Property="MONGO_DATA_FOLDER" Value="&quot;[d_data].&quot;" />
-    <CustomAction Id="ca_InstallMongoAsService" FileKey="f_mongod.exe" ExeCommand="--bind_ip [MONGO_IP_ADDRESS] --port [MONGO_IP_PORT] --logpath [MONGO_LOG_FILE] --logappend --dbpath [MONGO_DATA_FOLDER] --directoryperdb --install" Impersonate="no" />
-    <CustomAction Id="ca_StartMongoService" BinaryKey="Hermes_CA" DllEntry="StartService" Execute="immediate" Return="check" Impersonate="no" />
-    <CustomAction Id="ca_StopMongoService" BinaryKey="Hermes_CA" DllEntry="StopService" Execute="immediate" Return="check" Impersonate="no" />
-    <CustomAction Id="ca_RemoveMongoAsService" FileKey="f_mongod.exe" ExeCommand="--bind_ip [MONGO_IP_ADDRESS] --port [MONGO_IP_PORT] --logpath [MONGO_LOG_FILE] --logappend --dbpath [MONGO_DATA_FOLDER] --directoryperdb --remove" Impersonate="no" />
+    <CustomAction Id="ca_InstallMongoAsService" FileKey="f_mongod.exe" ExeCommand="--bind_ip [MONGO_IP_ADDRESS] --port [MONGO_IP_PORT] --logpath [MONGO_LOG_FILE] --logappend --dbpath [MONGO_DATA_FOLDER] --directoryperdb --install" />
+    <CustomAction Id="ca_StartMongoService" BinaryKey="Hermes_CA" DllEntry="StartService" Execute="immediate" Return="check" />
+    <CustomAction Id="ca_StopMongoService" BinaryKey="Hermes_CA" DllEntry="StopMongoService" Execute="immediate" Return="check" />
+    <CustomAction Id="ca_RemoveMongoAsService" FileKey="f_mongod.exe" ExeCommand="--bind_ip [MONGO_IP_ADDRESS] --port [MONGO_IP_PORT] --logpath [MONGO_LOG_FILE] --logappend --dbpath [MONGO_DATA_FOLDER] --directoryperdb --remove"/>
     <Feature Id="feature_MongoDB" Title="Hermes Database (MongoDB service)" Level="1">
       <ComponentRef Id="c_bsondump.exe" />
       <ComponentRef Id="c_mongo.exe" />
