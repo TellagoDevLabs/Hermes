@@ -306,15 +306,59 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
         return thisTopic.PostMessage(message, 'text/plain');
     };
 
-    this.GetFeed = function () {
+//    this.GetFeed = function () {
+//        var url = linkMap['Current Feed'];
+//        return jQuery.getFeed({ url: url });
+//    };
+
+    var getAllFeedItems = function (interval) {
         var url = linkMap['Current Feed'];
-        return jQuery.getFeed({ url: url });
+        return new Subscription(url, interval).AsObservable();
     };
 
-    var getNewItems = function (observableData, observer) {
-        if (observableData.isFetchingFeed)
+    var getAllMessageUrls = function (interval) {
+        return getAllFeedItems(interval)
+            .Select(function (item) {
+                return item.link;
+            });
+    };
+
+    var getAllMessages = function (interval) {
+        return getAllMessageUrls(interval)
+            .Select(function(url) {
+                return $.ajaxAsObservable({ url: url });
+            })
+            .SelectMany(function(d) { return d; })
+            .Select(function(d) { return d.data; });
+        };
+
+    this.GetAllMessages = function() {
+        return getAllMessages(0);
+    };
+
+    this.PollFeed = function(interval) {
+        return getAllMessages(interval);
+    };
+
+}
+
+function Subscription(feedUrl, interval) {
+    if (!(this instanceof Subscription))
+        return new Subscription(feedUrl, interval);
+    var state = {
+        lastReadMessageId: null,
+        isFetchingFeed: false,
+        polling: interval > 0,
+        intervalId: null
+    };
+    console.log(state);
+    console.log(interval);
+
+    var getNewItems = function (observer) {
+        console.log(state);
+        if (state.isFetchingFeed)
             return;
-        observableData.isFetchingFeed = true;
+        state.isFetchingFeed = true;
 
         var foundLastOne = false;
         var items = [];
@@ -322,7 +366,7 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
         var processFeed = function (feed) {
             for (var i = 0; i < feed.items.length; i++) {
                 var feedItem = feed.items[i];
-                foundLastOne = feedItem.id == observableData.lastReadMessageId;
+                foundLastOne = feedItem.id == state.lastReadMessageId;
                 if (foundLastOne)
                     break;
                 items.push(feedItem);
@@ -334,43 +378,28 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
             } else {
                 while (items.length > 0) {
                     var stackedItem = items.pop();
-                    observableData.lastReadMessageId = stackedItem.id;
+                    state.lastReadMessageId = stackedItem.id;
                     observer.OnNext(stackedItem);
                 }
-                observableData.isFetchingFeed = false;
-                if (observableData.pollingInterval == 0)
+                state.isFetchingFeed = false;
+                if (!state.polling)
                     observer.OnCompleted();
             }
         };
-        thisTopic.GetFeed().done(processFeed).fail(observer.OnError);
+        jQuery.getFeed({ url: feedUrl }).done(processFeed).fail(observer.OnError);
     };
 
-    var getAllFeedItems = function () {
+    this.AsObservable = function () {
         return Rx.Observable.Create(function (observer) {
-            var observableData = {
-                lastReadMessageId: null,
-                isFetchingFeed: false,
-                pollingInterval: 0
+            getNewItems(observer);
+            if (state.polling)
+                state.intervalId = setInterval(function () {
+                    getNewItems(observer);
+                }, interval);
+            return function () {
+                if (state.polling)
+                    clearInterval(state.intervalId);
             };
-            getNewItems(observableData, observer);
-            return function () { };
         });
     };
-
-    var getAllMessageUrls = function () {
-        return getAllFeedItems()
-            .Select(function (item) {
-                return item.link;
-            });
-    };
-
-    this.GetAllMessages = function () {
-        return getAllMessageUrls()
-            .Select(function(url) {
-                return $.ajaxAsObservable({ url: url });
-            })
-            .SelectMany(function(d) { return d; })
-            .Select(function(d) { return d.data; });
-    };
-
 }

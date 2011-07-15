@@ -14,23 +14,6 @@ $(document).ready(function () {
         ok(true);
     });
 
-    test('Get feed', function () {
-        var groupName = 'Get feed';
-        var topicName = groupName;
-        usingTopicWithMessages(groupName, topicName, function (topic) {
-            topic.GetFeed()
-                .done(function (feed) {
-                    start();
-                    console.log(feed);
-                    ok(true);
-                })
-                .fail(function () {
-                    start();
-                    ok(false, 'GetFeed failed.');
-                });
-        });
-    });
-
     test('GetAllMessages returns an Obserable', function () {
         var groupName = 'GetAllMessages returns an Obserable';
         var topicName = groupName;
@@ -66,6 +49,52 @@ $(document).ready(function () {
             );
             observable.Subscribe(observer);
         });
-    })
+    });
+
+    test('PollFeed has messages', function () {
+        var groupName = 'PollFeed has messages';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var items = [];
+            var observable = topic.PollFeed(500);
+            var observer = Rx.Observer.Create(
+                function (next) {
+                    items.push(next);
+                },
+                function (err) {
+                    start();
+                    ok(false, 'Observer got an error.');
+                },
+                function () {
+                    start();
+                    console.log(items);
+                    ok(false, 'A polling subscription never completes.');
+                }
+            );
+            var subscription = observable.Subscribe(observer);
+
+            setTimeout(function () {
+                topic.PostStringMessage('1');
+            }, 1000);
+
+            setTimeout(function () {
+                topic.PostStringMessage('2');
+            }, 2000);
+
+            setTimeout(function () {
+                topic.PostStringMessage('3');
+            }, 3000);
+
+            setTimeout(function () {
+                subscription.Dispose();
+            }, 4000);
+
+            setTimeout(function () {
+                start();
+                ok(items.length == 3);
+            }, 5000);
+
+        });
+    });
 
 });
