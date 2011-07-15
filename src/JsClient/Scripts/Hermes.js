@@ -130,19 +130,29 @@ function HermesClient(serviceUrl) {
     var createGroupProxy = function (promise) {
         var proxy = {
             Delete: function() {
-                return this.pipe(function(group) { return group.Delete(); });
+                return this.pipe(function(group) {
+                     return group.Delete();
+                });
             },
             GetTopics: function() {
-                return this.pipe(function(group) { return group.GetTopics(); });
+                return this.pipe(function(group) {
+                     return group.GetTopics();
+                });
             },
             CreateTopic: function(name, description) {
-                return this.pipe(function(group) { return group.CreateTopic(name, description); });
+                return this.pipe(function(group) {
+                     return group.CreateTopic(name, description);
+                });
             },
             TryCreateTopic: function(name, description) {
-                return this.pipe(function(group) { return group.TryCreateTopic(name, description); });
+                return this.pipe(function(group) {
+                     return group.TryCreateTopic(name, description);
+                });
             },
             GetTopicByName: function(name) {
-                return this.pipe(function(group) { return group.GetTopicByName(name); });
+                return this.pipe(function(group) {
+                     return group.GetTopicByName(name);
+                });
             }
         };
         return jQuery.extend(promise, proxy);

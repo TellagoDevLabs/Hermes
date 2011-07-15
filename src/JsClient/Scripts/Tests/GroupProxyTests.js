@@ -51,12 +51,108 @@ $(document).ready(function () {
         });
     });
 
-    test("TryCreateGroup(name, description) returns Group proxy", function() {
+    test("TryCreateGroup(name, description) returns Group proxy", function () {
         stop();
         var groupName = 'TryCreateGroup(name, description) returns Group proxy';
         var client = new HermesClient(serviceUrl);
         var actual = client.TryCreateGroup(groupName, '');
         assertIsGroupProxy(actual);
+    });
+
+    test("Group proxy Delete works", function () {
+        var groupName = 'Group proxy Delete works';
+        usingGroup(groupName, function (group) {
+            var groupId = group.getId();
+            var client = new HermesClient(serviceUrl);
+            var proxy = client.TryCreateGroup(groupName);
+            proxy.Delete()
+                .done(function () {
+                    client.GetGroup(groupId)
+                        .done(function (grp) {
+                            start();
+                            ok(false, 'GetGroup should fail if the group was deleted.');
+                        })
+                        .fail(function () {
+                            start();
+                            ok(true, 'GetGroup failed, meaning the group is deleted.');
+                        });
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'TryCreateGroup or Delete failed.');
+                });
+        });
+    });
+
+    test('Group proxy GetTopics works', function () {
+        var groupName = 'Group proxy GetTopics works';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function () {
+            var client = new HermesClient(serviceUrl);
+            var proxy = client.TryCreateGroup(groupName, '');
+            proxy.GetTopics()
+                .done(function (topics) {
+                    start();
+                    ok(topics.length > 0);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'TryCreateGroup or GetTopics failed.');
+                });
+        });
+    });
+
+    test("Group proxy CreateTopic works", function () {
+        var groupName = 'Group proxy CreateTopic works';
+        usingGroupWithoutTopics(groupName, function (group) {
+            var client = new HermesClient(serviceUrl);
+            var proxy = client.TryCreateGroup(groupName);
+            proxy.CreateTopic(groupName, 'My Topic Description')
+                .done(function (topic) {
+                    start();
+                    ok(topic instanceof Topic);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'TryCreateGroup or CreateTopic failed');
+                });
+        });
+    });
+
+    test("Group proxy GetTopicByName works", function () {
+        var groupName = 'Group proxy GetTopicByName works';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group) {
+            var client = new HermesClient(serviceUrl);
+            var proxy = client.TryCreateGroup(groupName);
+            proxy.GetTopicByName(topicName)
+                .done(function (topic) {
+                    start();
+                    ok(topic instanceof Topic);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'TryCreateGroup or TryCreateTopic failed');
+                });
+        });
+    });
+
+
+    test("Group proxy TryCreateTopic works", function () {
+        var groupName = 'Group proxy TryCreateTopic works';
+        usingGroupWithoutTopics(groupName, function (group) {
+            var client = new HermesClient(serviceUrl);
+            var proxy = client.TryCreateGroup(groupName);
+            proxy.TryCreateTopic(groupName, 'My Topic Description')
+                .done(function (topic) {
+                    start();
+                    ok(topic instanceof Topic);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'TryCreateGroup or TryCreateTopic failed');
+                });
+        });
     });
 
 });
