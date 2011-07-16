@@ -95,4 +95,63 @@ $(document).ready(function () {
         });
     });
 
+    test('topic.PollFeed can manage multiple subscriptions', function () {
+        var groupName = 'topicProxy.PollFeed can manage multiple subscriptions';
+        var topicName = groupName;
+        var message0 = 'Message 0.';
+        var message1 = 'Message 1.';
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var observable = topic.PollFeed(500);
+
+            var fail = function () {
+                console.log('Test failed');
+                start();
+                ok(false);
+                subscription0.Dispose();
+            };
+
+            var pass = function () {
+                console.log('Test passed');
+                start();
+                ok(true);
+                subscription0.Dispose();
+            };
+
+            // Should receive both messages
+            var subscription0 = observable.Subscribe(
+                function (next) {
+                    console.log('Subscription 0 got message ' + next);
+                    if (next == message1)
+                        pass();
+                },
+                fail,
+                fail);
+
+            // Should receive message0, but not message1
+            var subscription1 = observable.Subscribe(
+                function (next) {
+                    console.log('Subscription 1 got message ' + next);
+                    if (next == message1)
+                        fail();
+                },
+                fail,
+                fail);
+
+            setTimeout(function() {
+                topic.PostStringMessage(message0);
+            }, 100);
+
+            setTimeout(function () {
+                subscription1.Dispose();
+            }, 1500);
+
+            setTimeout(function () {
+                topic.PostStringMessage(message1);
+            }, 2500);
+
+        });
+
+    });
+
+
 });

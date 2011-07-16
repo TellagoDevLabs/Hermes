@@ -20,7 +20,8 @@ $(document).ready(function () {
         ok('Delete' in proxy && $.isFunction(proxy.Delete), 'proxy should implement Delete()');
         ok('PostMessage' in proxy && $.isFunction(proxy.PostMessage), 'proxy should implement PostMessage(data, contentType)');
         ok('PostStringMessage' in proxy && $.isFunction(proxy.PostStringMessage), 'proxy should implement PostStringMessage(message)');
-        ok('GetAllMessages' in proxy && $.isFunction(proxy.GetAllMessages), 'proxy should implement GetAllMessages');
+        ok('GetAllMessages' in proxy && $.isFunction(proxy.GetAllMessages), 'proxy should implement GetAllMessages()');
+        ok('PollFeed' in proxy && $.isFunction(proxy.PollFeed), 'proxy should implement PollFeed(interval)');
     };
 
     test('group.CreateTopic returns Topic proxy', function () {
@@ -216,7 +217,107 @@ $(document).ready(function () {
         });
     });
 
+    test('topicProxy.PollFeed works', function () {
+        var groupName = 'topicProxy.PollFeed works';
+        var topicName = groupName;
+        usingTopicWithMessages(groupName, topicName, function (topic) {
+            var client = new HermesClient(serviceUrl);
+            var groupProxy = client.TryCreateGroup(groupName);
+            var topicProxy = groupProxy.TryCreateTopic(topicName);
+            var observableProxy = topicProxy.PollFeed(500);
 
+            var filterd = observableProxy
+                .Where(function (msg) { return true; });
+
+            var subscription = filterd.Subscribe(function (next) {
+                console.log('Got message: ' + next);
+                gotMessage = true;
+                start();
+                ok(true);
+                subscription.Dispose();
+            },
+                function (err) {
+                    console.log('errored');
+                    start();
+                    ok(false, 'PollFeed observable failed.');
+                    subscription.Dispose();
+                },
+                function () {
+                    console.log('completed');
+                    start();
+                    ok(gotMessage);
+                });
+        });
+    });
+
+
+    test('topicProxy.PollFeed can manage multiple subscriptions', function () {
+        var groupName = 'topicProxy.PollFeed can manage multiple subscriptions';
+        var topicName = groupName;
+        var message0 = 'Message 0.';
+        var message1 = 'Message 1.';
+        usingGroupAndTopic(groupName, topicName, function () {
+
+            var client = new HermesClient(serviceUrl);
+            var groupProxy = client.TryCreateGroup(groupName);
+            var topicProxy = groupProxy.TryCreateTopic(topicName);
+            var observableProxy = topicProxy.PollFeed(500);
+
+            var fail = function () {
+                console.log('Test failed');
+                start();
+                ok(false);
+                subscription0.Dispose();
+                subscription1.Dispose();
+            };
+
+            // Should receive both messages
+            var subscription0items = [];
+            var subscription0 = observableProxy.Subscribe(
+                function (next) {
+                    console.log('Subscription 0 got message ' + next);
+                    subscription0items.push(next);
+                },
+                fail,
+                fail);
+
+            // Should receive message0, but not message1
+            var subscription1items = [];
+            var subscription1 = observableProxy.Subscribe(
+                function (next) {
+                    console.log('Subscription 1 got message ' + next);
+                    subscription1items.push(next);
+                },
+                fail,
+                fail);
+
+            topicProxy.done(function (topic) {
+                setTimeout(function () {
+                    topic.PostStringMessage(message0);
+                }, 100);
+
+                setTimeout(function () {
+                    subscription1.Dispose();
+                }, 1500);
+
+                setTimeout(function () {
+                    topic.PostStringMessage(message1);
+                }, 2500);
+            });
+
+            setTimeout(function () {
+                subscription0.Dispose();
+                start();
+                ok(subscription0items.length == 2);
+                ok(subscription0items[0] = message0);
+                ok(subscription0items[1] = message1);
+                ok(subscription1items.length == 1);
+                ok(subscription1items[0] == message0);
+            }, 3500);
+
+        });
+
+    });
 
 
 });

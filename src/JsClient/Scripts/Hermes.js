@@ -92,22 +92,48 @@ function HermesClient(serviceUrl) {
                 });
             },
             GetAllMessages: function () {
-                var observable = new Rx.Subject();
-                this.pipe(function (topic) {
-                    topic.GetAllMessages()
-                        .Subscribe(function (next) {
-                            observable.OnNext(next);
-                        },
-                        function (err) {
-                            observable.OnError(err);
-                        },
-                        function () {
-                            observable.OnCompleted();
-                        });
-                }, function (err) {
-                    observable.OnError(err);
+                var observers = [];
+                var unsubscribeActions = [];
+                var observableProxy = Rx.Observable.Create(function (observer) {
+                    var i = observers.length;
+                    observers.push(observer);
+                    return function () {
+                        if (unsubscribeActions.length > i)
+                            unsubscribeActions[i]();
+                    };
                 });
-                return observable;
+
+                this.pipe(function (topic) {
+                    var observable = topic.GetAllMessages();
+                    while (observers.length) {
+                        var subscription = observable.Subscribe(observers.pop());
+                        unsubscribeActions.push(subscription.Dispose);
+                    }
+                });
+                return observableProxy;
+            },
+            PollFeed: function (interval) {
+                var observers = [];
+                var subscriptions = [];
+                var observableProxy = Rx.Observable.Create(function (observer) {
+                    var i = observers.length;
+                    observers.push(observer);
+                    return function () {
+                        if (subscriptions.length > i && subscriptions[i] != null) {
+                            subscriptions[i].Dispose();
+                            subscriptions[i] = null;
+                        }
+                    };
+                });
+
+                this.pipe(function (topic) {
+                    var observable = topic.PollFeed(interval);
+                    for (var i = 0; i < observers.length; i++) {
+                        var subscription = observable.Subscribe(observers[i]);
+                        subscriptions.push(subscription);
+                    }
+                });
+                return observableProxy;
             }
         };
         return jQuery.extend(promise, proxy);
@@ -432,17 +458,17 @@ function Topic(restClient, group, id, topicName, topicDescription, linkMap) {
 
 function Subscription(feedUrl, interval) {
     if (!(this instanceof Subscription))
-        return new Subscription(feedUrl, interval);
+        return new Subscription(feedUrl, interval, subject);
     var state = {
         lastReadMessageId: null,
         isFetchingFeed: false,
         polling: interval > 0,
-        intervalId: null
+        intervalId: null,
+        subject: new Rx.Subject(),
+        subscriptionCount: 0
     };
-    console.log(state);
-    console.log(interval);
 
-    var getNewItems = function (observer) {
+    var getNewItems = function () {
         console.log(state);
         if (state.isFetchingFeed)
             return;
@@ -462,31 +488,64 @@ function Subscription(feedUrl, interval) {
             if (!foundLastOne && 'prev-archive' in feed.links) {
                 // Need to go back a page...
                 var url = feed.links['prev-archive'];
-                jQuery.getFeed({ url: url }).done(processFeed).fail(observer.OnError);
+                jQuery.getFeed({ url: url }).done(processFeed).fail(function () {
+                    var args = Array.prototype.slice.call(arguments);
+                    state.subject.OnError.apply(state.subject, args);
+                });
             } else {
                 while (items.length > 0) {
                     var stackedItem = items.pop();
                     state.lastReadMessageId = stackedItem.id;
-                    observer.OnNext(stackedItem);
+                    state.subject.OnNext(stackedItem);
                 }
                 state.isFetchingFeed = false;
                 if (!state.polling)
-                    observer.OnCompleted();
+                    state.subject.OnCompleted();
             }
         };
-        jQuery.getFeed({ url: feedUrl }).done(processFeed).fail(observer.OnError);
+        jQuery.getFeed({ url: feedUrl }).done(processFeed).fail(function () {
+            var args = Array.prototype.slice.call(arguments);
+            state.subject.OnError.apply(state.subject, args);
+        });
+    };
+
+    var startPolling = function () {
+        getNewItems();
+        if (state.polling)
+            state.intervalId = setInterval(function () {
+                getNewItems();
+            }, interval);
+    };
+
+    var stopPolling = function () {
+        if (state.intervalId != null)
+            clearInterval(state.intervalId);
+        state.intervalId = null;
+    };
+
+    var subscribe = function () {
+        if (state.subscriptionCount == 0)
+            startPolling();
+        state.subscriptionCount++;
+    };
+
+    var unsubscribe = function () {
+        state.subscriptionCount--;
+        if (state.subscriptionCount == 0)
+            stopPolling();
     };
 
     this.AsObservable = function () {
         return Rx.Observable.Create(function (observer) {
-            getNewItems(observer);
-            if (state.polling)
-                state.intervalId = setInterval(function () {
-                    getNewItems(observer);
-                }, interval);
+            var subscription = state.subject.Subscribe(
+                function (next) { observer.OnNext(next); },
+                function (err) { observer.OnError(err); },
+                function () { observer.OnCompleted(); }
+            );
+            subscribe();
             return function () {
-                if (state.polling)
-                    clearInterval(state.intervalId);
+                unsubscribe();
+                subscription.Dispose();
             };
         });
     };
