@@ -1,1 +1,2 @@
 Repository: https://github.com/jfhovinne/jFeed
+Changed to return a Deferred, and to expose all feed-level atom links.
