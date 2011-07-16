@@ -17,11 +17,12 @@ $(document).ready(function () {
 
     var assertIsGroupProxy = function (proxy) {
         start();
-        ok('Delete' in proxy, 'proxy should implement Delete()');
-        ok('GetTopics' in proxy, 'proxy should implement GetTopics()');
-        ok('CreateTopic' in proxy, 'proxy should implement CreateTopic(topicName, topicDescription)');
-        ok('GetTopicByName' in proxy, 'proxy should implement GetTopicByName(topicName)');
-        ok('TryCreateTopic' in proxy, 'proxy should implement TryCreateTopic(topicName, topicDescription)');
+        ok('Delete' in proxy && $.isFunction(proxy.Delete), 'proxy should implement Delete()');
+        ok('GetTopics' in proxy && $.isFunction(proxy.GetTopic), 'proxy should implement GetTopics()');
+        ok('CreateTopic' in proxy && $.isFunction(proxy.CreateTopic), 'proxy should implement CreateTopic(topicName, topicDescription)');
+        ok('GetTopicByName' in proxy && $.isFunction(proxy.GetTopicByName), 'proxy should implement GetTopicByName(topicName)');
+        ok('GetTopic' in proxy && $.isFunction(proxy.GetTopic), 'proxy should implement GetTopic(id)');
+        ok('TryCreateTopic' in proxy && $.isFunction(proxy.TryCreateTopic), 'proxy should implement TryCreateTopic(topicName, topicDescription)');
     };
 
     test("CreateGroup(name, description) returns Group proxy", function () {
@@ -129,6 +130,26 @@ $(document).ready(function () {
                 .done(function (topic) {
                     start();
                     ok(topic instanceof Topic);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'TryCreateGroup or TryCreateTopic failed');
+                });
+        });
+    });
+
+    test("Group proxy GetTopicByName works", function () {
+        var groupName = 'Group proxy GetTopicByName works';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var topicId = topic.getId();
+            var client = new HermesClient(serviceUrl);
+            var proxy = client.TryCreateGroup(groupName);
+            proxy.GetTopic(topicId)
+                .done(function (topic) {
+                    start();
+                    ok(topic instanceof Topic);
+                    equal(topic.getId(), topicId);
                 })
                 .fail(function () {
                     start();

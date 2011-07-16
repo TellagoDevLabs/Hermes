@@ -34,6 +34,85 @@ function HermesClient(serviceUrl) {
         return new Group(restClient, id, name, description, linkMap, createTopicProxy);
     };
 
+    var createGroupProxy = function (promise) {
+        var proxy = {
+            Delete: function() {
+                return this.pipe(function(group) {
+                    return group.Delete();
+                });
+            },
+            GetTopics: function() {
+                return this.pipe(function(group) {
+                    return group.GetTopics();
+                });
+            },
+            CreateTopic: function(name, description) {
+                var promise = this.pipe(function(group) {
+                    return group.CreateTopic(name, description);
+                });
+                return createTopicProxy(promise);
+            },
+            TryCreateTopic: function(name, description) {
+                var promise = this.pipe(function(group) {
+                    return group.TryCreateTopic(name, description);
+                });
+                return createTopicProxy(promise);
+            },
+            GetTopicByName: function(name) {
+                var promise = this.pipe(function(group) {
+                    return group.GetTopicByName(name);
+                });
+                return createTopicProxy(promise);
+            },
+            GetTopic: function(topicId) {
+                var promise = this.pipe(function(group) {
+                    return group.GetTopic(topicId);
+                });
+                return createTopicProxy(promise);
+            }
+        };
+        return jQuery.extend(promise, proxy);
+    };
+
+    var createTopicProxy = function (promise) {
+        var proxy = {
+            Delete: function () {
+                return this.pipe(function (topic) {
+                    return topic.Delete();
+                });
+            },
+            PostMessage: function (data, contentType) {
+                return this.pipe(function (topic) {
+                    return topic.PostMessage(data, contentType);
+                });
+            },
+            PostStringMessage: function (message) {
+                return this.pipe(function (topic) {
+                    return topic.PostStringMessage(message);
+                });
+            },
+            GetAllMessages: function () {
+                var observable = new Rx.Subject();
+                this.pipe(function (topic) {
+                    topic.GetAllMessages()
+                        .Subscribe(function (next) {
+                            observable.OnNext(next);
+                        },
+                        function (err) {
+                            observable.OnError(err);
+                        },
+                        function () {
+                            observable.OnCompleted();
+                        });
+                }, function (err) {
+                    observable.OnError(err);
+                });
+                return observable;
+            }
+        };
+        return jQuery.extend(promise, proxy);
+    };
+
     this.GetGroups = function () {
         var deferred = $.Deferred();
         var url = restClient.getUrl(operations.Groups);
@@ -127,40 +206,6 @@ function HermesClient(serviceUrl) {
         return createGroupProxy(deferred.promise());
     };
     
-    var createGroupProxy = function (promise) {
-        var proxy = {
-            Delete: function() {
-                return this.pipe(function(group) {
-                     return group.Delete();
-                });
-            },
-            GetTopics: function() {
-                return this.pipe(function(group) {
-                     return group.GetTopics();
-                });
-            },
-            CreateTopic: function(name, description) {
-                return this.pipe(function(group) {
-                     return group.CreateTopic(name, description);
-                });
-            },
-            TryCreateTopic: function(name, description) {
-                return this.pipe(function(group) {
-                     return group.TryCreateTopic(name, description);
-                });
-            },
-            GetTopicByName: function(name) {
-                return this.pipe(function(group) {
-                     return group.GetTopicByName(name);
-                });
-            }
-        };
-        return jQuery.extend(promise, proxy);
-    };
-
-    var createTopicProxy = function (promise) {
-        return promise;
-    };
 }
 
 function Group(restClient, id, groupName, groupDescription, linkMap, createTopicProxy) {
@@ -253,6 +298,18 @@ function Group(restClient, id, groupName, groupDescription, linkMap, createTopic
             for (var i = 0; i < topics.length; i++) {
                 var topic = topics[i];
                 if (topic.Name == topicName)
+                    return topic;
+            }
+            return null;
+        });
+        return createTopicProxy(promise);
+    };
+
+    this.GetTopic = function (topicId) {
+        var promise = this.GetTopics().pipe(function (topics) {
+            for (var i = 0; i < topics.length; i++) {
+                var topic = topics[i];
+                if (topic.getId() == topicId)
                     return topic;
             }
             return null;

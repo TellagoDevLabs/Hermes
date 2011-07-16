@@ -17,9 +17,10 @@ $(document).ready(function () {
 
     var assertIsTopicProxy = function (proxy) {
         start();
-        ok('Delete' in proxy, 'proxy should implement Delete()');
-        ok('PostMessage' in proxy, 'proxy should implement PostMessage(data, contentType)');
-        ok('PostStringMessage' in proxy, 'proxy should implement PostStringMessage(message)');
+        ok('Delete' in proxy && $.isFunction(proxy.Delete), 'proxy should implement Delete()');
+        ok('PostMessage' in proxy && $.isFunction(proxy.PostMessage), 'proxy should implement PostMessage(data, contentType)');
+        ok('PostStringMessage' in proxy && $.isFunction(proxy.PostStringMessage), 'proxy should implement PostStringMessage(message)');
+        ok('GetAllMessages' in proxy && $.isFunction(proxy.GetAllMessages), 'proxy should implement GetAllMessages');
     };
 
     test('group.CreateTopic returns Topic proxy', function () {
@@ -36,6 +37,15 @@ $(document).ready(function () {
         var topicName = groupName;
         usingGroupAndTopic(groupName, topicName, function (group, topic) {
             var actual = group.GetTopicByName(topicName);
+            assertIsTopicProxy(actual);
+        });
+    });
+
+    test('group.GetTopic returns Topic proxy', function () {
+        var groupName = 'group.GetTopic returns Topic proxy';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var actual = group.GetTopic(topic.getId());
             assertIsTopicProxy(actual);
         });
     });
@@ -81,5 +91,132 @@ $(document).ready(function () {
             assertIsTopicProxy(actual);
         });
     });
+
+    test('topicProxy.Delete works', function () {
+        var groupName = 'topicProxy.Delete works';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var proxy = group.GetTopicByName(topicName);
+            proxy.Delete()
+                .done(function () {
+                    // GetTopics filters results from GetTopics
+                    // and this request is getting cached results
+                    // causing the test to fail even when delete works correctly
+                    group.GetTopic(topic.getId())
+                        .fail(function () {
+                            start();
+                            ok(true, 'GetTopic(id) should fail if the topic is deleted.');
+                        })
+                        .done(function () {
+                            start();
+                            ok(false, 'GetTopic(id) should fail if the topic is deleted.');
+                        });
+
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'group.GetTopicByName or topicProxy.Delete failed.');
+                });
+        });
+    });
+
+    test('topicProxy.PostMessage works', function () {
+        var groupName = 'topicProxy.PostMessage works';
+        var topicName = groupName;
+        var message = 'The armadillo is rolling.';
+        var gotMessage = false;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var proxy = group.GetTopicByName(topicName);
+            proxy.PostMessage(message, 'text/plain')
+                .done(function () {
+                    topic.GetAllMessages()
+                        .Where(function (msg) { return msg == message; })
+                        .Subscribe(function (next) {
+                            gotMessage = true;
+                            start();
+                            ok(true);
+                        },
+                        function (err) {
+                            start();
+                            ok(false, 'GetAllMessages observable failed.');
+                        },
+                        function () {
+                            start();
+                            ok(gotMessage);
+                        });
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'group.GetTopicByName or topicProxy.PostMessage failed.');
+                });
+        });
+    });
+
+    test('topicProxy.PostStringMessage works', function () {
+        var groupName = 'topicProxy.PostStringMessage works';
+        var topicName = groupName;
+        var message = 'The armadillo is rolling.';
+        var gotMessage = false;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var proxy = group.GetTopicByName(topicName);
+            proxy.PostMessage(message, 'text/plain')
+                .done(function () {
+                    topic.GetAllMessages()
+                        .Where(function (msg) { return msg == message; })
+                        .Subscribe(function (next) {
+                            gotMessage = true;
+                            start();
+                            ok(true);
+                        },
+                        function (err) {
+                            start();
+                            ok(false, 'GetAllMessages observable failed.');
+                        },
+                        function () {
+                            start();
+                            ok(gotMessage);
+                        });
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'group.GetTopicByName or topicProxy.PostMessage failed.');
+                });
+        });
+    });
+
+    test('topicProxy.GetAllMessages works', function () {
+        var groupName = 'topicProxy.GetAllMessages works';
+        var topicName = groupName;
+        usingTopicWithMessages(groupName, topicName, function (topic) {
+            var client = new HermesClient(serviceUrl);
+            var groupProxy = client.TryCreateGroup(groupName);
+            var topicProxy = groupProxy.TryCreateTopic(topicName);
+            var observableProxy = topicProxy.GetAllMessages();
+
+            observableProxy
+                .Where(function (msg) { return true; })
+                .Subscribe(function (next) {
+                    console.log('Got message: ' + next);
+                    gotMessage = true;
+                    start();
+                    ok(true);
+                },
+                function (err) {
+                    console.log('errored');
+                    start();
+                    ok(false, 'GetAllMessages observable failed.');
+                },
+                function () {
+                    console.log('completed');
+                    start();
+                    ok(gotMessage);
+                });
+
+
+        });
+    });
+
+
+
 
 });

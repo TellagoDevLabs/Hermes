@@ -75,8 +75,6 @@ $(document).ready(function () {
 
     module('group.CreateTopic');
 
-
-
     test('group.CreateTopic returns a promise', function () {
         var groupName = 'group.CreateTopic returns a promise';
         usingGroup(groupName, function (group) {
@@ -120,6 +118,37 @@ $(document).ready(function () {
             ok(topics.length > 0, 'topics array should not be empty');
             for (var i = 0; i < topics.length; i++)
                 ok(topics[i] instanceof Topic);
+        });
+    });
+
+    module('group.GetTopic');
+
+    test('group.GetTopic returns promise', function () {
+        var groupName = 'group.GetTopicByName returns promise';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var topicId = topic.getId();
+            var actual = group.GetTopic(topicId);
+            start();
+            ok('done' in actual && 'fail' in actual);
+        });
+    });
+
+    test('group.GetTopic returns the topic', function () {
+        var groupName = 'group.GetTopicByName returns promise';
+        var topicName = groupName;
+        usingGroupAndTopic(groupName, topicName, function (group, topic) {
+            var topicId = topic.getId();
+            group.GetTopic(topicId)
+                .done(function (topic) {
+                    start();
+                    ok(topic instanceof Topic);
+                    equal(topic.getId(), topicId);
+                })
+                .fail(function () {
+                    start();
+                    ok(false, 'GetTopic(id) failed.');
+                });
         });
     });
 
