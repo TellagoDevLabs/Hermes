@@ -51,6 +51,16 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="default.htm" />
+    <Content Include="Scripts\Hermes.js" />
+    <Content Include="Scripts\jquery-1.6.2-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.6.2.js" />
+    <Content Include="Scripts\jquery-1.6.2.min.js" />
+    <Content Include="Scripts\jquery.jfeed.js" />
+    <Content Include="Scripts\jquery.json2xml.js" />
+    <Content Include="Scripts\RestClient.js" />
+    <Content Include="Scripts\rx.jQuery.js" />
+    <Content Include="Scripts\rx.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -61,6 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
@@ -89,4 +102,13 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="BeforeBuild">
+    <Exec Condition="Exists('$(ProjectDir)packages.config')" Command="&quot;$(SolutionDir)..\Tools\nuget.exe&quot; install &quot;$(ProjectDir)packages.config&quot; -o &quot;$(SolutionDir)Packages&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)..\JsClient\Scripts\Hermes.js')" Command="copy &quot;$(ProjectDir)..\JsClient\Scripts\Hermes.js&quot; &quot;$(ProjectDir)Scripts\&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)..\JsClient\Scripts\RestClient.js')" Command="copy &quot;$(ProjectDir)..\JsClient\Scripts\RestClient.js&quot; &quot;$(ProjectDir)Scripts\&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)..\JsClient\Scripts\jquery.jfeed.js')" Command="copy &quot;$(ProjectDir)..\JsClient\Scripts\jquery.jfeed.js&quot; &quot;$(ProjectDir)Scripts\&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)..\JsClient\Scripts\jquery.json2xml.js')" Command="copy &quot;$(ProjectDir)..\JsClient\Scripts\jquery.json2xml.js&quot; &quot;$(ProjectDir)Scripts\&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)..\JsClient\Scripts\rx.js')" Command="copy &quot;$(ProjectDir)..\JsClient\Scripts\rx.js&quot; &quot;$(ProjectDir)Scripts\&quot;" />
+    <Exec Condition="Exists('$(ProjectDir)..\JsClient\Scripts\rx.jQuery.js')" Command="copy &quot;$(ProjectDir)..\JsClient\Scripts\rx.jQuery.js&quot; &quot;$(ProjectDir)Scripts\&quot;" />
+  </Target>
 </Project>
