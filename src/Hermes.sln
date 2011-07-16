@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{FC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsClient", "JsClient\JsClient.csproj", "{330E9CC0-1D78-491A-9942-7B596B1A62D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleWeb", "ExampleWeb\ExampleWeb.csproj", "{4E88EDCF-2760-431E-A529-E638B8FDAC82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -160,6 +162,16 @@ Global
 		{330E9CC0-1D78-491A-9942-7B596B1A62D3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{330E9CC0-1D78-491A-9942-7B596B1A62D3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{330E9CC0-1D78-491A-9942-7B596B1A62D3}.Release|x86.ActiveCfg = Release|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -170,5 +182,6 @@ Global
 		{330E9CC0-1D78-491A-9942-7B596B1A62D3} = {E00FF13C-9677-409A-B26B-A53BC93C36D4}
 		{628EB1A7-9C25-43AD-986A-74C859C7D419} = {FC9A5881-07DB-4570-AA8A-47552121185D}
 		{D128CB57-C799-465F-B8F1-87C488724599} = {FC9A5881-07DB-4570-AA8A-47552121185D}
+		{4E88EDCF-2760-431E-A529-E638B8FDAC82} = {FC9A5881-07DB-4570-AA8A-47552121185D}
 	EndGlobalSection
 EndGlobal

@@ -1,9 +1,9 @@
-﻿///<reference path="http://code.jquery.com/jquery-latest.js" />
-///<reference path="jquery.json2xml.js" />
-///<reference path="jquery.jfeed.js" />
-///<reference path="RestClient.js" />
-///<reference path="rx.js" />
-///<reference path="rx.jQuery.js" />
+﻿// reference jquery 
+// reference jquery.json2xml.js 
+// reference jquery.jfeed.js 
+// reference RestClient.js 
+// reference rx.js
+// reference rx.jQuery.js 
 
 function HermesClient(serviceUrl) {
     if (!(this instanceof HermesClient))
