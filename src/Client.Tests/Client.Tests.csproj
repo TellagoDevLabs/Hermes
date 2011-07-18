@@ -49,9 +49,6 @@
     <Reference Include="SharpTestsEx">
       <HintPath>..\packages\SharpTestsEx.1.1.1\lib\SharpTestsEx.dll</HintPath>
     </Reference>
-    <Reference Include="SharpTestsEx.Mvc">
-      <HintPath>..\packages\SharpTestsEx.MVC.1.1.1\lib\SharpTestsEx.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
