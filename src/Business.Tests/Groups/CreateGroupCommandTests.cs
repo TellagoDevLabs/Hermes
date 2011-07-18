@@ -25,12 +25,13 @@ namespace Business.Tests.Groups
         [Test]
         public void WhenGroupNameIsDuplicated_ThenThrowValidateException()
         {
-            var groupCommand = CreateCreateGroupCommand(Mock.Of<IExistsGroupByGroupName>(q => q.Execute("test", null) == true));
+            var name = "name";
+            var groupCommand = CreateCreateGroupCommand(Mock.Of<IExistsGroupByGroupName>(q => q.Execute(name, null) == true));
 
-            groupCommand.Executing(gc => gc.Execute(new Group {Name = "test"}))
+            groupCommand.Executing(gc => gc.Execute(new Group {Name = name}))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(Texts.GroupNameMustBeUnique);
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.GroupNameMustBeUnique, name));
         }
         [Test]
         public void WhenParentIdDoesNotExist_ThenThrowException()
