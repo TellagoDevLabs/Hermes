@@ -24,7 +24,7 @@ namespace TellagoStudios.Hermes.Business.Groups
             if (!group.Id.HasValue) throw new ValidationException(Texts.IdMustNotBeNull);
             if (!entityById.Exist<Group>(group.Id.Value)) throw new EntityNotFoundException(typeof(Group), group.Id.Value);
             if (string.IsNullOrWhiteSpace(group.Name)) throw new ValidationException(Texts.NameMustBeNotNull);
-            if (existGroupByGroupName.Execute(group.Name, group.Id)) throw new ValidationException(Texts.GroupNameMustBeUnique);
+            if (existGroupByGroupName.Execute(group.Name, group.Id)) throw new ValidationException(Texts.GroupNameMustBeUnique, group.Name);
             if (group.ParentId.HasValue && !entityById.Exist<Group>(group.ParentId.Value)) throw new ValidationException(Texts.EntityNotFound);
 
             ValidateCircleReferences(group);

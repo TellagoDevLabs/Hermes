@@ -18,14 +18,15 @@ namespace Business.Tests.Groups
         [Test]
         public void WhenGroupNameIsDuplicated_ThenThrowValidateException()
         {
+            var name = "test";
             var id = Identity.Random();
-            var groupCommand = CreateUpdateGroupCommand(Mock.Of<IExistsGroupByGroupName>(q => q.Execute("test", id) == true),
+            var groupCommand = CreateUpdateGroupCommand(Mock.Of<IExistsGroupByGroupName>(q => q.Execute(name, id) == true),
                 Mock.Of<IEntityById>(q => q.Exist<Group>(id)));
 
-            groupCommand.Executing(gc => gc.Execute(new Group { Name = "test", Id = id }))
+            groupCommand.Executing(gc => gc.Execute(new Group { Name = name, Id = id }))
                                     .Throws<ValidationException>()
                                     .And
-                                    .Exception.Message.Should().Be.EqualTo(Texts.GroupNameMustBeUnique);
+                                    .Exception.Message.Should().Be.EqualTo(string.Format(Texts.GroupNameMustBeUnique, name));
         }
         [Test]
         public void WhenParentIdDoesNotExist_ThenThrowException()

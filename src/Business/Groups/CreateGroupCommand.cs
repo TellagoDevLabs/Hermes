@@ -24,7 +24,7 @@ namespace TellagoStudios.Hermes.Business.Groups
         public void Execute(Group group)
         {
             if (string.IsNullOrWhiteSpace(group.Name)) throw new ValidationException(Texts.NameMustBeNotNull);
-            if (existGroupByGroupName.Execute(group.Name)) throw new ValidationException(Texts.GroupNameMustBeUnique);
+            if (existGroupByGroupName.Execute(group.Name)) throw new ValidationException(Texts.GroupNameMustBeUnique, group.Name);
             if (group.ParentId.HasValue && !entityById.Exist<Group>(group.ParentId.Value)) throw new ValidationException(Texts.EntityNotFound);
 
             repository.MakePersistent(group);
