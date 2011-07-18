@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension" xmlns:sql="http://schemas.microsoft.com/wix/SqlExtension">
+  <Fragment>
+    <Property Id="IISMETABASE">
+      <DirectorySearch Id="IISMetabaseDirectorySearch" Depth="1" Path="[SystemFolder]inetsrv">
+        <FileSearch Id="IISMetabaseFileSearch" Name="adsiis.dll" />
+      </DirectorySearch>
+    </Property>
+    <CustomAction Id="ConfigureAppPools" Execute="deferred" Impersonate="no" Return="check" Directory="TARGETDIR" ExeCommand="[SystemFolder]inetsrv\appcmd set apppool /apppool.name:&quot;HermesAppPool&quot; /managedPipelineMode:Integrated /managedRuntimeVersion:v4.0"/>
+    <DirectoryRef Id="INSTALLLOCATION">
+      <Directory Id="web" Name="web">
+        <Component Id="global.asax" Guid="e98d3867-9999-4fa2-8e66-e0f7dff091ab">
+          <File Id="global.asax" Source="$(var.SolutionDir)\..\RestService\global.asax" />
+        </Component>
+        <Component Id="Web.config" Guid="6d5a7e70-7ad1-416a-befa-c8779392a8ed">
+          <File Id="Web.config" Source="$(var.SolutionDir)\..\RestService\Web.config" />
+          <util:XmlFile Id="SetBaseAddress" File="[web]Web.config" Action="setValue" ElementPath="//configuration/appSettings/add[\[]@key='baseAddress'[\]]/@value" Value="http://localhost:[WEBSITE_PORT]/[TARGETVDIR]" />
+          <util:XmlFile Id="SetMongoDb" File="[web]Web.config" Action="setValue" ElementPath="//configuration/connectionStrings/add[\[]@name='db.connectionString'[\]]/@connectionString" Value="mongodb://localhost/hermes" />
+        </Component>
+        <Directory Id="bin" Name="bin">
+          <Component Id="Autofac.Configuration.dll" Guid="9cbc84a0-a256-4ed2-8e79-bac0f0b084a1">
+            <File Id="Autofac.Configuration.dll" Source="$(var.SolutionDir)\..\RestService\bin\Autofac.Configuration.dll" />
+          </Component>
+          <Component Id="Autofac.dll" Guid="3c5d6bce-7966-4644-b5f0-36936afb1559">
+            <File Id="Autofac.dll" Source="$(var.SolutionDir)\..\RestService\bin\Autofac.dll" />
+          </Component>
+          <Component Id="Autofac.Integration.Mvc.dll" Guid="30689d6f-ce19-43a2-835d-e9c11698b760">
+            <File Id="Autofac.Integration.Mvc.dll" Source="$(var.SolutionDir)\..\RestService\bin\Autofac.Integration.Mvc.dll" />
+          </Component>
+          <Component Id="Autofac.xml" Guid="e105eba5-c1ee-4102-93fe-cba509aa74dd">
+            <File Id="Autofac.xml" Source="$(var.SolutionDir)\..\RestService\bin\Autofac.xml" />
+          </Component>
+          <Component Id="dotless.Core.dll" Guid="bf48b811-7cf0-46c0-aed8-d63b8d886b1b">
+            <File Id="dotless.Core.dll" Source="$(var.SolutionDir)\..\RestService\bin\dotless.Core.dll" />
+          </Component>
+          <Component Id="Microsoft.ApplicationServer.Common.dll" Guid="9082ed2e-1c90-4895-990e-813a09ee9e96">
+            <File Id="Microsoft.ApplicationServer.Common.dll" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.ApplicationServer.Common.dll" />
+          </Component>
+          <Component Id="Microsoft.ApplicationServer.Http.dll" Guid="d029520e-ccd6-4d99-93c4-e20080e87c65">
+            <File Id="Microsoft.ApplicationServer.Http.dll" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.ApplicationServer.Http.dll" />
+          </Component>
+          <Component Id="Microsoft.ApplicationServer.HttpEnhancements.dll" Guid="94d5e7c0-3bd2-447a-b6a0-c29af805cd24">
+            <File Id="Microsoft.ApplicationServer.HttpEnhancements.dll" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.ApplicationServer.HttpEnhancements.dll" />
+          </Component>
+          <Component Id="Microsoft.ApplicationServer.Serialization.dll" Guid="9776d4a0-3888-4e11-88cf-36e0703e71a7">
+            <File Id="Microsoft.ApplicationServer.Serialization.dll" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.ApplicationServer.Serialization.dll" />
+          </Component>
+          <Component Id="Microsoft.ApplicationServer.ServiceModel.dll" Guid="d0f5a44f-043d-4406-8f8e-c5c60f3e584b">
+            <File Id="Microsoft.ApplicationServer.ServiceModel.dll" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.ApplicationServer.ServiceModel.dll" />
+          </Component>
+          <Component Id="Microsoft.Net.Http.dll" Guid="a1c0d3bf-76be-4294-9616-b511d38fe55e">
+            <File Id="Microsoft.Net.Http.dll" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.Net.Http.dll" />
+          </Component>
+          <Component Id="Microsoft.QueryComposition.dll" Guid="3ded10bd-ca05-4f00-bfdd-2bd85116ffb7">
+            <File Id="Microsoft.QueryComposition.dll" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.QueryComposition.dll" />
+          </Component>
+          <Component Id="Microsoft.Runtime.Serialization.Json.dll" Guid="da24dc2a-1e0c-4f70-a759-e22c8b3979b4">
+            <File Id="Microsoft.Runtime.Serialization.Json.dll" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.Runtime.Serialization.Json.dll" />
+          </Component>
+          <Component Id="Microsoft.Runtime.Serialization.Json.xml" Guid="8851a785-05d0-42d5-b447-e3a6f60e6d8b">
+            <File Id="Microsoft.Runtime.Serialization.Json.xml" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.Runtime.Serialization.Json.xml" />
+          </Component>
+          <Component Id="Microsoft.ServiceModel.Web.jQuery.dll" Guid="6db26bc6-a900-4ae2-836b-cb00eb8559b3">
+            <File Id="Microsoft.ServiceModel.Web.jQuery.dll" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.ServiceModel.Web.jQuery.dll" />
+          </Component>
+          <Component Id="Microsoft.ServiceModel.Web.jQuery.xml" Guid="90aaf6e6-0d65-4fe4-8da6-e2890901f184">
+            <File Id="Microsoft.ServiceModel.Web.jQuery.xml" Source="$(var.SolutionDir)\..\RestService\bin\Microsoft.ServiceModel.Web.jQuery.xml" />
+          </Component>
+          <Component Id="MongoDB.Bson.dll" Guid="f3dde9e4-65dd-4405-85dd-f9147f06b29d">
+            <File Id="MongoDB.Bson.dll" Source="$(var.SolutionDir)\..\RestService\bin\MongoDB.Bson.dll" />
+          </Component>
+          <Component Id="MongoDB.Driver.dll" Guid="811d3fd9-a6c6-4571-bbe3-8f8c349a2deb">
+            <File Id="MongoDB.Driver.dll" Source="$(var.SolutionDir)\..\RestService\bin\MongoDB.Driver.dll" />
+          </Component>
+          <Component Id="System.Reactive.dll" Guid="d7168b42-a103-4966-b6c0-bd4585d4a4a2">
+            <File Id="System.Reactive.dll" Source="$(var.SolutionDir)\..\RestService\bin\System.Reactive.dll" />
+          </Component>
+          <Component Id="System.Reactive.xml" Guid="58e07d82-cf41-4b47-b200-1b9c415bc1b0">
+            <File Id="System.Reactive.xml" Source="$(var.SolutionDir)\..\RestService\bin\System.Reactive.xml" />
+          </Component>
+          <Component Id="TellagoStudios.Hermes.Business.dll" Guid="01ceba5d-2f91-4392-8db2-ad76dce9b13a">
+            <File Id="TellagoStudios.Hermes.Business.dll" Source="$(var.SolutionDir)\..\RestService\bin\TellagoStudios.Hermes.Business.dll" />
+          </Component>
+          <Component Id="TellagoStudios.Hermes.DataAccess.MongoDB.dll" Guid="c6911c0c-e330-429f-87ac-11feee6b72f0">
+            <File Id="TellagoStudios.Hermes.DataAccess.MongoDB.dll" Source="$(var.SolutionDir)\..\RestService\bin\TellagoStudios.Hermes.DataAccess.MongoDB.dll" />
+          </Component>
+          <Component Id="TellagoStudios.Hermes.Facade.dll" Guid="40d1fe32-7e58-4008-9202-51608bcec776">
+            <File Id="TellagoStudios.Hermes.Facade.dll" Source="$(var.SolutionDir)\..\RestService\bin\TellagoStudios.Hermes.Facade.dll" />
+          </Component>
+          <Component Id="TellagoStudios.Hermes.RestService.dll" Guid="38a31e85-df59-43b3-8299-951a9039ca15">
+            <File Id="TellagoStudios.Hermes.RestService.dll" Source="$(var.SolutionDir)\..\RestService\bin\TellagoStudios.Hermes.RestService.dll" />
+          </Component>
+          <Component Id="WebActivator.dll" Guid="be07ea24-d487-4670-80b0-a44a16d44fe3">
+            <File Id="WebActivator.dll" Source="$(var.SolutionDir)\..\RestService\bin\WebActivator.dll" />
+          </Component>
+        </Directory>
+        <Directory Id="Public" Name="public">
+          <Directory Id="css" Name="css">
+            <Component Id="default.less" Guid="2c54a872-a8b9-401f-8060-0ce17a9f52bc">
+              <File Id="default.less" Source="$(var.SolutionDir)\..\RestService\public\css\default.less" />
+            </Component>
+          </Directory>
+        </Directory>
+        <Directory Id="Scripts" Name="Scripts">
+          <Component Id="jquery.unobtrusive.ajax.js" Guid="47b1b09e-cb38-4482-aa16-685eaa5399c9">
+            <File Id="jquery.unobtrusive.ajax.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery.unobtrusive-ajax.js" />
+          </Component>
+          <Component Id="jquery.unobtrusive.ajax.min.js" Guid="be340d7d-f301-4318-bf31-1373ce4d4867">
+            <File Id="jquery.unobtrusive.ajax.min.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery.unobtrusive-ajax.min.js" />
+          </Component>
+          <Component Id="jquery.validate.js" Guid="42a30d5e-6c29-4eaa-8ae1-eefeb83cea51">
+            <File Id="jquery.validate.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery.validate.js" />
+          </Component>
+          <Component Id="jquery.validate.min.js" Guid="399c3a45-8ed1-4c7e-b0f5-bf3634eb384c">
+            <File Id="jquery.validate.min.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery.validate.min.js" />
+          </Component>
+          <Component Id="jquery.validate.unobtrusive.js" Guid="3da69860-7812-4dc5-bf8f-e29b6be5ed22">
+            <File Id="jquery.validate.unobtrusive.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery.validate.unobtrusive.js" />
+          </Component>
+          <Component Id="jquery.validate.unobtrusive.min.js" Guid="28901929-3ae5-48df-8ce0-484e9e1f02e2">
+            <File Id="jquery.validate.unobtrusive.min.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery.validate.unobtrusive.min.js" />
+          </Component>
+          <Component Id="jquery.validate.vsdoc.js" Guid="9672c0f1-6bcd-4181-a29d-794009eaec4a">
+            <File Id="jquery.validate.vsdoc.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery.validate-vsdoc.js" />
+          </Component>
+          <Component Id="jquery.1.4.4.js" Guid="0b5693da-b6a7-4244-a5ce-dc6b34cb828c">
+            <File Id="jquery.1.4.4.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery-1.4.4.js" />
+          </Component>
+          <Component Id="jquery.1.4.4.min.js" Guid="41a8e1cb-46f9-4bb3-b570-0e833159cc25">
+            <File Id="jquery.1.4.4.min.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery-1.4.4.min.js" />
+          </Component>
+          <Component Id="jquery.1.4.4.vsdoc.js" Guid="4dc42c7d-4c97-497e-a066-2616372aca7c">
+            <File Id="jquery.1.4.4.vsdoc.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery-1.4.4-vsdoc.js" />
+          </Component>
+          <Component Id="jquery.ui.js" Guid="c2a10eae-8ede-45ad-8d56-7fb0c73a2922">
+            <File Id="jquery.ui.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery-ui.js" />
+          </Component>
+          <Component Id="jquery.ui.min.js" Guid="13702b4b-7d46-4cf4-8c1c-f8fb1789bf7e">
+            <File Id="jquery.ui.min.js" Source="$(var.SolutionDir)\..\RestService\Scripts\jquery-ui.min.js" />
+          </Component>
+          <Component Id="MicrosoftAjax.debug.js" Guid="aa747348-daa1-4c97-99a7-bf6f0b59f891">
+            <File Id="MicrosoftAjax.debug.js" Source="$(var.SolutionDir)\..\RestService\Scripts\MicrosoftAjax.debug.js" />
+          </Component>
+          <Component Id="MicrosoftAjax.js" Guid="2eb13ef8-5369-49ce-b0eb-d17945806052">
+            <File Id="MicrosoftAjax.js" Source="$(var.SolutionDir)\..\RestService\Scripts\MicrosoftAjax.js" />
+          </Component>
+          <Component Id="MicrosoftMvcAjax.debug.js" Guid="ad96ad0b-2b62-4f6b-a88d-1560cd5a9076">
+            <File Id="MicrosoftMvcAjax.debug.js" Source="$(var.SolutionDir)\..\RestService\Scripts\MicrosoftMvcAjax.debug.js" />
+          </Component>
+          <Component Id="MicrosoftMvcAjax.js" Guid="4725cd1d-3598-4200-94f4-511b3aa7058c">
+            <File Id="MicrosoftMvcAjax.js" Source="$(var.SolutionDir)\..\RestService\Scripts\MicrosoftMvcAjax.js" />
+          </Component>
+          <Component Id="MicrosoftMvcValidation.debug.js" Guid="2dcf43b8-6619-41d2-b63a-a7b1b427ac27">
+            <File Id="MicrosoftMvcValidation.debug.js" Source="$(var.SolutionDir)\..\RestService\Scripts\MicrosoftMvcValidation.debug.js" />
+          </Component>
+          <Component Id="MicrosoftMvcValidation.js" Guid="60ab5555-38d8-4df4-b8b0-7b1b1af99e07">
+            <File Id="MicrosoftMvcValidation.js" Source="$(var.SolutionDir)\..\RestService\Scripts\MicrosoftMvcValidation.js" />
+          </Component>
+        </Directory>
+        <Directory Id="Views" Name="Views">
+          <Component Id="Views.Web.config" Guid="bac01c02-be49-49c8-bba8-5e41a427e3c8">
+            <File Id="Views.Web.config" Source="$(var.SolutionDir)\..\RestService\Views\Web.config" />
+          </Component>
+          <Component Id="_ViewStart.cshtml" Guid="1599d6e3-5804-470a-84ff-f6d381a1579d">
+            <File Id="_ViewStart.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\_ViewStart.cshtml" />
+          </Component>
+          <Directory Id="Account" Name="Account">
+            <Component Id="ChangePassword.cshtml" Guid="b0df503e-68de-4755-a1d1-4317d930809c">
+              <File Id="ChangePassword.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Account\ChangePassword.cshtml" />
+            </Component>
+            <Component Id="ChangePasswordSuccess.cshtml" Guid="c35d817e-f23c-46c8-b418-2ea15d596b4e">
+              <File Id="ChangePasswordSuccess.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Account\ChangePasswordSuccess.cshtml" />
+            </Component>
+            <Component Id="LogOn.cshtml" Guid="51af77c6-425d-40af-911d-9dc537c78b48">
+              <File Id="LogOn.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Account\LogOn.cshtml" />
+            </Component>
+            <Component Id="Register.cshtml" Guid="545592e7-449a-4605-a2d0-4b80ad773ee5">
+              <File Id="Register.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Account\Register.cshtml" />
+            </Component>
+          </Directory>
+          <Directory Id="Group" Name="Group">
+            <Component Id="Group.Create.cshtml" Guid="14a14e65-5160-4bd2-9050-b87c34b52644">
+              <File Id="Group.Create.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Group\Create.cshtml" />
+            </Component>
+            <Component Id="Group.Edit.cshtml" Guid="86edba8b-b473-43dd-823b-3a4215bf021d">
+              <File Id="Group.Edit.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Group\Edit.cshtml" />
+            </Component>
+            <Component Id="GroupDoesNotExist.cshtml" Guid="9f2c7ecf-767f-4dce-98da-8d532b7eaadd">
+              <File Id="GroupDoesNotExist.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Group\GroupDoesNotExist.cshtml" />
+            </Component>
+            <Component Id="Group.Index.cshtml" Guid="d1cbdc2f-4e3f-4c2a-9124-01f06c118447">
+              <File Id="Group.Index.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Group\Index.cshtml" />
+            </Component>
+          </Directory>
+          <Directory Id="Home" Name="Home">
+            <Component Id="About.cshtml" Guid="6ecedc31-ca2c-4936-8c96-5b44b4bd063e">
+              <File Id="About.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Home\About.cshtml" />
+            </Component>
+            <Component Id="Home.Index.cshtml" Guid="e860b8ad-8748-4556-b0dc-19907ab5e342">
+              <File Id="Home.Index.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Home\Index.cshtml" />
+            </Component>
+          </Directory>
+          <Directory Id="Shared" Name="Shared">
+            <Component Id="_Layout.cshtml" Guid="3eb3a114-38fc-498f-95ea-1998a45711cf">
+              <File Id="_Layout.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Shared\_Layout.cshtml" />
+            </Component>
+            <Component Id="_LogOnPartial.cshtml" Guid="81808b72-54ef-4766-8aec-b838fbc7316a">
+              <File Id="_LogOnPartial.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Shared\_LogOnPartial.cshtml" />
+            </Component>
+            <Component Id="Error.cshtml" Guid="23bd0695-ab4e-45eb-b0c2-919da62c38c8">
+              <File Id="Error.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Shared\Error.cshtml" />
+            </Component>
+          </Directory>
+          <Directory Id="Topic" Name="Topic">
+            <Component Id="Create.cshtml" Guid="3fa62075-8e4b-466b-aa97-b882071dbdd4">
+              <File Id="CreateCreate.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Topic\Create.cshtml" />
+            </Component>
+            <Component Id="Edit.cshtml" Guid="5d44d8d1-a606-4795-81df-dea6bf045cd6">
+              <File Id="Edit.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Topic\Edit.cshtml" />
+            </Component>
+            <Component Id="Index.cshtml" Guid="21ded5f2-a4fb-454c-8807-094782487d50">
+              <File Id="Index.cshtml" Source="$(var.SolutionDir)\..\RestService\Views\Topic\Index.cshtml" />
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

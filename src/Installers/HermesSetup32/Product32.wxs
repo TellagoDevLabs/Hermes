@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension" xmlns:sql="http://schemas.microsoft.com/wix/SqlExtension">
+  <Product Id="3c3fce1e-5b26-4db4-b7de-fbd790859f53" Name="Hermes 32bits" Language="1033" Version="1.0.0.0" Manufacturer="Tellago Studios" UpgradeCode="714c018b-b311-443b-b793-13e0186f7d76">
+    <Package InstallerVersion="200" Compressed="yes" Platform="x86" />
+    <Condition Message="This instaler is for 32 bit versions of Windows Vista, Windows Server 2008, Windows 7 or higher."><![CDATA[NOT VersionNT64]]></Condition>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="d_tellagoStudios" Name="Tellago Studios">
+          <Directory Id="INSTALLLOCATION" Name="Hermes"></Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="TellagoStudiosStartMenuFolder" Name="Tellago Studios">
+          <Directory Id="HermesStartMenuFolder" Name="Hermes"></Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <InstallExecuteSequence>
+      <Custom Action="ConfigureAppPools" Before="InstallFinalize"><![CDATA[NOT Installed AND NOT VersionNT64]]></Custom>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>

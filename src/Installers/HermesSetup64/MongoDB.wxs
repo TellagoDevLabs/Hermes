@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+  <Fragment Id="fragment_MongoDB">
+    <Condition Message="MongoDB service is already installed, the instaler will skip the MongoDB installation."><![CDATA[Installed OR NOT MONGO_SERVER_REG]]></Condition>
+    <Property Id="MONGO_SERVER_REG">
+      <RegistrySearch Id="rs_Mongo_Server_Reg" Key="SYSTEM\CurrentControlSet\services\MongoDB" Name="ImagePath" Root="HKLM" Type="raw" />
+    </Property>
+    <Property Id="MONGO_IP_ADDRESS" Value="127.0.0.1" />
+    <Property Id="MONGO_IP_PORT" Value="27017" />
+    <Property Id="MONGO_LOG_FILE" Value="empty" />
+    <Property Id="MONGO_DATA_FOLDER" Value="empty" />
+    <Property Id="START_SERVICE_NAME" Value="MongoDB" />
+    <CustomAction Id="ca_SET_MONGO_LOG_FILE" Property="MONGO_LOG_FILE" Value="&quot;[d_logs]service.log&quot;" />
+    <CustomAction Id="ca_SET_MONGO_DATA_FOLDER" Property="MONGO_DATA_FOLDER" Value="&quot;[d_data].&quot;" />
+    <CustomAction Id="ca_InstallMongoAsService" FileKey="f_mongod.exe" ExeCommand="--bind_ip [MONGO_IP_ADDRESS] --port [MONGO_IP_PORT] --logpath [MONGO_LOG_FILE] --logappend --dbpath [MONGO_DATA_FOLDER] --directoryperdb --install" />
+    <CustomAction Id="ca_StartMongoService" BinaryKey="Hermes_CA" DllEntry="StartService" Execute="immediate" Return="check" />
+    <CustomAction Id="ca_StopMongoService" BinaryKey="Hermes_CA" DllEntry="StopMongoService" Execute="immediate" Return="check" />
+    <CustomAction Id="ca_RemoveMongoAsService" FileKey="f_mongod.exe" ExeCommand="--bind_ip [MONGO_IP_ADDRESS] --port [MONGO_IP_PORT] --logpath [MONGO_LOG_FILE] --logappend --dbpath [MONGO_DATA_FOLDER] --directoryperdb --remove"/>
+    <Feature Id="feature_MongoDB" Title="Hermes Database (MongoDB service)" Level="1">
+      <ComponentRef Id="c_bsondump.exe" />
+      <ComponentRef Id="c_mongo.exe" />
+      <ComponentRef Id="c_mongod.exe" />
+      <ComponentRef Id="c_mongodump.exe" />
+      <ComponentRef Id="c_mongoexport.exe" />
+      <ComponentRef Id="c_mongofiles.exe" />
+      <ComponentRef Id="c_mongoimport.exe" />
+      <ComponentRef Id="c_mongorestore.exe" />
+      <ComponentRef Id="c_mongos.exe" />
+      <ComponentRef Id="c_mongostat.exe" />
+      <ComponentRef Id="c_service.log" />
+      <ComponentRef Id="c_folderData" />
+      <ComponentRef Id="c_apache.txt" />
+    </Feature>
+    <InstallExecuteSequence></InstallExecuteSequence>
+  </Fragment>
+</Wix>

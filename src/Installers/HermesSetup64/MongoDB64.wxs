@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+  <Fragment Id="fragment_MongoDB64">
+    <DirectoryRef Id="INSTALLLOCATION">
+      <Directory Id="d_mongoDB" Name="MongoDB" FileSource="MongoDbFiles64">
+        <Directory Id="d_bin" Name="bin">
+          <Component Id="c_apache.txt" Guid="456C4E9E-0D06-4C1B-9E98-8F5F6BA38C20" Win64="yes">
+            <File Id="f_apache.txt" Name="APACHE-2.0.txt" KeyPath="yes" />
+          </Component>
+          <Component Id="c_bsondump.exe" Guid="744d4383-58a5-46b8-a2c4-c4287d6b1eda" Win64="yes">
+            <File Id="f_bsondump.exe" Name="bsondump.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongo.exe" Guid="8b84e922-5fdf-413e-ad75-ec01d49ba275" Win64="yes">
+            <File Id="f_mongo.exe" Name="mongo.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongod.exe" Guid="aa7f00f4-c7ef-4fe6-95a3-c02f516e2e21" Win64="yes">
+            <File Id="f_mongod.exe" Name="mongod.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongodump.exe" Guid="73505277-38de-40b8-aefb-6b6c725941bf" Win64="yes">
+            <File Id="f_mongodump.exe" Name="mongodump.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongoexport.exe" Guid="d9dccacd-3a77-4a2c-9322-92db81bc4168" Win64="yes">
+            <File Id="f_mongoexport.exe" Name="mongoexport.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongofiles.exe" Guid="463eabb0-8c85-4745-b0fb-a0c50212c48b" Win64="yes">
+            <File Id="f_mongofiles.exe" Name="mongofiles.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongoimport.exe" Guid="101e1bd9-82de-4aa4-965d-85693e599c70" Win64="yes">
+            <File Id="f_mongoimport.exe" Name="mongoimport.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongorestore.exe" Guid="581f7a24-9510-422f-9944-8abde5b8baa6" Win64="yes">
+            <File Id="f_mongorestore.exe" Name="mongorestore.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongos.exe" Guid="b933355e-3756-4071-b6b5-d3820ef723ce" Win64="yes">
+            <File Id="f_mongos.exe" Name="mongos.exe" KeyPath="yes" />
+          </Component>
+          <Component Id="c_mongostat.exe" Guid="eb59cccd-f994-4d94-82d1-2e2e8b234ec9" Win64="yes">
+            <File Id="f_mongostat.exe" Name="mongostat.exe" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="d_data" Name="data">
+          <Component Id="c_folderData" Guid="24cd990c-865e-4c67-9d6b-9c1fba085b1a" Win64="yes">
+            <CreateFolder />
+          </Component>
+        </Directory>
+        <Directory Id="d_logs" Name="logs">
+          <Component Id="c_service.log" Guid="4b89bbc1-770c-4be1-8b2b-162203e20186" Win64="yes">
+            <File Id="f_service.log" Name="service.log" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

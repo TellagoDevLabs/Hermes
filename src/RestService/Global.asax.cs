@@ -44,6 +44,7 @@ namespace TellagoStudios.Hermes.RestService
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
+         
             #region Initialize Routes MVC
 
             RouteTable.Routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
@@ -61,7 +62,7 @@ namespace TellagoStudios.Hermes.RestService
                            new[] { "TellagoStudios.Hermes.RestService.Controllers" });
 
             #endregion            
-
+            
             #region Initialize Routes REST
 
             IHttpHostConfigurationBuilder config;
