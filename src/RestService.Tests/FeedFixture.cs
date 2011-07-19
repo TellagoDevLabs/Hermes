@@ -38,6 +38,11 @@ namespace RestService.Tests
             return typeof(FeedResource);
         }
 
+        protected override RestClient.SerializationType GetSerializationType()
+        {
+            return RestClient.SerializationType.Xml;
+        }
+
         private SyndicationFeed GetFeedForMessage(Message message)
         {
             var messageId = message.Id.Value;
