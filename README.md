@@ -20,5 +20,9 @@ Road map
 *	Enhance the portal
 *	Add support for long polling; even if we have some spikes of this, we are probabily open a new opensource project for doing this.
 *	Create a real scenario application
-*	Create more client examples in different technologies (javascript is the most important right now)
+*	Create more client examples in different technologies
 *	Add support for serialization/deserialization of messages in the .Net client.
+
+Javascript Client
+========
+The Hermes.js client requires Reactive Extensions for Javascript. Because of the current EULA, it can't be included in this repository. It's currently available for download from [MSDN](http://msdn.microsoft.com/en-us/data/gg577610#js). Extract rx.js and rx.jQuery.js from the archive to the src/JsClient/Scripts directory, then build the solution.
