@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Channel Chat</title>
+    <style type="text/css">
+        #messages
+        {
+            list-style-type: none;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 1em;
+            border: 1px solid black;
+        }
+        
+        #chatBox 
+        {
+            width: 80%;
+            border: 1px solid black;
+            padding: 1em;
+        }
+        
+        #send
+        {
+            padding: 1em;
+        }
+        
+    </style>
+    <script src="Scripts/jquery-1.6.2.min.js" type="text/javascript"></script>
+    <script src="Scripts/jquery.jfeed.js" type="text/javascript"></script>
+    <script src="Scripts/jquery.json2xml.js" type="text/javascript"></script>
+    <script src="Scripts/rx.js" type="text/javascript"></script>
+    <script src="Scripts/rx.jQuery.js" type="text/javascript"></script>
+    <script src="Scripts/RestClient.js" type="text/javascript"></script>
+    <script src="Scripts/Hermes.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('#chatBox').focus();
+
+            var uri = "http://localhost:6156/";
+            var hermesClient = new HermesClient(uri);
+            var topic = hermesClient.TryCreateGroup("Chat Server")
+                                    .TryCreateTopic("Weather Channel");
+
+            topic.fail(function () {
+                alert('Unable to connect to Hermes server');
+            });
+
+            // Check for new messages every 1/2 second
+            topic.PollFeed(500)
+                .Subscribe(function (message) {
+
+                    // Add the message to unordered list
+                    $('<li />')
+                        .text(message)
+                        .appendTo('#messages');
+
+                    //scroll to the bottom
+                    $('#messages').scrollTop($('#messages')[0].scrollHeight);
+                });
+
+            // If we're typing a message and we press enter, click Send
+            $('#chatBox').keyup(function (e) {
+                if (e.keyCode == 13)
+                    $('#send').click();
+            });
+
+            $('#send').click(function () {
+                // Publish the message
+                topic.PostStringMessage($('#chatBox').val());
+
+                // Clear the chat box and focus the chat box
+                $('#chatBox').val('').focus();
+            });
+
+        });
+
+    </script>
+</head>
+<body>
+    <ul id="messages">
+        <li>Welcome to Weather Chat.</li>
+    </ul>
+    <button id="send">Send</button>
+    <input type="text" id="chatBox" />
+</body>
+</html>

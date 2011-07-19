@@ -19,5 +19,7 @@ src/[pP]ackages/*
 *.log*
 *.svclog
 
+rx.js
+rx.jQuery.js
 
 /README.html
