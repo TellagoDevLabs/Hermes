@@ -39,6 +39,11 @@ namespace RestService.Tests
                 messageKeysBySubscription.Object));
         }
 
+        protected override RestClient.SerializationType GetSerializationType()
+        {
+            return RestClient.SerializationType.Xml;
+        }
+
         protected override Type GetServiceType()
         {
             return typeof(MessageResource);

@@ -9,15 +9,12 @@ namespace TellagoStudios.Hermes.RestService.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            //builder.RegisterType<HermesMediaTypeFormatter>().As<MediaTypeFormatter>();
-            
-            //builder.RegisterType<AtomMediaTypeFormatter>().As<MediaTypeFormatter>();
-            
             builder.RegisterType<HttpOperationHandlerFactory>()
                    .AsSelf().WithParameter("formatters", new MediaTypeFormatter[]
                                                              {
                                                                  new AtomMediaTypeFormatter(), 
-                                                                 new HermesMediaTypeFormatter()
+                                                                 new HermesMediaTypeFormatter(),
+                                                                 new Formatters.JsonMediaTypeFormatter()
                                                              })
                    .SingleInstance();
         }

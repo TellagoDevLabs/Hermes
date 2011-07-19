@@ -41,6 +41,11 @@ namespace RestService.Tests
                 mockedDeleteCommand.Object, Mock.Of<ITopicsByGroup>()));
         }
 
+        protected override RestClient.SerializationType GetSerializationType()
+        {
+            return RestClient.SerializationType.Xml;
+        }
+
         protected override Type GetServiceType()
         {
             return typeof(GroupsResource);
@@ -169,19 +174,14 @@ namespace RestService.Tests
             mockedCreateCommand.Setup(r => r.Execute(It.IsAny<M.Group>()))
                 .Callback<M.Group>(g => g.Id = new Identity("4de7e38617b6c420a45a84c4"));
 
-            var result = client.ExecutePost<F.GroupPost, F.Group>("", groupPost);
+            var result = client.ExecutePost("", groupPost);
 
             mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(g => g.Satisfy(gr => gr != null 
                                                                                     && gr.Description == groupPost.Description
                                                                                     && gr.Name == groupPost.Name
                                                                                     && gr.ParentId == groupPost.ParentId.ToModel()))));
             
-            //TODO: There are two things here: 1-Test asser many things. 2-Http speaking, a POST request should not be respondend with any content but a location in the header.
-            //Assert.AreEqual(group.Description, result.Description);
-            //Assert.AreEqual(TellagoStudios.Hermes.Business.Constants.Relationships.Parent, result.Parent.rel);
-            //Assert.AreEqual(ResourceLocation.OfGroup(parent.Id.Value), result.Parent.href);
-            //Assert.AreEqual(group.Id, result.Id.ToModel());
-            //Assert.AreEqual(group.Name, result.Name);
+            Assert.IsNotNull(result);
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace RestService.Tests
 
             mockedCreateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())).Throws(new ValidationException("foo"));
 
-            var result = client.ExecutePost<F.GroupPost, F.Group>("", groupPost, HttpStatusCode.BadRequest);
+            var result = client.ExecutePost("", groupPost, HttpStatusCode.BadRequest);
 
             Assert.IsNull(result);
 

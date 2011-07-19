@@ -5,7 +5,7 @@ using Autofac;
 using Microsoft.ApplicationServer.Http.Activation;
 using Microsoft.ApplicationServer.Http.Description;
 using NUnit.Framework;
-using TellagoStudios.Hermes.RestService.Formatters;
+using TellagoStudios.Hermes.RestService.Modules;
 using TellagoStudios.Hermes.RestService.Resources;
 
 namespace RestService.Tests
@@ -22,11 +22,10 @@ namespace RestService.Tests
         {
             // Creates a new Spring context
             var builder = new ContainerBuilder();
-
+            builder.RegisterModule(new WebApiModule());
             PopulateApplicationContext(builder);
 
             var config = HttpHostConfiguration.Create()
-                .AddFormatters(new AtomMediaTypeFormatter())
                 .SetResourceFactory(new AutofacResourceFactory(builder.Build()));
 
             var type = GetServiceType();
@@ -36,7 +35,7 @@ namespace RestService.Tests
             ResourceLocation.BaseAddress = baseUri;
 
             // Create client instance 
-            client = new RestClient(baseUri);
+            client = new RestClient(baseUri, GetSerializationType());
         }
 
         [TestFixtureTearDown]
@@ -51,5 +50,6 @@ namespace RestService.Tests
 
         protected abstract void PopulateApplicationContext(ContainerBuilder builder);
         protected abstract Type GetServiceType();
+        protected abstract RestClient.SerializationType GetSerializationType();
     }
 }

@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Group.cs" />
-    <Compile Include="ModelBase.cs" />
+    <Compile Include="Util\ModelBase.cs" />
     <Compile Include="SubscriptionToFeed.cs" />
     <Compile Include="Topic.cs" />
     <Compile Include="Util\Constants.cs" />
