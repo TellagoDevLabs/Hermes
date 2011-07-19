@@ -8,15 +8,14 @@ namespace TellagoStudios.Hermes.Facade
     public class Link
     {
         public Link() { }
-        public Link(Uri uri, string relation, string mediaType = "application/vnd.hermeshub+xml")
-            : this(uri.ToString(), relation, mediaType)
+        public Link(Uri uri, string relation)
+            : this(uri.ToString(), relation)
         {}
 
-        public Link(string uri, string relation, string mediaType = "application/vnd.hermeshub+xml")
+        public Link(string uri, string relation)
         {
             Uri = uri;
             Relation = relation;
-            MediaType = mediaType;
         }
 
         /// <summary>
@@ -34,19 +33,10 @@ namespace TellagoStudios.Hermes.Facade
         [XmlAttribute(AttributeName = "rel")]
         public string Relation { get; set; }
 
-        /// <summary>
-        /// If a request requires an entity body, the link element will 
-        /// contain a mediaType attribute that declares the format of the 
-        /// request payload. If a request does not require an entity body, 
-        /// the mediaType attribute will be absent.
-        /// </summary>
-        [XmlAttribute(AttributeName = "mediaType")]
-        public string MediaType { get; set; }
-
         public override string ToString()
         {
 
-            return string.Format("Media Type: {0}; Relation: {1}; Uri: {2}", MediaType, Relation, Uri);
+            return string.Format("Relation: {0}; Uri: {1}", Relation, Uri);
         }
 
         #region Equality members
@@ -54,7 +44,7 @@ namespace TellagoStudios.Hermes.Facade
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(other.Uri, Uri) && Equals(other.Relation, Relation) && Equals(other.MediaType, MediaType);
+            return Equals(other.Uri, Uri) && Equals(other.Relation, Relation);
         }
 
         public override bool Equals(object obj)
@@ -71,7 +61,6 @@ namespace TellagoStudios.Hermes.Facade
             {
                 int result = (Uri != null ? Uri.GetHashCode() : 0);
                 result = (result * 397) ^ (Relation != null ? Relation.GetHashCode() : 0);
-                result = (result * 397) ^ (MediaType != null ? MediaType.GetHashCode() : 0);
                 return result;
             }
         }

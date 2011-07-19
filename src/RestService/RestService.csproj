@@ -134,6 +134,7 @@
     <Compile Include="CustomViewEngine.cs" />
     <Compile Include="DotLessResult.cs" />
     <Compile Include="Extensions\IdentityExtensions.cs" />
+    <Compile Include="Formatters\JsonMediaTypeFormatter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

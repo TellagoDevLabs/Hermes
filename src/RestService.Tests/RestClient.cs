@@ -8,25 +8,35 @@ using System.Xml;
 using System.Xml.Serialization;
 using NUnit.Framework;
 using TellagoStudios.Hermes.Facade;
+using TellagoStudios.Hermes.Facade.Serialization;
 
 namespace RestService.Tests
 {
     public class RestClient
     {
-        public Uri Url { get; protected set; }
+        public enum SerializationType
+        {
+            Xml,
+            Json
+        }
 
-        public RestClient(Uri serviceUrl)
+        public Uri Url { get; protected set; }
+        private SerializationType serializationType = SerializationType.Xml;
+
+        public RestClient(Uri serviceUrl, SerializationType serializationType )
         {
             if (serviceUrl == null)
                 throw new ArgumentNullException("serviceUrl");
 
             Url = serviceUrl;
+            this.serializationType = serializationType;
         }
 
         public T ExecuteGet<T>(string operation, HttpStatusCode expectedCode = HttpStatusCode.OK)
         {
             using (var client = CreateClient(this.Url))
             {
+                
                 var uri = Combine(operation);
                 using (HttpResponseMessage response = client.Get(uri))
                 {
@@ -46,23 +56,16 @@ namespace RestService.Tests
         {
             U instance = default(U);
 
-            DoPut(operation, entity, content => instance = content.DeserializeToEntity<U>(), expectedCode);
+            DoPut(operation, entity, response => instance = response.Content.DeserializeToEntity<U>(), expectedCode);
 
             return instance;
         }
 
-        public void ExecutePost<T>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.Created)
+        public Uri ExecutePost<T>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.Created)
         {
-            DoPost<T>(operation, entity, null, expectedCode);
-        }
-
-        public U ExecutePost<T, U>(string operation, T entity, HttpStatusCode expectedCode = HttpStatusCode.Created)
-        {
-            U instance = default(U);
-
-            DoPost(operation, entity, content => instance = content.DeserializeToEntity<U>(), expectedCode);
-
-            return instance;
+            Uri location = null;
+            DoPost<T>(operation, entity, response => location = response.Headers.Location, expectedCode);
+            return location;
         }
 
         public void ExecuteDelete(string operation, HttpStatusCode expectedCode = HttpStatusCode.NoContent)
@@ -80,39 +83,46 @@ namespace RestService.Tests
 
         private HttpClient CreateClient(Uri url)
         {
-            HttpClient client = new HttpClient(url);
-            //client.TransportSettings.Credentials = CredentialCache.DefaultCredentials;
-
+            var client = new HttpClient(url);
+            switch (serializationType)
+            {
+                case SerializationType.Xml:
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                    break;
+                case SerializationType.Json:
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    break;
+            }
             return client;
         }
 
-        private void DoPost<T>(string operation, T entity, Action<HttpContent> action, HttpStatusCode expectedCode = HttpStatusCode.Created)
+        private void DoPost<T>(string operation, T entity, Action<HttpResponseMessage> action, HttpStatusCode expectedCode = HttpStatusCode.Created)
         {
-            using (var client = new HttpClient(Url))
+            using (var client = CreateClient(Url))
             {
-                var content = entity.SerializeToContent();
+                var content = entity.SerializeToContent(serializationType);
                 using (HttpResponseMessage response = client.Post(Combine(operation), content))
                 {
                     Assert.AreEqual(expectedCode, response.StatusCode);
                     if (action != null)
                     {
-                        action(response.Content);
+                        action(response);
                     }
                 }
             }
         }
 
-        private void DoPut<T>(string operation, T entity, Action<HttpContent> action, HttpStatusCode expectedCode = HttpStatusCode.NoContent)
+        private void DoPut<T>(string operation, T entity, Action<HttpResponseMessage> action, HttpStatusCode expectedCode = HttpStatusCode.NoContent)
         {
-            using (var client = new HttpClient(Url))
+            using (var client = CreateClient(Url))
             {
-                var content = entity.SerializeToContent();
+                var content = entity.SerializeToContent(serializationType);
                 using (HttpResponseMessage response = client.Put(Combine(operation), content))
                 {
                     Assert.AreEqual(expectedCode, response.StatusCode);
                     if (action != null)
                     {
-                        action(response.Content);
+                        action(response);
                     }
                 }
             }
@@ -128,7 +138,7 @@ namespace RestService.Tests
 
     static class RestClientExtensions
     {
-        static public HttpContent SerializeToContent<T>(this T from)
+        static public HttpContent SerializeToContent<T>(this T from, RestClient.SerializationType serializationType)
         {
             HttpContent content;  
             if (from == null)
@@ -145,19 +155,37 @@ namespace RestService.Tests
             {
                 using (var stream = new MemoryStream())
                 {
-                    var settings = new XmlWriterSettings {OmitXmlDeclaration = true};
-                    var writer = XmlWriter.Create(stream, settings);
+                    switch (serializationType)
+                    {
+                        case RestClient.SerializationType.Xml:
+                            var xmlSettings = new XmlWriterSettings {OmitXmlDeclaration = true};
+                            var xmlWriter = XmlWriter.Create(stream, xmlSettings);
 
-                    var ns = new XmlSerializerNamespaces();
-                    ns.Add("", "http://schemas.datacontract.org/2004/07/EB.PayDirect.Hermes.Core.Facade");
+                            var ns = new XmlSerializerNamespaces();
+                            ns.Add("", "http://schemas.datacontract.org/2004/07/EB.PayDirect.Hermes.Core.Facade");
 
-                    var serializer = new XmlSerializer(typeof (T));
-                    serializer.Serialize(writer, from, ns);
+                            var xmlSerializer = new XmlSerializer(typeof (T));
+                            xmlSerializer.Serialize(xmlWriter, from, ns);
+                            break;
+                        case RestClient.SerializationType.Json:
+                            JsonSerializer.Serialize(from, stream);
+                            break;
+                    };
+
                     var length = stream.Length;
                     stream.Seek(0, SeekOrigin.Begin);
 
                     content = new StreamContent(stream);
-                    content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
+                    switch (serializationType)
+                    {
+                        case RestClient.SerializationType.Xml:
+                            content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
+                            break;
+                        case RestClient.SerializationType.Json:
+                            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                            break;
+
+                    }
                     content.LoadIntoBuffer();
                 }
             }
@@ -166,19 +194,28 @@ namespace RestService.Tests
 
         static public T DeserializeToEntity<T>(this HttpContent content)
         {
-            if (content ==null || 
+            var entity = default(T);
+
+            if (content == null || 
                 content.Headers.ContentType == null ||
-                content.Headers.ContentType.MediaType == null ||
-                !content.Headers.ContentType.MediaType.Contains("xml"))
+                content.Headers.ContentType.MediaType == null)
             {
-                return default(T);
+                return entity;
             }
 
-            var reader = XmlReader.Create(content.ContentReadStream);
-            var serializer = new XmlSerializer(typeof(T), new [] {typeof(Identity)});
-            var entity = (T)serializer.Deserialize(reader);
+            if (content.Headers.ContentType.MediaType.Contains("xml"))
+            {
+
+                var xmlReader = XmlReader.Create(content.ContentReadStream);
+                var xmlSerializer = new XmlSerializer(typeof (T), new[] {typeof (Identity)});
+                entity = (T)xmlSerializer.Deserialize(xmlReader);
+            }
+            else if (content.Headers.ContentType.MediaType.Contains("json"))
+            {
+                entity = JsonSerializer.Deserialize<T>(content.ContentReadStream);
+            }
             return entity;
         }
-        
+            
     }
 }
