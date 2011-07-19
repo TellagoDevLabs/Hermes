@@ -5,6 +5,7 @@ using Autofac;
 using Microsoft.ApplicationServer.Http.Activation;
 using Microsoft.ApplicationServer.Http.Description;
 using NUnit.Framework;
+using TellagoStudios.Hermes.RestService.Formatters;
 using TellagoStudios.Hermes.RestService.Resources;
 
 namespace RestService.Tests
@@ -25,6 +26,7 @@ namespace RestService.Tests
             PopulateApplicationContext(builder);
 
             var config = HttpHostConfiguration.Create()
+                .AddFormatters(new AtomMediaTypeFormatter())
                 .SetResourceFactory(new AutofacResourceFactory(builder.Build()));
 
             var type = GetServiceType();

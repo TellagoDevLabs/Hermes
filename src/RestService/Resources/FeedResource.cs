@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -38,7 +39,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
             var syndicationFeed = CreateSyndicationFromFeed(topicId, workingFeed);
             return new HttpResponseMessage<SyndicationFeed>(syndicationFeed, HttpStatusCode.OK)
                        {
-                           Content = { Headers = { ContentType = new MediaTypeHeaderValue("application/atom+xml") } }
+                           Content = {Headers = {ContentType = new MediaTypeHeaderValue("application/atom+xml")}}
                        };
         }
 
