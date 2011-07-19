@@ -90,7 +90,7 @@ namespace RestService.Tests
         [Test]
         public void Text_message_with_charset_is_included_as_text()
         {
-            const string contentType = "text/text;charset=UTF-8";
+            const string contentType = "text/plain;charset=UTF-8";
             const string payload = "Hello!";
             var messageId = Identity.Random();
             var topicId = Identity.Random();
