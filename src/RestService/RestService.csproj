@@ -94,6 +94,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <EmbeddedResource Include="Public\css\default.less" />
+    <Content Include="index.htm" />
     <Content Include="Scripts\jquery-1.4.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.4.4.js" />
     <Content Include="Scripts\jquery-1.4.4.min.js" />
