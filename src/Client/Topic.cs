@@ -74,6 +74,11 @@ namespace TellagoStudios.Hermes.Client
             return PostMessage(data, "text/plain");
         }
 
+        public Uri GetLinkForFeed()
+        {
+            return new Uri(topic.GetLinkForRelation("Current Feed"));
+        }
+
         /// <summary>
         /// Poll the feed of recent events.
         /// </summary>

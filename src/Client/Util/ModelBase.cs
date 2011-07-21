@@ -1,3 +1,5 @@
+using TellagoStudios.Hermes.Facade.Base;
+
 namespace TellagoStudios.Hermes.Client
 {
     public class ModelBase
