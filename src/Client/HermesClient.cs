@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using TellagoStudios.Hermes.Client.Util;
 using TellagoStudios.Hermes.Facade;
@@ -11,9 +12,17 @@ namespace TellagoStudios.Hermes.Client
 
         #region Constructors
 
+        /// <summary>
+        /// This constructor will try to get
+        /// the Hermes's address from an appSetting named hermes
+        /// </summary>
+        public HermesClient()
+            : this (ConfigurationManager.AppSettings["hermes"])
+        {}
+
         public HermesClient(string hermesAddress)
             : this(new Uri(hermesAddress), null)
-        { }
+        {}
 
 
         public HermesClient(string hermesAddress, string proxy)
@@ -27,6 +36,15 @@ namespace TellagoStudios.Hermes.Client
         }
 
         #endregion
+
+        public Uri TryPostMessage<T>(string groupName, string topicName, T data)
+        {
+           var location = TryCreateGroup(groupName)
+                .TryCreateTopic(topicName)
+                .PostMessage(data);
+
+            return new Uri(location);
+        }
 
         #region Topic Groups
 

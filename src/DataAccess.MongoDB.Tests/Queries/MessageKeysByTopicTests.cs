@@ -42,11 +42,23 @@ namespace DataAccess.Tests.Queries
         public void WhenMessageExists_MustReturnMessage()
         {
             var query = new MessageKeysByTopic(base.connectionString);
-            var result = query.Get(topicId)
+            var result = query.Get(topicId, null, null, null)
                 .ToArray();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(msgIds.Length, result.Length);
+        }
+
+        [Test]
+        public void ReturnsMessageUsingLast()
+        {
+            var query = new MessageKeysByTopic(base.connectionString);
+            var result = query.Get(topicId, msgIds[1], null, null)
+                .ToArray();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(msgIds[2], result[0].MessageId);
         }
     }
 }

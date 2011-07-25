@@ -22,7 +22,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
             this.messageByGroup = messageByGroup;
         }
 
-        public IEnumerable<MessageKey> Get(Identity subscriptionId, int? skip = null, int? limit = null)
+        public IEnumerable<MessageKey> Get(Identity subscriptionId, Identity? last = null, int? skip = null, int? limit = null)
         {
             var subscription = entityById.Get<Subscription>(subscriptionId);
 
@@ -31,9 +31,9 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
                 switch (subscription.TargetKind)
                 {
                     case TargetKind.Topic:
-                        return messageByTopic.Get(subscription.TargetId.Value, skip, limit);
+                        return messageByTopic.Get(subscription.TargetId.Value, last, skip, limit);
                     case TargetKind.Group:
-                        return messageByGroup.Get(subscription.TargetId.Value, skip, limit);
+                        return messageByGroup.Get(subscription.TargetId.Value, last, skip, limit);
                     default:
                         throw new InvalidOperationException(string.Format(Texts.TargetKindUnknown,
                                                                           subscription.TargetKind));

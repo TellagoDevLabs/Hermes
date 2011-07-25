@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using Autofac;
@@ -71,8 +72,6 @@ namespace RestService.Tests
         public void Should_get_a_messagge()
         {
             var contentType = "text/text";
-            var ppName = "Amount";
-            var ppValue = 100;
             var payload = "Hello!";
             var message = new Message()
             {
@@ -130,6 +129,41 @@ namespace RestService.Tests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
+        }
+
+        [Test] 
+        public void Should_get_a_messagge_by_topic()
+        {
+            var key = new MessageKey {MessageId = Identity.Random(), TopicId = Identity.Random()};
+
+            messageKeysByTopic
+                .Setup(r => r.Get(key.TopicId, null, null, null))
+                .Returns(new[] {key});
+
+            var client = new HttpClient(baseUri);
+            var url = baseUri + "topic/" + key.TopicId;
+            var result = client.Get(url);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Test]
+        public void Should_get_a_messagge_by_topic_using_last()
+        {
+            var last = Identity.Random();
+            var key = new MessageKey { MessageId = Identity.Random(), TopicId = Identity.Random() };
+
+            messageKeysByTopic
+                .Setup(r => r.Get(key.TopicId, last, null, null))
+                .Returns(new [] { key });
+
+            var client = new HttpClient(baseUri);
+            var url = baseUri + "topic/" + key.TopicId + "?last=" + last;
+            var result = client.Get(url);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
     }
 }

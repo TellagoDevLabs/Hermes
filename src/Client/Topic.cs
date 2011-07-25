@@ -1,7 +1,10 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Linq;
+using TellagoStudios.Hermes.Client.Util;
 using TellagoStudios.Hermes.Facade;
+using System.Reactive.Concurrency;
 
 namespace TellagoStudios.Hermes.Client
 {
@@ -93,10 +96,24 @@ namespace TellagoStudios.Hermes.Client
         /// Poll the feed of recent events.
         /// </summary>
         /// <param name="timeSpan">polling interval</param>
+        /// <param name="scheduler">Reactive framework's scheduler</param>
         /// <returns>an observable sequence of messages</returns>
-        public IObservable<string> PollFeed(TimeSpan timeSpan)
+        public IObservable<string> PollFeed(TimeSpan timeSpan, IScheduler scheduler = null)
         {
-            return new SubscriptionToFeed(topic, restClient, timeSpan);
+            return new SubscriptionToFeed(topic, restClient, timeSpan, scheduler);
+        }
+
+        public Uri[] PollMessages(Uri lastMessage = null)
+        {
+            return restClient.Get<Link[]>(Operations.GetMessagesByTopic(topic.Id, lastMessage))
+                .Select(l => new Uri(l.Uri))
+                .ToArray();
+        }
+
+        public IObservable<Message<T>> PollMessages<T>(TimeSpan timeSpan, Uri lastMessage , IScheduler scheduler = null)
+            where T : class, new()
+        {
+            return new SubscriptionToTopic<T>(this, restClient, timeSpan, lastMessage, scheduler);
         }
     }
 }

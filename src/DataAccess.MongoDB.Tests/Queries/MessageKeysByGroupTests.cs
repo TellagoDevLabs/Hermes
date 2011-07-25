@@ -79,8 +79,8 @@ namespace DataAccess.Tests.Queries
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Length);
             Assert.IsTrue(result.Any(mk => mk.TopicId == topicIds[0] && mk.MessageId == msgIds[0]));
-            Assert.IsTrue (result.Any(mk => mk.TopicId == topicIds[1] && mk.MessageId == msgIds[1]));
-            Assert.IsTrue (result.Any(mk => mk.TopicId == topicIds[2] && mk.MessageId == msgIds[2]));
+            Assert.IsTrue(result.Any(mk => mk.TopicId == topicIds[1] && mk.MessageId == msgIds[1]));
+            Assert.IsTrue(result.Any(mk => mk.TopicId == topicIds[2] && mk.MessageId == msgIds[2]));
 
             Assert.IsTrue(!result.Any(mk => mk.TopicId == topicIds[3] && mk.MessageId == msgIds[3]));
         }

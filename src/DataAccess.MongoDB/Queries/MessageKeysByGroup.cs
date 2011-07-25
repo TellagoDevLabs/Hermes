@@ -21,10 +21,10 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
             this.topicByGroup = topicByGroup;
         }
 
-        public IEnumerable<MessageKey> Get(Identity groupId, int? skip = null, int? limit = null)
+        public IEnumerable<MessageKey> Get(Identity groupId, Identity? last = null, int? skip = null, int? limit = null)
         {
             var topicIds = GetGroupTopicIdsAndDescendants(groupId);
-            var keys = GetMessageKeys(topicIds);
+            var keys = GetMessageKeys(topicIds, last);
 
             if (skip.HasValue) keys = keys.Skip(skip.Value);
             if (limit.HasValue) keys = keys.Take(limit.Value);
@@ -51,12 +51,14 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
             }
         }
 
-        private IEnumerable<MessageKey> GetMessageKeys(IEnumerable<Identity> topicIds)
+        private IEnumerable<MessageKey> GetMessageKeys(IEnumerable<Identity> topicIds, Identity? last = null)
         {
             foreach (var topicId in topicIds)
             {
                 var col = DB.GetCollection<Message>(MongoDbConstants.GetCollectionNameForMessage(topicId));
-                var cursor = col.FindAll()
+                var query = last.HasValue ? Query.GT("_id", BsonValue.Create(last.Value)) : null;
+
+                var cursor = col.Find(query)
                     .SetFields("_id");
 
                 foreach (var message in cursor)

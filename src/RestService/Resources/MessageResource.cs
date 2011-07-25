@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.ServiceModel;
@@ -52,15 +53,16 @@ namespace TellagoStudios.Hermes.RestService.Resources
             });
         }
 
-        [WebGet(UriTemplate = "/subscription/{id}?skip={skip}&limit={limit}")]
-        public HttpResponseMessage<Link[]> GetBySubscription(Identity id, int skip, int limit)
+        [WebGet(UriTemplate = "/subscription/{id}?last={last}&skip={skip}&limit={limit}")]
+        public HttpResponseMessage<Link[]> GetBySubscription(Identity id, Identity last, int skip, int limit)
         {
             // set valid values of opional parameters
             var validatedSkip = skip > 0 ? skip : new int?();
             var validatedLimit = limit > 0 ? limit : new int?();
+            var validatedLast = last != Identity.Empty ? last : new Identity?();
 
             return ProcessGet(() => messageKeysBySubscription
-                    .Get(id, validatedSkip, validatedLimit)
+                    .Get(id, validatedLast, validatedSkip, validatedLimit)
                     .Select(key => key.ToLink())
                     .ToArray()
             );
@@ -88,29 +90,31 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return response;
         }
 
-        [WebGet(UriTemplate = "topic/{id}?skip={skip}&limit={limit}")]
-        public HttpResponseMessage<Link[]> GetForTopic(Identity id, int skip, int limit)
+        [WebGet(UriTemplate = "topic/{id}?last={last}&skip={skip}&limit={limit}")]
+        public HttpResponseMessage<Link[]> GetForTopic(Identity id, Identity last, int skip, int limit)
         {
             // set valid values of opional parameters
             var validatedSkip = skip > 0 ? skip : new int?();
             var validatedLimit = limit > 0 ? limit : new int?();
+            var validatedLast = last != Identity.Empty ? last : new Identity?();
 
             return ProcessGet(() => messageKeysByTopic
-                    .Get(id, validatedSkip, validatedLimit)
+                    .Get(id, validatedLast, validatedSkip, validatedLimit)
                     .Select(key => key.ToLink())
                     .ToArray()
             );
         }
 
-        [WebGet(UriTemplate = "topicgroup/{id}?skip={skip}&limit={limit}")]
-        public HttpResponseMessage<Link[]> GetForGroup(Identity id, int skip, int limit)
+        [WebGet(UriTemplate = "topicgroup/{id}?last={last}&skip={skip}&limit={limit}")]
+        public HttpResponseMessage<Link[]> GetForGroup(Identity id, Identity last, int skip, int limit)
         {
             // set valid values of opional parameters
             var validatedSkip = skip > 0 ? skip : new int?();
             var validatedLimit = limit > 0 ? limit  : new int?();
+            var validatedLast = last != Identity.Empty ? last : new Identity?();
 
             return ProcessGet(() => messageKeysByGroup
-                    .Get(id, validatedSkip, validatedLimit)
+                    .Get(id, validatedLast, validatedSkip, validatedLimit)
                     .Select(key => key.ToLink())
                     .ToArray()
             );

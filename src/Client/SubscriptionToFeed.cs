@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.ServiceModel.Syndication;
@@ -17,11 +18,11 @@ namespace TellagoStudios.Hermes.Client
                 = new Stack<Tuple<string, string>>();
         private readonly object lck = new object();
 
-        public SubscriptionToFeed(Facade.Topic topic, RestClient restClient, TimeSpan interval)
+        public SubscriptionToFeed(Facade.Topic topic, RestClient restClient, TimeSpan interval, IScheduler scheduler = null)
         {
             this.restClient = restClient;
             subject = new Subject<string>();
-            Observable.Timer(interval)
+            Observable.Timer(interval, scheduler ?? Scheduler.TaskPool)
                 .Repeat()
                 .Subscribe(u =>
                                {

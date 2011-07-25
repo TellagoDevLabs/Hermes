@@ -4,7 +4,6 @@ using Moq;
 using NUnit.Framework;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
-using TellagoStudios.Hermes.DataAccess.MongoDB;
 using TellagoStudios.Hermes.DataAccess.MongoDB.Queries;
 
 namespace DataAccess.Tests.Queries
@@ -29,7 +28,7 @@ namespace DataAccess.Tests.Queries
 
 
             var query = CreateQuery(Mock.Of<IEntityById>(q => q.Get<Subscription>(subscriptionId) == subscription),
-                messageKeysByTopic: Mock.Of<IMessageKeysByTopic>(q => q.Get(topicId, null, null) == keys));
+                messageKeysByTopic: Mock.Of<IMessageKeysByTopic>(q => q.Get(topicId, null, null, null) == keys));
 
             var result = query.Get(subscriptionId)
                 .ToArray();
@@ -49,7 +48,7 @@ namespace DataAccess.Tests.Queries
 
 
             var query = CreateQuery(Mock.Of<IEntityById>(q => q.Get<Subscription>(subscriptionId) == subscription),
-                Mock.Of<IMessageKeysByGroup>(q => q.Get(groupId, null, null) == keys));
+                Mock.Of<IMessageKeysByGroup>(q => q.Get(groupId, null, null, null) == keys));
 
             var result = query.Get(subscriptionId)
                 .ToArray();
@@ -57,6 +56,7 @@ namespace DataAccess.Tests.Queries
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Length);
         }
+
         private MessageKeysBySubscription CreateQuery(
             IEntityById entityById = null,
             IMessageKeysByGroup messageKeysByGroup = null,
