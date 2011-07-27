@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestService.Tests", "RestService.Tests\RestService.Tests.csproj", "{D1C1CDE4-B1DA-4D05-925D-46CDE55C1455}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{36B7ADBD-E9A0-4B0A-AC1A-9FB83A7664BA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D79F25E-0BF5-466B-A1B3-FAFD9A211046} = {6D79F25E-0BF5-466B-A1B3-FAFD9A211046}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Facade", "Facade\Facade.csproj", "{70D93217-DEB3-4843-9C0F-BED6CC0E654C}"
 EndProject
@@ -22,18 +25,33 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Tests", "Client.Tests\Client.Tests.csproj", "{E6CABAAF-B770-499A-976B-8A83CD09A84E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePublisher", "ExamplePublisher\ExamplePublisher.csproj", "{D128CB57-C799-465F-B8F1-87C488724599}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D79F25E-0BF5-466B-A1B3-FAFD9A211046} = {6D79F25E-0BF5-466B-A1B3-FAFD9A211046}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleSubscriber", "ExampleSubscriber\ExampleSubscriber.csproj", "{628EB1A7-9C25-43AD-986A-74C859C7D419}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D79F25E-0BF5-466B-A1B3-FAFD9A211046} = {6D79F25E-0BF5-466B-A1B3-FAFD9A211046}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{FC9A5881-07DB-4570-AA8A-47552121185D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsClient", "JsClient\JsClient.csproj", "{330E9CC0-1D78-491A-9942-7B596B1A62D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleWeb", "ExampleWeb\ExampleWeb.csproj", "{4E88EDCF-2760-431E-A529-E638B8FDAC82}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D79F25E-0BF5-466B-A1B3-FAFD9A211046} = {6D79F25E-0BF5-466B-A1B3-FAFD9A211046}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleEventLogPublisher", "ExampleEventLogPublisher\ExampleEventLogPublisher.csproj", "{CB95C169-D8A5-4A98-A3CD-B790357B556D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D79F25E-0BF5-466B-A1B3-FAFD9A211046} = {6D79F25E-0BF5-466B-A1B3-FAFD9A211046}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleDecouplingApplications", "ExampleDecouplingApplications\ExampleDecouplingApplications.csproj", "{0F06464D-0F63-4EAE-874C-D65835180D38}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D79F25E-0BF5-466B-A1B3-FAFD9A211046} = {6D79F25E-0BF5-466B-A1B3-FAFD9A211046}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

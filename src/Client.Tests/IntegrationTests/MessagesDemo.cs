@@ -12,7 +12,7 @@ using TellagoStudios.Hermes.Client.Tests.Util;
 
 namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
 {
-    [TestFixture, Explicit]
+    [TestFixture]
     public class MessagesDemo : IntegrationTestBase
     {
         private readonly HermesClient client = new HermesClient("http://localhost:40403");
@@ -37,6 +37,17 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         }
 
         [Test]
+        public void CanPostAndGetTypedMessageFromTopic()
+        {
+            var news = new News { Title = "Hello world", Date = DateTime.Now };
+            var messageId = topic.PostMessage(news);
+            messageId.Should().Not.Be.NullOrEmpty();
+            var url = new Uri(messageId);
+            var news2 = client.GetMessage<News>(url);
+            news2.Satisfy(n => news.Title == n.Title && news.Date == n.Date);
+        }
+
+        [Test]
         public void CanSubscribeToTopicFeed()
         {
             var read = new List<string>();
@@ -49,6 +60,34 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
                 topic.PostStringMessage("c");
                 while (read.Count < 3) { }
                 read.Should().Have.SameSequenceAs("a", "b", "c");                
+            }
+        }
+
+        [Test]
+        public void CanSubscribeToTypedTopicFeed()
+        {
+            var news = new []
+            { 
+                new News {Title = "One", Date = DateTime.Now },
+                new News {Title = "Two", Date = DateTime.Now.AddMinutes(1) },
+                new News {Title = "Three", Date = DateTime.Now.AddMinutes(2) }
+            };
+            
+            var topicNews = client.TryCreateGroup("Group1")
+                          .TryCreateTopic("News");
+
+            foreach (var n in news)
+            {
+                topicNews.PostMessage(n);
+            }
+
+            var read = new List<News>();
+            using (topicNews.PollFeed<News>(1)
+                        .ObserveOn(Scheduler.CurrentThread)
+                        .Subscribe(read.Add))
+            {
+                while (read.Count < 3) { }
+                read.Should().Have.SameSequenceAs(news);
             }
         }
 
@@ -68,6 +107,12 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
 
                 read.Should().Have.SameSequenceAs(messages);
             }
+        }
+
+        [Test]
+        public void Samples()
+        {
+            
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using TellagoStudios.Hermes.Client.Util;
 using TellagoStudios.Hermes.Facade;
@@ -37,6 +38,15 @@ namespace TellagoStudios.Hermes.Client
 
         #endregion
 
+        public T GetMessage<T>(Uri url)
+        {
+            return restClient.GetFromUrl<T>(url);
+        }
+
+        public Stream GetMessageAsStream(Uri url)
+        {
+            return restClient.GetStream(url);
+        }
         public Uri TryPostMessage<T>(string groupName, string topicName, T data)
         {
            var location = TryCreateGroup(groupName)

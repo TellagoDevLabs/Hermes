@@ -1,27 +1,36 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.ServiceModel.Syndication;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace TellagoStudios.Hermes.Client
 {
-    public class SubscriptionToFeed : IObservable<string>
+    public class SubscriptionToFeed : SubscriptionToFeed<string>
+    {
+        public SubscriptionToFeed(Facade.Topic topic, RestClient restClient, TimeSpan interval, IScheduler scheduler = null)
+            : base(topic, restClient, interval, scheduler)
+        {
+        }
+    }
+ 
+    public class SubscriptionToFeed<T> : IObservable<T>
     {
         private readonly RestClient restClient;
-        private readonly ISubject<string> subject;
+        private readonly ISubject<T> subject;
         private string lastRead;
-        private readonly Stack<Tuple<string, string>> stack 
-                = new Stack<Tuple<string, string>>();
+        private readonly Stack<Tuple<string, string>> stack = new Stack<Tuple<string, string>>();
         private readonly object lck = new object();
 
         public SubscriptionToFeed(Facade.Topic topic, RestClient restClient, TimeSpan interval, IScheduler scheduler = null)
         {
             this.restClient = restClient;
-            subject = new Subject<string>();
+            subject = new Subject<T>();
             Observable.Timer(interval, scheduler ?? Scheduler.TaskPool)
                 .Repeat()
                 .Subscribe(u =>
@@ -71,12 +80,26 @@ namespace TellagoStudios.Hermes.Client
                 {
                     var entry = stack.Pop();
                     lastRead = entry.Item1;
-                    subject.OnNext(entry.Item2);    
+                    subject.OnNext(Deserialize(entry.Item2));    
                 }
             }
         }
 
-        public IDisposable Subscribe(IObserver<string> observer)
+        private static T Deserialize(string data)
+        {
+            if (typeof(T) == typeof(string))
+            {
+                return (T)(object)data;
+            }
+
+            using (var reader = new StringReader(data))
+            {
+                var serializer = new XmlSerializer(typeof (T));
+                return (T) serializer.Deserialize(reader);
+            }
+        }
+
+        public IDisposable Subscribe(IObserver<T> observer)
         {
             return subject.Subscribe(observer);
         }

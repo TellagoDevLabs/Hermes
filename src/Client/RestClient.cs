@@ -78,14 +78,6 @@ namespace TellagoStudios.Hermes.Client
             using(var httpWebResponse = httpWebRequest.Serialize(data).Send(webExceptionHandler))
             {
                 location = httpWebResponse.GetLocation();
-
-                //var responseStream = httpWebResponse.GetResponseStream();
-                //if (responseStream != null)
-                //{
-                //    responseStream.Close();
-                //    responseStream.Dispose();
-                //}
-                //httpWebResponse.Close();
             }
 
             return location;
@@ -163,6 +155,13 @@ namespace TellagoStudios.Hermes.Client
         public Stream GetStream(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
             return Client(operation, "GET", headers)
+                .Send(webExceptionHandler)
+                .GetResponseStream();
+        }
+
+        public Stream GetStream(Uri url, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        {
+            return ExecuteRequest(url, "GET", headers)
                 .Send(webExceptionHandler)
                 .GetResponseStream();
         }
@@ -264,8 +263,11 @@ namespace TellagoStudios.Hermes.Client
                 using (var writer = XmlWriter.Create(ms, settings))
                 {
                     var ns = new XmlSerializerNamespaces();
-                    ns.Add("", "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade");
 
+                    if (typeof(T).Namespace == "TellagoStudios.Hermes.Facade")
+                    {
+                        ns.Add("", "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade");
+                    }
                     var serializer = new XmlSerializer(typeof(T));
                     serializer.Serialize(writer, data, ns);
 

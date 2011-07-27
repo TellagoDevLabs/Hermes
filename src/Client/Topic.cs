@@ -86,10 +86,11 @@ namespace TellagoStudios.Hermes.Client
         /// Poll the feed of recent events.
         /// </summary>
         /// <param name="interval">polling interval in seconds</param>
+        /// <param name="scheduler">Reactive framework's scheduler</param>
         /// <returns>an observable sequence of messages</returns>
-        public IObservable<string> PollFeed(int interval = 10)
+        public IObservable<string> PollFeed(int interval = 10, IScheduler scheduler = null)
         {
-            return PollFeed(TimeSpan.FromSeconds(interval));
+            return PollFeed(TimeSpan.FromSeconds(interval), scheduler);
         }
 
         /// <summary>
@@ -103,13 +104,51 @@ namespace TellagoStudios.Hermes.Client
             return new SubscriptionToFeed(topic, restClient, timeSpan, scheduler);
         }
 
-        public Uri[] PollMessages(Uri lastMessage = null)
+
+        /// <summary>
+        /// Poll the feed of recent events.
+        /// </summary>
+        /// <param name="interval">polling interval in seconds</param>
+        /// <param name="scheduler">Reactive framework's scheduler</param>
+        /// <returns>an observable sequence of messages</returns>
+        public IObservable<T> PollFeed<T>(int interval = 10, IScheduler scheduler = null)
         {
-            return restClient.Get<Link[]>(Operations.GetMessagesByTopic(topic.Id, lastMessage))
+            return PollFeed<T>(TimeSpan.FromSeconds(interval), scheduler);
+        }
+
+        /// <summary>
+        /// Poll the feed of recent events.
+        /// </summary>
+        /// <param name="timeSpan">polling interval</param>
+        /// <param name="scheduler">Reactive framework's scheduler</param>
+        /// <returns>an observable sequence of messages</returns>
+        public IObservable<T> PollFeed<T>(TimeSpan timeSpan, IScheduler scheduler = null)
+        {
+            return new SubscriptionToFeed<T>(topic, restClient, timeSpan, scheduler);
+        }
+
+        /// <summary>
+        /// Poll topic's messages
+        /// </summary>
+        /// <param name="lastMessage">Optional. Url of the latest message that we received</param>
+        /// <param name="skip">Optional. Count of messages to be skipped by the server</param>
+        /// <param name="limit">Optional. Count of messages to return</param>
+        /// <returns>Messages's url.</returns>
+        public Uri[] PollMessages(Uri lastMessage = null, int? skip = null, int? limit = null)
+        {
+            return restClient.Get<Link[]>(Operations.GetMessagesByTopic(topic.Id, lastMessage, skip, limit))
                 .Select(l => new Uri(l.Uri))
                 .ToArray();
         }
 
+        /// <summary>
+        /// Poll topic's messages and deserialize them using XmlSerializer.
+        /// </summary>
+        /// <typeparam name="T">Type of the message's content</typeparam>
+        /// <param name="timeSpan">Timespan between poll actions.</param>
+        /// <param name="lastMessage">Optional. Url of the latest message that we received</param>
+        /// <param name="scheduler">Optional. Scheduler instance</param>
+        /// <returns>An observable sequence of Message's instances.</returns>
         public IObservable<Message<T>> PollMessages<T>(TimeSpan timeSpan, Uri lastMessage , IScheduler scheduler = null)
             where T : class, new()
         {
