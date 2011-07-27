@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Xml;
-using System.Xml.Serialization;
+using TellagoStudios.Hermes.Client.Serialization;
 using TellagoStudios.Hermes.Client.Util;
 
 namespace TellagoStudios.Hermes.Client
@@ -245,7 +244,7 @@ namespace TellagoStudios.Hermes.Client
         {
             if (string.IsNullOrEmpty(request.ContentType))
             {
-                request.ContentType = "application/xml"; // TODO: Replace. We should support many content types
+                request.ContentType = "application/xml"; 
             }
             var dataAsStream = data as Stream;
             if (dataAsStream != null)
@@ -258,31 +257,11 @@ namespace TellagoStudios.Hermes.Client
             }
             else
             {
-                var settings = new XmlWriterSettings { OmitXmlDeclaration = true };
-                using (var ms = new MemoryStream())
-                using (var writer = XmlWriter.Create(ms, settings))
+                using (var stream = request.GetRequestStream())
                 {
-                    var ns = new XmlSerializerNamespaces();
-
-                    if (typeof(T).Namespace == "TellagoStudios.Hermes.Facade")
-                    {
-                        ns.Add("", "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade");
-                    }
-                    var serializer = new XmlSerializer(typeof(T));
-                    serializer.Serialize(writer, data, ns);
-
-                    writer.Close();
-
-                    ms.Position = 0;
-                    request.ContentLength = ms.Length;
-                    using (var stream = request.GetRequestStream())
-                    {
-                        ms.CopyTo(stream);
-                        stream.Flush();
-                        stream.Close();
-                    }
-                    writer.Close();
-                    ms.Close();
+                    Serializer.Instance.Serialize(request.ContentType, stream, data);
+                    stream.Flush();
+                    stream.Close();
                 }
             }
             return request;
@@ -310,12 +289,7 @@ namespace TellagoStudios.Hermes.Client
                     return t;
                 }
 
-                var reader = XmlReader.Create(stream);
-                var serializer = new XmlSerializer(typeof(T));
-                var entity = (T)serializer.Deserialize(reader);
-                
-                stream.Close();
-
+                var entity = Serializer.Instance.Deserialize<T>(response.ContentType, stream);
                 return entity;
             }
         }

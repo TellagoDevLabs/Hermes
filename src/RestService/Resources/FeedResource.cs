@@ -99,34 +99,11 @@ namespace TellagoStudios.Hermes.RestService.Resources
 
         private SyndicationItem MapEntryToSyndicationItem(Identity topicId, FeedEntry e)
         {
-
-            var textContentTypes = new[]
-                                       {
-                                           "text/plain",
-                                           "text/plain;charset=utf-8",
-                                           "text/plain;charset=UTF-8",
-                                           "text/plain; charset=utf-8",
-                                           "text/plain; charset=UTF-8"
-                                       };
-
             var messageLink = ResourceLocation.OfMessageByTopic(topicId, e.MessageId);
             var message = messageByMessageKey.Get(new MessageKey {TopicId = topicId, MessageId = e.MessageId});
 
-            var hasContentType = message.Headers.ContainsKey("Content-Type");
             var contentType = message.Headers.FirstOrDefault(h => h.Key == "Content-Type");
-            var isPlainText = hasContentType && contentType.Value.Intersect(textContentTypes).Any();
-
-            SyndicationContent content;
-            
-            if (isPlainText)
-            {
-                content = new TextSyndicationContent(Encoding.UTF8.GetString(message.Payload));
-            }
-            else
-            {
-                var entryContentType = hasContentType ? contentType.Value.First() : "application/xml";
-                content = new UrlSyndicationContent(messageLink, entryContentType);
-            }
+            var content = new UrlSyndicationContent(messageLink, contentType.Value.Aggregate((a,b)=>a +","+b));
 
             return new SyndicationItem(string.Format("Message {0}", e.MessageId),
                                        content,

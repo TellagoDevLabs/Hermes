@@ -43,6 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Message.cs" />
+    <Compile Include="Serialization\TextSerializer.cs" />
+    <Compile Include="Serialization\ISerializer.cs" />
+    <Compile Include="Serialization\JsonSerializer.cs" />
+    <Compile Include="Serialization\Serializer.cs" />
+    <Compile Include="Serialization\XmlSerializer.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="SubscriptionToTopic.cs" />
     <Compile Include="Group.cs" />

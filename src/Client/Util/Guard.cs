@@ -36,16 +36,12 @@ namespace TellagoStudios.Hermes.Client.Util
             throw new ArgumentException(Messages.ArgumentWasEmpty, GetArgumentName(argName));
         }
 
-        public Guard ArgumentNotNullOrWhiteSpace(Expression<Func<object>> argName, IEnumerable argValue)
+        public Guard ArgumentNotNullOrWhiteSpace(Expression<Func<object>> argName, string argValue)
         {
             if (argValue == null)
                 throw new ArgumentNullException(GetArgumentName(argName));
 
-            var strValue = argValue as string;
-            if (!string.IsNullOrWhiteSpace(strValue))
-                return Instance;
-
-            if (argValue.Cast<object>().Any())
+            if (!string.IsNullOrWhiteSpace(argValue))
                 return Instance;
 
             throw new ArgumentException(Messages.ArgumentWasEmptyOrWhitespace, GetArgumentName(argName));

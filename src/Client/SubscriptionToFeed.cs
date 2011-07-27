@@ -7,7 +7,8 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.ServiceModel.Syndication;
 using System.Xml;
-using System.Xml.Serialization;
+using TellagoStudios.Hermes.Client.Serialization;
+using XmlSerializer = System.Xml.Serialization.XmlSerializer;
 
 namespace TellagoStudios.Hermes.Client
 {
@@ -24,7 +25,7 @@ namespace TellagoStudios.Hermes.Client
         private readonly RestClient restClient;
         private readonly ISubject<T> subject;
         private string lastRead;
-        private readonly Stack<Tuple<string, string>> stack = new Stack<Tuple<string, string>>();
+        private readonly Stack<Tuple<string, Uri, string>> stack = new Stack<Tuple<string, Uri, string>>();
         private readonly object lck = new object();
 
         public SubscriptionToFeed(Facade.Topic topic, RestClient restClient, TimeSpan interval, IScheduler scheduler = null)
@@ -60,10 +61,10 @@ namespace TellagoStudios.Hermes.Client
                         foundLastOne = true;
                         break;
                     }
-                    var textSyndicationContent = entry.Content as TextSyndicationContent;
-                    if(textSyndicationContent != null)
+                    var urlSyndicationContent = entry.Content as UrlSyndicationContent;
+                    if(urlSyndicationContent != null)
                     {
-                        stack.Push(Tuple.Create(entry.Id, textSyndicationContent.Text));
+                        stack.Push(Tuple.Create(entry.Id, urlSyndicationContent.Url, urlSyndicationContent.Type));
                     }
                 }
 
@@ -80,22 +81,13 @@ namespace TellagoStudios.Hermes.Client
                 {
                     var entry = stack.Pop();
                     lastRead = entry.Item1;
-                    subject.OnNext(Deserialize(entry.Item2));    
+                    T t;
+                    using (var streamT = restClient.GetStream(entry.Item2))
+                    {
+                        t = Serializer.Instance.Deserialize<T>(entry.Item3, streamT);
+                    }
+                    subject.OnNext(t);
                 }
-            }
-        }
-
-        private static T Deserialize(string data)
-        {
-            if (typeof(T) == typeof(string))
-            {
-                return (T)(object)data;
-            }
-
-            using (var reader = new StringReader(data))
-            {
-                var serializer = new XmlSerializer(typeof (T));
-                return (T) serializer.Deserialize(reader);
             }
         }
 

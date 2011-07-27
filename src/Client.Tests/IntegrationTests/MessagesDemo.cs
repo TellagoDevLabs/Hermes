@@ -12,7 +12,7 @@ using TellagoStudios.Hermes.Client.Tests.Util;
 
 namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
 {
-    [TestFixture]
+    [TestFixture, Explicit]
     public class MessagesDemo : IntegrationTestBase
     {
         private readonly HermesClient client = new HermesClient("http://localhost:40403");
@@ -52,7 +52,6 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
         {
             var read = new List<string>();
             using (topic.PollFeed(1)
-                        .ObserveOn(Scheduler.CurrentThread)
                         .Subscribe(read.Add))
             {
                 topic.PostStringMessage("a");
@@ -83,7 +82,6 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
 
             var read = new List<News>();
             using (topicNews.PollFeed<News>(1)
-                        .ObserveOn(Scheduler.CurrentThread)
                         .Subscribe(read.Add))
             {
                 while (read.Count < 3) { }

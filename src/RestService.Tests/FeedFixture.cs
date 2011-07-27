@@ -112,8 +112,7 @@ namespace RestService.Tests
 
             var entry = feed.Items.Single();
 
-            Assert.AreEqual("text", entry.Content.Type);
-
+            Assert.AreEqual(contentType, entry.Content.Type);
         }
 
         [Test]
