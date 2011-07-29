@@ -9,7 +9,7 @@ namespace TellagoStudios.Hermes.Facade
         public string Description { get; set; }
 
         [XmlElement(ElementName = "groupId")]
-        public Identity GroupId { get; set; }
+        public Identity? GroupId { get; set; }
 
         [XmlElement(ElementName = "name")]
         public string Name { get; set; }

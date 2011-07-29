@@ -19,7 +19,9 @@
         {
             public const string Feed = "feed";
             public const string Messages = "messages";
+            public const string Topic = "topic";
             public const string Topics = "topics";
+            public const string Group = "group";
             public const string Groups = "groups";
             public const string Subscriptions = "subscriptions";
             public const string Retries = "retries";

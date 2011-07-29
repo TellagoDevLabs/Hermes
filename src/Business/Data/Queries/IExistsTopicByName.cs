@@ -4,6 +4,6 @@ namespace TellagoStudios.Hermes.Business.Data.Queries
 {
     public interface IExistsTopicByName
     {
-        bool Execute(string topicName, Identity? excludeId = null);
+        bool Execute(Identity? groupId, string topicName, Identity? excludeId = null);
     }
 }

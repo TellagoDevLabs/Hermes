@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Web.Mvc;
-using TellagoStudios.Hermes.Business.Data.Commads;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Business.Topics;
 using TellagoStudios.Hermes.RestService.Models;
 
 namespace TellagoStudios.Hermes.RestService.Controllers
@@ -12,18 +12,24 @@ namespace TellagoStudios.Hermes.RestService.Controllers
         private readonly ITopicsSortedByName topicsSortedByName;
         private readonly IGroupsSortedByName groupsSortedByName;
         private readonly IEntityById entityById;
-        private readonly IRepository<Topic> topicRepository;
+        readonly ICreateTopicCommand createTopicCommand;
+        readonly IUpdateTopicCommand updateTopicCommand;
+        readonly IDeleteTopicCommand deleteTopicCommand;
 
         public TopicController(
+            IEntityById entityById,
             ITopicsSortedByName topicsSortedByName, 
             IGroupsSortedByName groupsSortedByName,
-            IEntityById entityById,
-            IRepository<Topic> topicRepository)
+            ICreateTopicCommand createTopicCommand,
+            IUpdateTopicCommand updateTopicCommand,
+            IDeleteTopicCommand deleteTopicCommand)
         {
+            this.entityById = entityById;
             this.topicsSortedByName = topicsSortedByName;
             this.groupsSortedByName = groupsSortedByName;
-            this.entityById = entityById;
-            this.topicRepository = topicRepository;
+            this.createTopicCommand = createTopicCommand;
+            this.updateTopicCommand = updateTopicCommand;
+            this.deleteTopicCommand = deleteTopicCommand;
         }
 
         public ActionResult Index()
@@ -46,7 +52,7 @@ namespace TellagoStudios.Hermes.RestService.Controllers
             if (!ModelState.IsValid) return View(model);
             var entity = entityById.Get<Topic>((Identity) model.TopicId);
             ModelToEntity(model, entity);
-            topicRepository.Update(entity);
+            updateTopicCommand.Execute(entity);
             return RedirectToAction("Index");
         }
 
@@ -60,9 +66,17 @@ namespace TellagoStudios.Hermes.RestService.Controllers
             }
         }
 
-        public ActionResult Delete(Identity id)
+        public ActionResult Delete(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                deleteTopicCommand.Execute(new Identity(id));
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError(Guid.NewGuid().ToString(), e);
+            }
+            return RedirectToAction("Index");
         }
 
         public ActionResult Create()
@@ -75,9 +89,10 @@ namespace TellagoStudios.Hermes.RestService.Controllers
         public ActionResult Create(EditTopicModel model)
         {
             if (!ModelState.IsValid) return View(model);
+
             var topic = new Topic();
             ModelToEntity(model, topic);
-            topicRepository.MakePersistent(topic);
+            createTopicCommand.Execute(topic);
             return RedirectToAction("Index");
         }
     }

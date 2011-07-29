@@ -14,5 +14,17 @@ namespace System.Collections.Generic
             }
         }
     }
+}
 
+namespace System
+{
+    static class Extensions
+    {
+        static public TResult NullOr<TSource, TResult>(this TSource source, Func<TSource, TResult> func)
+            where TSource : class
+            where TResult : class
+        {
+            return source == null ? null : func(source);
+        }
+    }
 }

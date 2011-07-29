@@ -26,6 +26,8 @@ namespace TellagoStudios.Hermes.RestService.Models
             Groups = groups.Select(g => new GroupViewModel((string)g.Id.Value, g.Name)).ToArray();
         }
 
+        [Key]
+        [Required(ErrorMessage = "Id is required")]
         public string TopicId { get; set; }
 
         public IEnumerable<GroupViewModel> Groups { get; private set; }

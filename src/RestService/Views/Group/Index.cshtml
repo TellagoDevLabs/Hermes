@@ -18,8 +18,8 @@
         {
             <tr>
                 <td>
-                    @Ajax.ActionLink("Edit", "Edit", "Group", new { id = group.Id }, new AjaxOptions ())
-                    @Ajax.ActionLink("Delete", "Delete", "Group",new { id = group.Id }, new AjaxOptions { Confirm = "Delete group?", HttpMethod = "Post", UpdateTargetId = "main" })
+                    @Html.ActionLink("Edit", "Edit", "Group", new { id = group.Id.Value }, new AjaxOptions ())
+                    @Html.ActionLink("Delete", "Delete", "Group",new { id = group.Id.Value }, new AjaxOptions { Confirm = "Delete group?", HttpMethod = "POST", UpdateTargetId = "main" })
                 </td>
                     <td>
                     @group.Name
@@ -32,5 +32,5 @@
     </table>
 </fieldset>
 <p>
-    @Ajax.ActionLink("Create New Group", "Create", "Group", new AjaxOptions())
+    @Html.ActionLink("Create New Group", "Create", "Group", new AjaxOptions())
 </p>

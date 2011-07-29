@@ -8,7 +8,6 @@ using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.RestService.Extensions;
-using Topic = TellagoStudios.Hermes.Facade.Topic;
 
 namespace TellagoStudios.Hermes.RestService.Resources
 {
@@ -16,26 +15,15 @@ namespace TellagoStudios.Hermes.RestService.Resources
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
     public class GroupsResource : Resource
     {
-        private readonly IEntityById entityById;
         private readonly IGenericJsonPagedQuery genericJsonPagedQuery;
         private readonly ICreateGroupCommand createGroupCommand;
-        private readonly IUpdateGroupCommand updateGroupCommand;
-        private readonly IDeleteGroupCommand deleteGroupCommand;
-        private readonly ITopicsByGroup topicsByGroup;
 
-        public GroupsResource(IEntityById entityById,
+        public GroupsResource(
             IGenericJsonPagedQuery genericJsonPagedQuery,
-            ICreateGroupCommand createGroupCommand, 
-            IUpdateGroupCommand updateGroupCommand,
-            IDeleteGroupCommand deleteGroupCommand,
-            ITopicsByGroup topicsByGroup)
+            ICreateGroupCommand createGroupCommand)
         {
-            this.entityById = entityById;
             this.genericJsonPagedQuery = genericJsonPagedQuery;
             this.createGroupCommand = createGroupCommand;
-            this.updateGroupCommand = updateGroupCommand;
-            this.deleteGroupCommand = deleteGroupCommand;
-            this.topicsByGroup = topicsByGroup;
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
@@ -49,28 +37,6 @@ namespace TellagoStudios.Hermes.RestService.Resources
                                });
         }
 
-        [WebGet(UriTemplate = "{id}")]
-        public HttpResponseMessage<Facade.Group> Get(Identity id)
-        {
-            return ProcessGet(() => entityById.Get<Group>(id).ToFacade());
-        }
-
-        [WebInvoke(UriTemplate = "{id}", Method = "PUT")]
-        public HttpResponseMessage Update(Identity id, Facade.GroupPut group)
-        {
-            return ProcessPut(() =>
-                               {
-                                   var instance = group.ToModel();
-                                   updateGroupCommand.Execute(instance);
-                               });
-        }
-
-        [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
-        public HttpResponseMessage Delete(Identity id)
-        {
-            return ProcessDelete(() => deleteGroupCommand.Execute(id));
-        }
-
         [WebGet(UriTemplate = "?query={query}&skip={skip}&limit={limit}")]
         public HttpResponseMessage<Facade.Group[]> GetAll(string query, int skip, int limit)
         {
@@ -81,25 +47,10 @@ namespace TellagoStudios.Hermes.RestService.Resources
             return ProcessGet(() => Find(query, validatedSkip, validatedLimit));
         }
 
-        #region Private members
         private Facade.Group[] Find(string query, int? skip, int? limit)
         {
             var result = genericJsonPagedQuery.Execute<Group>(query, skip, limit);
             return result.Select(item => item.ToFacade()).ToArray();
-        }
-        #endregion
-
-        [WebGet(UriTemplate = "{groupId}/topics?skip={skip}&limit={limit}")]
-        public HttpResponseMessage<Topic[]> GetByGroup(Facade.Identity groupId, int skip, int limit)
-        {
-            // set valid values of opional parameters
-            var validatedSkip = skip > 0 ? skip : new int?();
-            var validatedLimit = limit > 0 ? limit : new int?();
-
-            return ProcessGet(() =>
-                    topicsByGroup.GetTopics(groupId.ToModel(), validatedSkip, validatedLimit)
-                        .Select(item => item.ToFacade())
-                        .ToArray());
         }
     }
 }

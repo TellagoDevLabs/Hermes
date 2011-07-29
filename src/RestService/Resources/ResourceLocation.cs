@@ -26,12 +26,12 @@ namespace TellagoStudios.Hermes.RestService.Resources
 
         public static Uri OfTopicsByGroup(Identity id)
         {
-            return CreateUri("/" + Constants.Routes.Groups + "/" + id + "/topics");
+            return CreateUri("/" + Constants.Routes.Group + "/" + id + "/topics");
         }
 
         public static Uri OfTopic(Identity id)
         {
-            return CreateUri( "/" + Constants.Routes.Topics + "/" + id);
+            return CreateUri( "/" + Constants.Routes.Topic + "/" + id);
         }
 
         public static Uri OfTopicFeed(Identity topicId, Identity feedId)
@@ -46,7 +46,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
 
         public static Uri  OfGroup(Identity id)
         {
-            return CreateUri( "/" + Constants.Routes.Groups + "/" + id);
+            return CreateUri( "/" + Constants.Routes.Group + "/" + id);
         }
 
         public static Uri OfSubscription(Identity id)

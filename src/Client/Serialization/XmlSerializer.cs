@@ -18,7 +18,7 @@ namespace TellagoStudios.Hermes.Client.Serialization
 
                 if (typeof(T).Namespace == HermesNameSpace)
                 {
-                    ns.Add("", "http://schemas.datacontract.org/2004/07/TellagoStudios.Hermes.RestService.Facade");
+                    ns.Add("", Facade.XmlNamespaces.Default);
                 }
 
                 var serializer = new Xml.XmlSerializer(typeof(T));

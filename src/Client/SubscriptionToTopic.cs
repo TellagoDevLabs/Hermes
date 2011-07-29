@@ -33,7 +33,7 @@ namespace TellagoStudios.Hermes.Client
                 foreach (var url in topic.PollMessages(last))
                 {
                     last = url;
-                    var data = restClient.GetFromUrl<T>(url);
+                    var data = restClient.Get<T>(url);
                     subject.OnNext(new Message<T> { Url = url, Data = data });
                 }
             }

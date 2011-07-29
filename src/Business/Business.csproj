@@ -61,6 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Queries\IGroupByName.cs" />
+    <Compile Include="Data\Queries\ITopicByName.cs" />
     <Compile Include="Data\Queries\IGetWorkingFeedForTopic.cs" />
     <Compile Include="Data\Queries\IGroupsSortedByName.cs" />
     <Compile Include="Data\Queries\IQueryValidator.cs" />

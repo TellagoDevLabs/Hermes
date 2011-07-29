@@ -2,8 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Web.Configuration;
-using System.Xml;
 using System.Xml.Linq;
 using NUnit.Framework;
 using TellagoStudios.Hermes.Client.Tests.Util;

@@ -27,54 +27,71 @@ namespace TellagoStudios.Hermes.Client
 
         public static Action<WebException> WebExceptionHandler { get; set; }
 
-        public HttpWebResponse GetResponse(string operation, 
-                                            IEnumerable<Header> headers = null, 
-                                            Action<WebException> webExceptionHandler = null)
+        public HttpWebResponse GetResponse(string operation, IEnumerable<Header> headers = null)
         {
-            return Client(operation, "GET", headers)
-                .Send(webExceptionHandler);
+            var url = CreateUrl(operation);
+            return GetResponse(url, headers);
         }
 
-        public void Get(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        public HttpWebResponse GetResponse(Uri url, IEnumerable<Header> headers = null)
         {
-            Client(operation, "GET", headers)
-                .Send(webExceptionHandler);
+            return CreateRequest(url, "GET", headers)
+                .Send();
         }
 
         public T Get<T>(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
-            var httpWebRequest = Client(operation, "GET", headers);
-            using(var httpWebResponse = httpWebRequest.Send(webExceptionHandler))
+            var url = CreateUrl(operation);
+            return Get<T>(url, headers, webExceptionHandler);
+        }
+
+        public T Get<T>(Uri url, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        {
+            try
             {
-                var deserialized = httpWebResponse.Deserialize<T>();
-                httpWebResponse.Close();
-                return deserialized;
+                return CreateRequest(url, "GET", headers)
+                    .Send(webExceptionHandler)
+                    .Deserialize<T>();
+            }
+            catch (WebException e)
+            {
+                var response = (HttpWebResponse)e.Response;
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return default(T);
+                }
+                throw;
             }
         }
 
-        public T GetFromUrl<T>(Uri url, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        public void Put<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
-            return ExecuteRequest(url, "GET", headers)
-                .Send(webExceptionHandler)
-                .Deserialize<T>();
+            Uri url = CreateUrl(operation);
+            Put(url, data, headers, webExceptionHandler);
         }
 
-        public void Put<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
+        public void Put<T>(Uri url, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null) 
         {
-            Client(operation, "PUT", headers)
+            CreateRequest(url, "PUT", headers)
                 .Serialize(data)
                 .Send(webExceptionHandler);
         }
 
-        public Uri Post<T>(string operation, T data, 
-                           IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null,
-                           string contentType = null )
+        public Uri Post<T>(string operation, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null, string contentType = null)
         {
-            var httpWebRequest = Client(operation, "POST", headers);
-            if (contentType != null) httpWebRequest.ContentType = contentType;
-            Uri location;
+            Uri url = CreateUrl(operation);
+            return Post(url, data, headers, webExceptionHandler, contentType);
+        }
 
-            using(var httpWebResponse = httpWebRequest.Serialize(data).Send(webExceptionHandler))
+        public Uri Post<T>(Uri url, T data, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null, string contentType = null )
+        {
+            var httpWebRequest = CreateRequest(url, "POST", headers);
+            if (!string.IsNullOrWhiteSpace(contentType)) httpWebRequest.ContentType = contentType;
+
+            Uri location;
+            using (var httpWebResponse = httpWebRequest
+                .Serialize(data)
+                .Send(webExceptionHandler))
             {
                 location = httpWebResponse.GetLocation();
             }
@@ -84,11 +101,32 @@ namespace TellagoStudios.Hermes.Client
 
         public void Delete(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
         {
-            Client(operation, "DELETE", headers)
+            var url = CreateUrl(operation);
+            Delete(url, headers, webExceptionHandler);
+        }
+
+        public void Delete(Uri url, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        {
+            CreateRequest(url, "DELETE", headers)
                 .Send(webExceptionHandler);
         }
 
-        private HttpWebRequest Client(string operation, string method, IEnumerable<Header> headers)
+        public Stream GetStream(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        {
+            var url = CreateUrl(operation);
+            return GetStream(url, headers, webExceptionHandler);
+        }
+
+        public Stream GetStream(Uri url, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
+        {
+            return CreateRequest(url, "GET", headers)
+                .Send(webExceptionHandler)
+                .GetResponseStream();
+        }
+
+        #region Private members
+
+        private Uri CreateUrl(string operation)
         {
             Uri url;
 
@@ -104,8 +142,6 @@ namespace TellagoStudios.Hermes.Client
             }
             else
             {
-                //if (operation[0] != '/') operation = '/' + operation;
-
                 var requestUri = new Uri(operation, UriKind.RelativeOrAbsolute);
                 if (requestUri.IsAbsoluteUri)
                 {
@@ -122,10 +158,10 @@ namespace TellagoStudios.Hermes.Client
                 }
             }
 
-            return ExecuteRequest(url, method, headers);
+            return url;
         }
 
-        private HttpWebRequest ExecuteRequest(Uri url, string method, IEnumerable<Header> headers)
+        private HttpWebRequest CreateRequest(Uri url, string method, IEnumerable<Header> headers)
         {
             var request = (HttpWebRequest) WebRequest.Create(url);
             request.Method = method;
@@ -151,19 +187,7 @@ namespace TellagoStudios.Hermes.Client
             return request;
         }
 
-        public Stream GetStream(string operation, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
-        {
-            return Client(operation, "GET", headers)
-                .Send(webExceptionHandler)
-                .GetResponseStream();
-        }
-
-        public Stream GetStream(Uri url, IEnumerable<Header> headers = null, Action<WebException> webExceptionHandler = null)
-        {
-            return ExecuteRequest(url, "GET", headers)
-                .Send(webExceptionHandler)
-                .GetResponseStream();
-        }
+        #endregion
     }
 
     static class RestClientExtensions
@@ -214,30 +238,20 @@ namespace TellagoStudios.Hermes.Client
             }
         }
 
-        public static HttpWebResponse Send(this HttpWebRequest request, Action<WebException> webExceptionHandler)
+        public static HttpWebResponse Send(this HttpWebRequest request, Action<WebException> webExceptionHanlder = null)
         {
-            HttpWebResponse response = null;
             try
             {
-                response = (HttpWebResponse)request.GetResponse();
+                return (HttpWebResponse)request.GetResponse();
             }
             catch (WebException e)
             {
-                if (webExceptionHandler != null)
-                {
-                    webExceptionHandler(e);
-                }
-                else if (RestClient.WebExceptionHandler != null)
-                {
-                    RestClient.WebExceptionHandler(e);
-                }
-                else
-                {
-                    throw;
-                }
+                if (webExceptionHanlder!=null) webExceptionHanlder(e);
+                else if (RestClient.WebExceptionHandler!=null) RestClient.WebExceptionHandler(e);
+                else throw;
             }
 
-            return response;
+            return null;
         }
         
         static public HttpWebRequest Serialize<T>(this HttpWebRequest request, T data)
@@ -269,7 +283,7 @@ namespace TellagoStudios.Hermes.Client
 
         static public T Deserialize<T>(this HttpWebResponse response)
         {
-            if (response == null) return default(T);
+            if (response == null || response.StatusCode == HttpStatusCode.NotFound) return default(T);
 
             Debug.Assert(response.ContentType.Contains("xml"));
 
@@ -296,6 +310,8 @@ namespace TellagoStudios.Hermes.Client
 
         static public Uri GetLocation(this HttpWebResponse response)
         {
+            if (response==null) return null;
+
             var location = response.Headers[HttpResponseHeader.Location];
             return string.IsNullOrWhiteSpace(location) ? null : new Uri(location);
         }

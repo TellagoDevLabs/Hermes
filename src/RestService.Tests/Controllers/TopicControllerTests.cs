@@ -8,6 +8,7 @@ using SharpTestsEx;
 using TellagoStudios.Hermes.Business.Data.Commads;
 using TellagoStudios.Hermes.Business.Data.Queries;
 using TellagoStudios.Hermes.Business.Model;
+using TellagoStudios.Hermes.Business.Topics;
 using TellagoStudios.Hermes.RestService.Controllers;
 using TellagoStudios.Hermes.RestService.Models;
 
@@ -21,12 +22,19 @@ namespace RestService.Tests.Controllers
         private static TopicController CreateController(
             ITopicsSortedByName topicsSortedByName = null, 
             IEntityById entityById = null,
-            IGroupsSortedByName groupsSortedByName = null)
+            IGroupsSortedByName groupsSortedByName = null,
+            ICreateTopicCommand createTopicCommand = null,
+            IUpdateTopicCommand updateTopicCommand = null,
+            IDeleteTopicCommand deleteTopicCommand = null)
+
         {
             var defaultGroupQuery = Mock.Of<IGroupsSortedByName>(q => q.Execute() == new Group[]{SampleGroup});
-            return new TopicController( topicsSortedByName ?? Mock.Of<ITopicsSortedByName>(),
+            return new TopicController( entityById ?? Mock.Of<IEntityById>(),
+                                        topicsSortedByName ?? Mock.Of<ITopicsSortedByName>(),
                                         groupsSortedByName ?? defaultGroupQuery, 
-                                        entityById ?? Mock.Of<IEntityById>(), Mock.Of<IRepository<Topic>>()
+                                        createTopicCommand ?? Mock.Of<ICreateTopicCommand>(),
+                                        updateTopicCommand ?? Mock.Of<IUpdateTopicCommand>(),
+                                        deleteTopicCommand ?? Mock.Of<IDeleteTopicCommand>()
                                         );
         }
 

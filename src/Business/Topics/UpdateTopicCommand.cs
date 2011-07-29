@@ -26,8 +26,8 @@ namespace TellagoStudios.Hermes.Business.Topics
             if (!topic.Id.HasValue) throw new ValidationException(Texts.IdMustNotBeNull);
             if (!entityById.Exist<Topic>(topic.Id.Value)) throw new EntityNotFoundException(typeof(Topic), topic.Id.Value);
             if (string.IsNullOrWhiteSpace(topic.Name )) throw new ValidationException(Texts.NameMustBeNotNull);
-            if (existsTopicByName.Execute(topic.Name, topic.Id)) throw new ValidationException(Texts.TopicNameMustBeUnique, topic.Name);
-            if (!entityById.Exist<Group>(topic.GroupId)) throw new ValidationException(Texts.EntityNotFound, typeof(Group).Name, topic.GroupId);
+            if (existsTopicByName.Execute(topic.GroupId, topic.Name, topic.Id)) throw new ValidationException(Texts.TopicNameMustBeUnique, topic.Name);
+            if (topic.GroupId.HasValue && !entityById.Exist<Group>(topic.GroupId.Value)) throw new ValidationException(Texts.EntityNotFound, typeof(Group).Name, topic.GroupId);
 
             repository.Update(topic);
         }

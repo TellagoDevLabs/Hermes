@@ -14,17 +14,19 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
             : base(connectionString)
         {}
 
-        public bool Execute(string topicName, Identity? excludeId = null)
+        public bool Execute(Identity? groupId, string topicName, Identity? excludeId = null)
         {
-            var query = QueryDuplicatedName(topicName, excludeId);
+            var query = QueryDuplicatedName(groupId, topicName, excludeId);
             return DB.GetCollection(MongoDbConstants.Collections.Topics).Exists(query);
         }
 
-        public IMongoQuery QueryDuplicatedName(string topicName, Identity? excludeId = null)
+        public IMongoQuery QueryDuplicatedName(Identity? groupId, string topicName, Identity? excludeId = null)
         {
-            return excludeId.HasValue ?
+            var query =  excludeId.HasValue ?
                 Query.And(Query.EQ("Name", BsonString.Create(topicName)), Query.NE("_id", excludeId.Value.ToBson())) :
                 Query.EQ("Name", BsonString.Create(topicName));
+
+            return Query.And(query, Query.EQ("GroupId", groupId.ToBson()));
         }
     }
 }

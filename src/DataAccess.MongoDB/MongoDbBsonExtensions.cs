@@ -39,6 +39,13 @@ namespace MongoDB.Bson
             return new QueryDocument("_id", new BsonObjectId((byte[]) id.Value));
         }
 
+        public static BsonValue ToBson(this Identity? id)
+        {
+            if (id.HasValue) return new BsonObjectId((byte[])id);
+            
+            return BsonNull.Value;
+        }
+
         public static BsonObjectId ToBson(this Identity id)
         {
             return new BsonObjectId((byte[])id);

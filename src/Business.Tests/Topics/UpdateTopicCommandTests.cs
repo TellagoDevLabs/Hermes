@@ -55,11 +55,12 @@ namespace Business.Tests.Topics
         public void WhenTopicNameIsDuplicated_ThenThrowValidateException()
         {
             var id = Identity.Random();
+            var groupId = Identity.Random();
             var name = "test";
             var command = CreateUpdateTopicCommand(entityById: Mock.Of<IEntityById>(q => q.Exist<Topic>(id)),
-            existsTopicByName: Mock.Of<IExistsTopicByName>(q => q.Execute(name, id) ));
+            existsTopicByName: Mock.Of<IExistsTopicByName>(q => q.Execute(groupId, name, id) ));
 
-            command.Executing(c => c.Execute(new Topic {Id = id, Name = name}))
+            command.Executing(c => c.Execute(new Topic {Id = id, Name = name, GroupId = groupId}))
                                     .Throws<ValidationException>()
                                     .And
                                     .Exception.Message.Should().Be.EqualTo(string.Format(Texts.TopicNameMustBeUnique, name));
@@ -71,7 +72,7 @@ namespace Business.Tests.Topics
             var name = "Test";
             var groupId = Identity.Random();
             var command = CreateUpdateTopicCommand(entityById: Mock.Of<IEntityById>(q => q.Exist<Topic>(id)),
-                existsTopicByName: Mock.Of<IExistsTopicByName>(q => q.Execute(name, id)== false));
+                existsTopicByName: Mock.Of<IExistsTopicByName>(q => q.Execute(groupId, name, id)== false));
 
             var topic = new Topic { Id = id, Name = name, GroupId  = groupId};
             command.Executing(c => c.Execute(topic))
@@ -81,15 +82,31 @@ namespace Business.Tests.Topics
         }
 
         [Test]
-        public void WhenEverythingIsOK_ThenInsertTheTopic()
+        public void WhenEverythingIsOK_ThenUpdateTheTopic()
         {
             var stubRepository = new StubRepository<Topic>();
             var id = Identity.Random();
             var name = "Test";
             var groupId = Identity.Random();
             var command = CreateUpdateTopicCommand(entityById: Mock.Of<IEntityById>(q => q.Exist<Topic>(id) && q.Exist<Group>(groupId)),
-                existsTopicByName: Mock.Of<IExistsTopicByName>(q => q.Execute(name, id)==false), cudTopic: stubRepository);
-            var topic = new Topic { Id = id, Name = name, GroupId = groupId};
+                existsTopicByName: Mock.Of<IExistsTopicByName>(q => q.Execute(groupId, name, id) == false), cudTopic: stubRepository);
+            var topic = new Topic { Id = id, Name = name, GroupId = groupId };
+
+            command.Execute(topic);
+
+            stubRepository.Updates.Should().Contain(topic);
+        }
+
+        [Test]
+        public void WhenJustGroupIsMissing_ThenUpdateTheTopic()
+        {
+            var stubRepository = new StubRepository<Topic>();
+            var id = Identity.Random();
+            var name = "Test";
+            var command = CreateUpdateTopicCommand(
+                entityById: Mock.Of<IEntityById>(q => q.Exist<Topic>(id)),
+                existsTopicByName: Mock.Of<IExistsTopicByName>(q => q.Execute(null, name, id) == false), cudTopic: stubRepository);
+            var topic = new Topic { Id = id, Name = name };
 
             command.Execute(topic);
 

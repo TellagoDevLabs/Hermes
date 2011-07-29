@@ -15,13 +15,22 @@ namespace TellagoStudios.Hermes.Client
         private readonly RestClient restClient;
 
         public Topic(
-            Facade.Topic topic, 
+            Facade.Topic topic,
             Group group,
             RestClient restClient)
-            : base((string) topic.Id)
+            : base((string)topic.Id)
         {
             this.topic = topic;
             this.@group = @group;
+            this.restClient = restClient;
+        }
+
+        public Topic(
+            Facade.Topic topic,
+            RestClient restClient)
+            : base((string)topic.Id)
+        {
+            this.topic = topic;
             this.restClient = restClient;
         }
 
@@ -49,9 +58,10 @@ namespace TellagoStudios.Hermes.Client
                                {
                                    Description = Description,
                                    Name = Name,
-                                   GroupId = (Identity) group.Id,
                                    Id = (Identity) Id
                                };
+
+            if (group!=null) topicPut.GroupId = new Identity(group.Id);
             restClient.Put(topic.GetLinkForRelation("Update"), topicPut);
         }
 

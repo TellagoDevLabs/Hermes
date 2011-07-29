@@ -47,8 +47,7 @@ namespace TellagoStudios.Hermes.Client.Tests.IntegrationTests
             client.CreateGroup("TestGroup", "TestDescription");
             client.Executing(c => c.CreateGroup("TestGroup", "TestDescription"))
                   .Throws<WebException>();
-        }
-       
+         }
 
         [Test]
         public void CanGetGroups()

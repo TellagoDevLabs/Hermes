@@ -2,7 +2,6 @@
 using Moq;
 using NUnit.Framework;
 using SharpTestsEx;
-using TellagoStudios.Hermes.Business.Exceptions;
 using TellagoStudios.Hermes.Business.Groups;
 using TellagoStudios.Hermes.Business.Model;
 using TellagoStudios.Hermes.Business.Data.Queries;
@@ -12,7 +11,6 @@ using M = TellagoStudios.Hermes.Business.Model;
 using F = TellagoStudios.Hermes.Facade;
 using System;
 using System.Linq;
-using System.Net;
 
 namespace RestService.Tests
 {
@@ -22,7 +20,6 @@ namespace RestService.Tests
     {
         private Mock<ICreateGroupCommand> mockedCreateCommand;
         private Mock<IUpdateGroupCommand> mockedUpdateCommand;
-        private Mock<IDeleteGroupCommand> mockedDeleteCommand;
         private Mock<IEntityById> mockedEntityById;
         private Mock<IGenericJsonPagedQuery> mockedGenericJsonQuery;
 
@@ -31,15 +28,12 @@ namespace RestService.Tests
             // Create a mocked repository for topics.
             mockedCreateCommand = new Mock<ICreateGroupCommand>();
             mockedUpdateCommand = new Mock<IUpdateGroupCommand>();
-            mockedDeleteCommand = new Mock<IDeleteGroupCommand>();
             mockedEntityById = new Mock<IEntityById>();
             mockedGenericJsonQuery = new Mock<IGenericJsonPagedQuery>();
+
             builder.RegisterInstance(new GroupsResource(
-                mockedEntityById.Object,
                 mockedGenericJsonQuery.Object,
-                mockedCreateCommand.Object,
-                mockedUpdateCommand.Object,
-                mockedDeleteCommand.Object, Mock.Of<ITopicsByGroup>()));
+                mockedCreateCommand.Object));
         }
 
         protected override RestClient.SerializationType GetSerializationType()

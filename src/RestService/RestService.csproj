@@ -129,9 +129,13 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CssController.cs" />
-    <Compile Include="Controllers\GroupController.cs" />
+    <Compile Include="Controllers\GroupController.cs">
+      <Tags>Group Controller</Tags>
+    </Compile>
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\TopicController.cs" />
+    <Compile Include="Controllers\TopicController.cs">
+      <Tags>Topic Controller</Tags>
+    </Compile>
     <Compile Include="CustomViewEngine.cs" />
     <Compile Include="DotLessResult.cs" />
     <Compile Include="Extensions\IdentityExtensions.cs" />
@@ -163,6 +167,8 @@
     <Compile Include="Modules\CommandsModule.cs" />
     <Compile Include="Modules\QueriesModule.cs" />
     <Compile Include="Extensions\MessageExtensions.cs" />
+    <Compile Include="Resources\GroupResource.cs" />
+    <Compile Include="Resources\TopicResource.cs" />
     <Compile Include="Resources\FeedResource.cs" />
     <Compile Include="Resources\MessageResource.cs" />
     <Compile Include="Modules\ResourcesModule.cs" />

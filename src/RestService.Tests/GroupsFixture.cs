@@ -20,25 +20,16 @@ namespace RestService.Tests
     public class GroupsFixture : ResourceBaseFixture
     {
         private Mock<ICreateGroupCommand> mockedCreateCommand;
-        private Mock<IUpdateGroupCommand> mockedUpdateCommand;
-        private Mock<IDeleteGroupCommand> mockedDeleteCommand;
-        private Mock<IEntityById> mockedEntityById;
         private Mock<IGenericJsonPagedQuery> mockedGenericJsonQuery;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
             // Create a mocked repository for topics.
             mockedCreateCommand = new Mock<ICreateGroupCommand>();
-            mockedUpdateCommand = new Mock<IUpdateGroupCommand>();
-            mockedDeleteCommand = new Mock<IDeleteGroupCommand>();
-            mockedEntityById = new Mock<IEntityById>();
             mockedGenericJsonQuery = new Mock<IGenericJsonPagedQuery>();
             builder.RegisterInstance(new GroupsResource(
-                mockedEntityById.Object,
                 mockedGenericJsonQuery.Object,
-                mockedCreateCommand.Object,
-                mockedUpdateCommand.Object,
-                mockedDeleteCommand.Object, Mock.Of<ITopicsByGroup>()));
+                mockedCreateCommand.Object));
         }
 
         protected override RestClient.SerializationType GetSerializationType()
@@ -49,43 +40,6 @@ namespace RestService.Tests
         protected override Type GetServiceType()
         {
             return typeof(GroupsResource);
-        }
-
-        [Test]
-        public void Should_get_a_group_by_id()
-        {
-            var parent = new M.Group { Id = M.Identity.Random() };
-            var group = new M.Group
-                            {
-                                Id = M.Identity.Random(),
-                                Name = "sample",
-                                Description = "sample group",
-                                ParentId = parent.Id
-                            };
-
-            mockedEntityById.Setup(r => r.Get<Group>(group.Id.Value)).Returns(group);
-
-            var result = client.ExecuteGet<F.Group>("/" + group.Id);
-
-            Assert.AreEqual(group.Description, result.Description);
-            Assert.AreEqual(group.Id, result.Id.ToModel());
-            Assert.AreEqual(group.Name, result.Name);
-            Assert.IsNotEmpty(result.Links);
-
-            result.Links.Satisfy(ls => ls.Any(l =>
-                                              l.Relation == TellagoStudios.Hermes.RestService.Constants.Relationships.Parent
-                                              && l.Uri == ResourceLocation.OfGroup(parent.Id.Value).ToString()));
-        }
-
-        [Test]
-        public void Validates_a_get_with_an_invalid_id()
-        {
-            var id = M.Identity.Random();
-            mockedEntityById.Setup(r => r.Get<Group>(It.IsAny<M.Identity>())).Returns((M.Group)null);
-
-            var result = client.ExecuteGet<F.Group>("/" + id, HttpStatusCode.NotFound);
-
-            Assert.IsNull(result);
         }
 
         [Test]
@@ -204,93 +158,6 @@ namespace RestService.Tests
             mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPost.Description)));
             mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPost.Name)));
             mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPost.ParentId.ToModel())));
-        }
-
-        [Test]
-        public void Should_put_a_topic()
-        {
-            var groupPut = new F.GroupPut()
-                               {
-                                   Id = F.Identity.Random(),
-                                   Description = "description",
-                                   ParentId = F.Identity.Random(),
-                                   Name = "test"
-                               };
-
-            var parent = new M.Group {Id = groupPut.ParentId.ToModel()};
-            var group = new M.Group()
-                            {
-                                Description = groupPut.Description,
-                                ParentId = parent.Id,
-                                Id = groupPut.Id.ToModel(),
-                                Name = groupPut.Name
-                            };
-
-
-            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())); //.Returns(group);
-
-            client.ExecutePut<F.GroupPut>(groupPut.Id.ToString(), groupPut);
-
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPut.Description)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPut.Name)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
-        }
-
-        [Test]
-        public void Validates_a_put_with_a_ValidationError()
-        {
-            var groupPut = new F.GroupPut()
-            {
-                Id = F.Identity.Random(),
-                Description = "description",
-                Name = string.Empty,
-                ParentId = F.Identity.Random()
-            };
-
-            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())).Throws(new ValidationException("foo"));
-
-            var result = client.ExecutePut<F.GroupPut, F.Group>(groupPut.Id.ToString(), groupPut, HttpStatusCode.BadRequest);
-
-            Assert.IsNull(result);
-
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Id == groupPut.Id.ToModel())));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPut.Description)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPut.Name)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
-        }
-
-        [Test]
-        public void Validates_a_put_with_an_invalid_GroupId()
-        {
-            var groupPut = new F.GroupPut()
-            {
-                Id = F.Identity.Random(),
-                Description = "description",
-                Name = string.Empty,
-                ParentId = F.Identity.Random()
-            };
-
-            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Group>())).Throws<EntityNotFoundException>();
-
-            var result = client.ExecutePut<F.GroupPut, F.Group>(groupPut.Id.ToString(), groupPut, HttpStatusCode.NotFound);
-
-            Assert.IsNull(result);
-
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t != null)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Id == groupPut.Id.ToModel())));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Description == groupPut.Description)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.Name == groupPut.Name)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Group>(t => t.ParentId == groupPut.ParentId.ToModel())));
-        }
-        [Test]
-        public void Should_delete_a_group()
-        {
-            var id = M.Identity.Random(12);
-            client.ExecuteDelete("/" + id);
-
-            mockedDeleteCommand.Verify(r => r.Execute(id));
         }
     }
 }

@@ -28,7 +28,7 @@ namespace DataAccess.Tests.Queries
             var topic = new Topic {Id = Identity.Random(12), Name = "Foo", GroupId = Identity.Random(12)};
             topicsCollection.Insert(topic);
 
-            existTopicByTopicName.Execute("Foo", topic.Id).Should().Be.False();
+            existTopicByTopicName.Execute(topic.GroupId, "Foo", topic.Id).Should().Be.False();
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace DataAccess.Tests.Queries
             var existTopicByTopicName = new ExistTopicByName(connectionString);
             var topic = new Topic { Id = Identity.Random(12), Name = "Foo", GroupId = Identity.Random(12) };
             topicsCollection.Insert(topic);
-            existTopicByTopicName.Execute("Foo", Identity.Random(12)).Should().Be.True();
+            existTopicByTopicName.Execute(topic.GroupId, "Foo", Identity.Random(12)).Should().Be.True();
         }
 
         [Test]
@@ -46,15 +46,25 @@ namespace DataAccess.Tests.Queries
             var existTopicByTopicName = new ExistTopicByName(connectionString);
             var topic = new Topic { Id = Identity.Random(12), Name = "Foo", GroupId = Identity.Random(12) };
             topicsCollection.Insert(topic);
-            existTopicByTopicName.Execute("Foo", null).Should().Be.True();
+            existTopicByTopicName.Execute(topic.GroupId, "Foo", null).Should().Be.True();
         }
 
         [Test]
-        public void WhenThereNotIsATopicWithGivenName_ThenReturnsFalse()
+        public void WhenThereIsNotATopicWithGivenName_ThenReturnsFalse()
         {
             var existTopicByTopicName = new ExistTopicByName(connectionString);
-            topicsCollection.Insert(new Topic {Id = Identity.Random(12), Name = "Foo", GroupId = Identity.Random(12) });
-            existTopicByTopicName.Execute("Bar").Should().Be.False();
+            var topic = new Topic {Id = Identity.Random(12), Name = "Foo", GroupId = Identity.Random(12) };
+            topicsCollection.Insert(topic);
+            existTopicByTopicName.Execute(topic.GroupId, "Bar").Should().Be.False();
+        }
+
+        [Test]
+        public void WhenThereIsATopicWithSameNameInDifferentGroup_ThenReturnsFalse()
+        {
+            var existTopicByTopicName = new ExistTopicByName(connectionString);
+            var topic = new Topic { Id = Identity.Random(12), Name = "Foo", GroupId = Identity.Random(12) };
+            topicsCollection.Insert(topic);
+            existTopicByTopicName.Execute(Identity.Random(12), "Foo", Identity.Random(12)).Should().Be.False();
         }
     }
 }

@@ -41,8 +41,12 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
         {
             var topic = topicCollection.FindById(topicId);
             var subscriptions = subscriptionCollection.Find(QueryGetByTopic(topicId)).ToList();
-            var groups = queryGroupAncestors.Execute(topic.GroupId);
-            subscriptions.AddRange(groups.SelectMany(g => subscriptionCollection.Find(QueryGetByGroup(g.Id.Value))));
+            if (topic.GroupId.HasValue)
+            {
+                var groups = queryGroupAncestors.Execute(topic.GroupId.Value);
+                subscriptions.AddRange(groups.SelectMany(g => subscriptionCollection.Find(QueryGetByGroup(g.Id.Value))));
+            }
+
             return subscriptions.Distinct();
             
         }

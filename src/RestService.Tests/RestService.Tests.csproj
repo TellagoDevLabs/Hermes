@@ -94,6 +94,8 @@
   <ItemGroup>
     <Compile Include="AutofacResourceFactory.cs" />
     <Compile Include="Controllers\TopicControllerTests.cs" />
+    <Compile Include="GroupFixture.cs" />
+    <Compile Include="TopicFixture.cs" />
     <Compile Include="FeedFixture.cs" />
     <Compile Include="JsonFixture.cs" />
     <Compile Include="MessageFixture.cs" />

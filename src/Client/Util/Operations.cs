@@ -6,13 +6,33 @@ namespace TellagoStudios.Hermes.Client.Util
 {
     public static class Operations
     {
+        public const string Topic = "topic";
+        public const string Topics = "topics";
+        public const string Group = "group";
         public const string Groups = "groups";
         public const string Messages = "messages";
         public const string Subscriptions = "subscriptions";
 
         static public string GetGroup(Identity id)
         {
-            return Groups + "/" + id;
+            return Group + "/" + id;
+        }
+
+        static public string GetGroup(string name)
+        {
+            return Group + "/?name=" + name;
+        }
+
+        static public string GetTopic(Identity id)
+        {
+            return Topic + "/" + id;
+        }
+
+        static public string GetTopic(string name, Identity? groupId = null)
+        {
+            return groupId.HasValue ?
+                Topic + "/?name=" + name + "&groupId=" + groupId.Value :
+                Topic + "/?name=" + name;
         }
 
         static public string GetMessagesByTopic(Identity id, Uri last, int? skip = null, int? limit = null)

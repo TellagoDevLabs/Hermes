@@ -24,8 +24,8 @@ namespace TellagoStudios.Hermes.Business.Topics
         public virtual void Execute(Topic topic)
         {
             if (string.IsNullOrWhiteSpace(topic.Name )) throw new ValidationException(Texts.NameMustBeNotNull);
-            if (existsTopicByName.Execute(topic.Name)) throw new ValidationException(Texts.TopicNameMustBeUnique, topic.Name);
-            if (!entityById.Exist<Group>(topic.GroupId)) throw new ValidationException(Texts.EntityNotFound, typeof(Group).Name, topic.GroupId);
+            if (existsTopicByName.Execute(topic.GroupId, topic.Name)) throw new ValidationException(Texts.TopicNameMustBeUnique, topic.Name);
+            if (topic.GroupId.HasValue && !entityById.Exist<Group>(topic.GroupId.Value)) throw new ValidationException(Texts.EntityNotFound, typeof(Group).Name, topic.GroupId);
 
             repository.MakePersistent(topic);
         }

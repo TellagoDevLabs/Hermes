@@ -30,6 +30,6 @@
         public const string TargetIdMustNotBeNull = "TargetId property must not be null.";
         public const string TargetKindUnknown = "The target's kind '{0}' is unknown.";
         public const string TopicIdMustNotBeNull = "TopicId property must not be null.";
-        public const string TopicNameMustBeUnique = "Already exists a topic with name '{0}'.";
+        public const string TopicNameMustBeUnique = "Already exists a topic with name '{0}' in the same group.";
     }
 }

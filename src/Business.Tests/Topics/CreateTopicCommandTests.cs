@@ -25,10 +25,11 @@ namespace Business.Tests.Topics
         [Test]
         public void WhenTopicNameIsDuplicated_ThenThrowValidateException()
         {
+            var groupId = Identity.Random();
             var name = "test";
-            var command = CreateCreateTopicCommand(Mock.Of<IExistsTopicByName>(q => q.Execute(name, null) == true));
+            var command = CreateCreateTopicCommand(Mock.Of<IExistsTopicByName>(q => q.Execute(groupId, name, null) == true));
 
-            command.Executing(gc => gc.Execute(new Topic {Name = name}))
+            command.Executing(gc => gc.Execute(new Topic { Name = name, GroupId = groupId }))
                                     .Throws<ValidationException>()
                                     .And
                                     .Exception.Message.Should().Be.EqualTo(string.Format(Texts.TopicNameMustBeUnique, name));
@@ -55,11 +56,22 @@ namespace Business.Tests.Topics
             var stubRepository = new StubRepository<Topic>();
             var command = CreateCreateTopicCommand(entityById: Mock.Of<IEntityById>(q => q.Exist<Group>(groupId)),
                                     cudTopic: stubRepository);
-            var topic = new Topic { Name = name, GroupId = groupId};
+            var topic = new Topic { Name = name, GroupId = groupId };
             command.Execute(topic);
 
             stubRepository.Entities.Should().Contain(topic);
+        }
 
+        [Test]
+        public void WhenJustGroupIsMissing_ThenInsertTheTopic()
+        {
+            var name = "Test";
+            var stubRepository = new StubRepository<Topic>();
+            var command = CreateCreateTopicCommand(cudTopic: stubRepository);
+            var topic = new Topic { Name = name };
+            command.Execute(topic);
+
+            stubRepository.Entities.Should().Contain(topic);
         }
 
         private static ICreateTopicCommand CreateCreateTopicCommand(

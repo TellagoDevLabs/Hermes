@@ -73,9 +73,11 @@ namespace TellagoStudios.Hermes.RestService
                     .SetOperationHandlerFactory(container.Resolve<HttpOperationHandlerFactory>());
             }
 
+            RouteTable.Routes.MapServiceRoute<GroupResource>(Constants.Routes.Group, config);
+            RouteTable.Routes.MapServiceRoute<GroupsResource>(Constants.Routes.Groups, config);
+            RouteTable.Routes.MapServiceRoute<TopicResource>(Constants.Routes.Topic, config);
             RouteTable.Routes.MapServiceRoute<TopicsResource>(Constants.Routes.Topics, config);
             RouteTable.Routes.MapServiceRoute<MessageResource>(Constants.Routes.Messages, config);
-            RouteTable.Routes.MapServiceRoute<GroupsResource>(Constants.Routes.Groups, config);
             RouteTable.Routes.MapServiceRoute<SubscriptionResource>(Constants.Routes.Subscriptions, config);
             RouteTable.Routes.MapServiceRoute<FeedResource>(Constants.Routes.Feed, config);
 

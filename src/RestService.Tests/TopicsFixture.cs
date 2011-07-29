@@ -19,25 +19,17 @@ namespace RestService.Tests
     public class TopicsFixture : ResourceBaseFixture
     {
         private Mock<ICreateTopicCommand> mockedCreateCommand;
-        private Mock<IUpdateTopicCommand> mockedUpdateCommand;
-        private Mock<IDeleteTopicCommand> mockedDeleteCommand;
-        private Mock<IEntityById> mockedEntityById;
         private Mock<IGenericJsonPagedQuery> mockedGenericJsonQuery;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
             // Create a mocked repository for topics.
             mockedCreateCommand = new Mock<ICreateTopicCommand>();
-            mockedUpdateCommand = new Mock<IUpdateTopicCommand>();
-            mockedDeleteCommand = new Mock<IDeleteTopicCommand>();
-            mockedEntityById = new Mock<IEntityById>();
             mockedGenericJsonQuery = new Mock<IGenericJsonPagedQuery>();
+
             builder.RegisterInstance(new TopicsResource(
-                mockedEntityById.Object,
                 mockedGenericJsonQuery.Object,
-                mockedCreateCommand.Object,
-                mockedUpdateCommand.Object,
-                mockedDeleteCommand.Object));
+                mockedCreateCommand.Object));
         }
 
         protected override RestClient.SerializationType GetSerializationType()
@@ -48,37 +40,6 @@ namespace RestService.Tests
         protected override Type GetServiceType()
         {
             return typeof(TopicsResource);
-        }
-
-        [Test]
-        public void Should_get_a_topic_by_id()
-        {
-            var group = new M.Group { Id = Identity.Random() };
-            var topic = new M.Topic()
-                            {
-                                Description = "description",
-                                GroupId = group.Id.Value ,
-                                Id = Identity.Random(),
-                                Name = "test"
-                            };
-            mockedEntityById.Setup(r => r.Get<Topic>(topic.Id.Value)).Returns(topic);
-
-            var result = client.ExecuteGet<F.Topic>("/" + topic.Id);
-
-            Assert.AreEqual(topic.Description, result.Description);
-            Assert.AreEqual(topic.Id, result.Id.ToModel());
-            Assert.AreEqual(topic.Name, result.Name);
-        }
-
-       [Test]
-       public void Validates_a_get_with_an_invalid_id()
-        {
-            var id = Identity.Random();
-            mockedEntityById.Setup(r => r.Get<Topic>(It.IsAny<Identity>())).Throws<EntityNotFoundException>();
-
-            var result = client.ExecuteGet<F.Topic>("/" + id, HttpStatusCode.NotFound);
-
-            Assert.IsNull(result);
         }
 
         [Test]
@@ -168,37 +129,6 @@ namespace RestService.Tests
             mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.Description == topicPost.Description)));
             mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.Name == topicPost.Name)));
             mockedCreateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.GroupId == topicPost.GroupId.ToModel())));
-        }
-
-        [Test]
-        public void Should_put_a_topic()
-        {
-            var topicPut = new F.TopicPut()
-            {
-                Id = F.Identity.Random(),
-                Description = "description",
-                GroupId = F.Identity.Random(),
-                Name = "test"
-            };
-
-            mockedUpdateCommand.Setup(r => r.Execute(It.IsAny<M.Topic>()));
-
-            client.ExecutePut(topicPut.Id.ToString(), topicPut);
-
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t != null)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.Description == topicPut.Description)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.Name == topicPut.Name)));
-            mockedUpdateCommand.Verify(r => r.Execute(It.Is<M.Topic>(t => t.GroupId == topicPut.GroupId.ToModel())));
-        }
-
-        [Test]
-        public void Should_delete_a_topic()
-        {
-            var topicId = Identity.Random();
-
-            client.ExecuteDelete("/" + topicId);
-
-            mockedDeleteCommand.Verify(r => r.Execute(topicId));
         }
     }
 }

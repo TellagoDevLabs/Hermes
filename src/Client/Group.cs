@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
+using TellagoStudios.Hermes.Client.Util;
 using TellagoStudios.Hermes.Facade;
 
 namespace TellagoStudios.Hermes.Client
@@ -33,7 +31,7 @@ namespace TellagoStudios.Hermes.Client
 
         public Topic CreateTopic(string name, string description = "")
         {
-            var topicPost = new TopicPost {Name = name, Description = description, GroupId = (Identity) this.Id};
+            var topicPost = new TopicPost {Name = name, Description = description, GroupId = (Identity)Id};
             var location = restClient.Post(group.GetLinkForRelation("Create Topic"), topicPost);
             var topicCreated = restClient.Get<Facade.Topic>(location.ToString());
 
@@ -53,18 +51,21 @@ namespace TellagoStudios.Hermes.Client
 
         public void SaveChanges()
         {
-            restClient.Put(group.GetLinkForRelation("Update"), new GroupPut
-                                                                   {
-                                                                       Description = Description,
-                                                                       Name = Name,
-                                                                       Id = (Identity) Id
-                                                                   });
+            restClient.Put(group.GetLinkForRelation("Update"), 
+                new GroupPut
+                {
+                    Description = Description,
+                    Name = Name,
+                    Id = (Identity) Id
+                });
         }
 
         public Topic TryCreateTopic(string name, string description = "")
         {
-            var topic = GetTopics().FirstOrDefault(t => t.Name == name);
-            return topic ?? CreateTopic(name, description);
+            var topic = restClient.Get<Facade.Topic>(Operations.GetTopic(name, group.Id));
+            return topic==null ?
+                CreateTopic(name, description) : 
+                new Topic( topic , restClient);
         }
     }
 }

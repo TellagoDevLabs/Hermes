@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net;
+﻿using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
@@ -18,30 +16,16 @@ namespace TellagoStudios.Hermes.RestService.Resources
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
     public class TopicsResource : Resource
     {
-        private readonly IEntityById entityById;
         private readonly IGenericJsonPagedQuery genericJsonPagedQuery;
         private readonly ICreateTopicCommand createGroupCommand;
-        private readonly IUpdateTopicCommand updateGroupCommand;
-        private readonly IDeleteTopicCommand deleteGroupCommand;
         
 
-        public TopicsResource( IEntityById entityById,
+        public TopicsResource( 
             IGenericJsonPagedQuery genericJsonPagedQuery,
-            ICreateTopicCommand createGroupCommand,
-            IUpdateTopicCommand updateGroupCommand,
-            IDeleteTopicCommand deleteGroupCommand)
+            ICreateTopicCommand createGroupCommand)
         {
-            this.entityById = entityById;
             this.genericJsonPagedQuery = genericJsonPagedQuery;
             this.createGroupCommand = createGroupCommand;
-            this.updateGroupCommand = updateGroupCommand;
-            this.deleteGroupCommand = deleteGroupCommand;
-        }
-
-        [WebGet(UriTemplate = "{id}")]
-        public HttpResponseMessage<Topic> Get(Identity id)
-        {
-            return ProcessGet(() => entityById.Get<M.Topic>(id.ToModel()).ToFacade());
         }
 
         [WebInvoke(Method = "POST", UriTemplate = "")]
@@ -53,23 +37,6 @@ namespace TellagoStudios.Hermes.RestService.Resources
                                    createGroupCommand.Execute(instance);
                                    return ResourceLocation.OfTopic(instance.Id.Value);
                                });
-        }
-
-        [WebInvoke(UriTemplate = "{id}", Method = "PUT")]
-        public HttpResponseMessage Update(Identity id, TopicPut topic)
-        {
-            //todo id?mmm
-            return ProcessPut(() =>
-                               {
-                                   var instance = topic.ToModel();
-                                   updateGroupCommand.Execute(instance);
-                               });
-        }
-
-        [WebInvoke(UriTemplate = "{id}", Method = "DELETE")]
-        public HttpResponseMessage Delete(Identity id)
-        {
-            return ProcessDelete(() => deleteGroupCommand.Execute(id.ToModel()));
         }
 
         [WebGet(UriTemplate = "?skip={skip}&limit={limit}&query={query}")]
@@ -85,7 +52,5 @@ namespace TellagoStudios.Hermes.RestService.Resources
                                         .ToArray()
                                );
         }
-
-
     }
 }

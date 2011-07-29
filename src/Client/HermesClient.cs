@@ -40,13 +40,14 @@ namespace TellagoStudios.Hermes.Client
 
         public T GetMessage<T>(Uri url)
         {
-            return restClient.GetFromUrl<T>(url);
+            return restClient.Get<T>(url);
         }
 
         public Stream GetMessageAsStream(Uri url)
         {
             return restClient.GetStream(url);
         }
+
         public Uri TryPostMessage<T>(string groupName, string topicName, T data)
         {
            var location = TryCreateGroup(groupName)
@@ -56,7 +57,26 @@ namespace TellagoStudios.Hermes.Client
             return new Uri(location);
         }
 
-        #region Topic Groups
+        #region Topic
+
+        public Topic CreateTopicWithoutGroup(string name, string description = "")
+        {
+            var topicPost = new TopicPost { Name = name, Description = description };
+            var location = restClient.Post(Operations.Topics, topicPost);
+            var topic = restClient.Get<Facade.Topic>(location.ToString());
+
+            return topic == null ? null : new Topic(topic, restClient);
+        }
+
+        public Topic GetTopicWithoutGroup(string name)
+        {
+            var topic = restClient.Get<Facade.Topic>(Operations.GetTopic(name));
+            return topic == null ? null : new Topic(topic, restClient);
+        }
+
+        #endregion
+
+        #region Groups
 
         public Group CreateGroup(string name, string description)
         {
@@ -67,8 +87,10 @@ namespace TellagoStudios.Hermes.Client
                 Name = name,
                 Description = description
             });
-            var createdGroup = restClient.Get<Facade.Group>(location.ToString());
 
+            if (location==null) return null;
+
+            var createdGroup = restClient.Get<Facade.Group>(location);
             return new Group(createdGroup, restClient);
         }
 
@@ -77,10 +99,16 @@ namespace TellagoStudios.Hermes.Client
             return CreateGroup(name, string.Empty);
         }
 
+        public Group GetGroupByName(string name)
+        {
+            var g = restClient.Get<Facade.Group>(Operations.GetGroup(name));
+            return g == null ? null : new Group(g, restClient);
+        }
+
         public Group GetGroup(string id)
         {
             var g = restClient.Get<Facade.Group>(Operations.GetGroup((Identity) id));
-            return new Group(g, restClient);
+            return g == null ? null : new Group(g, restClient);
         }
 
         public Group[] GetGroups()
@@ -92,15 +120,14 @@ namespace TellagoStudios.Hermes.Client
 
         public Group TryCreateGroup(string name)
         {
-            var group = GetGroups().FirstOrDefault(g => g.Name == name);
+            var group = GetGroupByName(name);
             return group ?? CreateGroup(name);
         }
 
         public Group TryCreateGroup(string name, string description)
         {
             var group = GetGroups().FirstOrDefault(g => g.Name == name);
-            if (group != null) return group;
-            return CreateGroup(name, description);
+            return group ?? CreateGroup(name);
         }
 
         #endregion
