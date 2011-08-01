@@ -167,6 +167,8 @@
     <Compile Include="Modules\CommandsModule.cs" />
     <Compile Include="Modules\QueriesModule.cs" />
     <Compile Include="Extensions\MessageExtensions.cs" />
+    <Compile Include="Resources\SubscriptionsResource.cs" />
+    <Compile Include="Resources\MessagesResource.cs" />
     <Compile Include="Resources\GroupResource.cs" />
     <Compile Include="Resources\TopicResource.cs" />
     <Compile Include="Resources\FeedResource.cs" />

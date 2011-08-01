@@ -11,7 +11,9 @@ namespace TellagoStudios.Hermes.RestService.Modules
             builder.RegisterType<GroupResource>().AsSelf().AsImplementedInterfaces();
             builder.RegisterType<GroupsResource>().AsSelf().AsImplementedInterfaces();
             builder.RegisterType<MessageResource>().AsSelf().AsImplementedInterfaces();
+            builder.RegisterType<MessagesResource>().AsSelf().AsImplementedInterfaces();
             builder.RegisterType<SubscriptionResource>().AsSelf().AsImplementedInterfaces();
+            builder.RegisterType<SubscriptionsResource>().AsSelf().AsImplementedInterfaces();
             builder.RegisterType<TopicResource>().AsSelf().AsImplementedInterfaces();
             builder.RegisterType<TopicsResource>().AsSelf().AsImplementedInterfaces();
             builder.RegisterType<FeedResource>().AsSelf().AsImplementedInterfaces();

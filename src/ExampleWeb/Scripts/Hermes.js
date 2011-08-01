@@ -13,11 +13,14 @@ function HermesClient(serviceUrl) {
 
     var restClient = new RestClient(serviceUrl);
     var operations = {
+        Group: "group",
         Groups: "groups",
+        Message: "message",
         Messages: "messages",
+        Subscription: "subscription",
         Subscriptions: "subscriptions",
         GetGroup: function (id) {
-            return this.Groups + "/" + id;
+            return this.Group + "/" + id;
         }
     };
 

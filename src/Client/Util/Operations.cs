@@ -10,7 +10,9 @@ namespace TellagoStudios.Hermes.Client.Util
         public const string Topics = "topics";
         public const string Group = "group";
         public const string Groups = "groups";
+        public const string Message = "message";
         public const string Messages = "messages";
+        public const string Subscription = "subscription";
         public const string Subscriptions = "subscriptions";
 
         static public string GetGroup(Identity id)
@@ -72,7 +74,7 @@ namespace TellagoStudios.Hermes.Client.Util
         }
 
         static private void AppendParameter<T>(this StringBuilder sb, T? instance, string name, ref bool first)
-        where T : struct
+            where T : struct
         {
             if (!instance.HasValue) return;
 

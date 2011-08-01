@@ -19,25 +19,12 @@ namespace RestService.Tests
     public class MessageFixture : ResourceBaseFixture
     {
         private Mock<IMessageByMessageKey> messageByMessageKey;
-        private Mock<ICreateMessageCommand> createMessageCommand;
-        private Mock<IMessageKeysByTopic> messageKeysByTopic;
-        private Mock<IMessageKeysByGroup> messageKeysByGroup;
-        private Mock<IMessageKeysBySubscription> messageKeysBySubscription;
 
         protected override void PopulateApplicationContext(ContainerBuilder builder)
         {
             messageByMessageKey = new Mock<IMessageByMessageKey>();
-            createMessageCommand = new Mock<ICreateMessageCommand> ();
-            messageKeysByTopic = new Mock<IMessageKeysByTopic>();
-            messageKeysByGroup = new Mock<IMessageKeysByGroup>();
-            messageKeysBySubscription = new Mock<IMessageKeysBySubscription>();
 
-            builder.RegisterInstance(new MessageResource(
-                messageByMessageKey.Object,
-                createMessageCommand.Object,
-                messageKeysByTopic.Object,
-                messageKeysByGroup.Object,
-                messageKeysBySubscription.Object));
+            builder.RegisterInstance(new MessageResource(messageByMessageKey.Object));
         }
 
         protected override RestClient.SerializationType GetSerializationType()
@@ -48,24 +35,6 @@ namespace RestService.Tests
         protected override Type GetServiceType()
         {
             return typeof(MessageResource);
-        }
-
-        [Test]
-        public void Post_of_a_valid_message()
-        {
-            var client = new HttpClient(baseUri);
-            var content = new StringContent("sample");
-
-            var topicId = Identity.Random();
-            var response = new Message {Id = Identity.Random() };
-
-            createMessageCommand
-                .Setup(s => s.Execute(It.Is<Message>(m => m != null && m.TopicId == topicId)))
-                .Callback<Message>(m => m.Id = Identity.Random()); ;
-
-            var httpResponse = client.Post(baseUri+"/topic/" + topicId, content);
-
-            var contentStr = httpResponse.Content.ReadAsString();
         }
 
         [Test]
@@ -129,41 +98,6 @@ namespace RestService.Tests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
-        }
-
-        [Test] 
-        public void Should_get_a_messagge_by_topic()
-        {
-            var key = new MessageKey {MessageId = Identity.Random(), TopicId = Identity.Random()};
-
-            messageKeysByTopic
-                .Setup(r => r.Get(key.TopicId, null, null, null))
-                .Returns(new[] {key});
-
-            var client = new HttpClient(baseUri);
-            var url = baseUri + "topic/" + key.TopicId;
-            var result = client.Get(url);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-        }
-
-        [Test]
-        public void Should_get_a_messagge_by_topic_using_last()
-        {
-            var last = Identity.Random();
-            var key = new MessageKey { MessageId = Identity.Random(), TopicId = Identity.Random() };
-
-            messageKeysByTopic
-                .Setup(r => r.Get(key.TopicId, last, null, null))
-                .Returns(new [] { key });
-
-            var client = new HttpClient(baseUri);
-            var url = baseUri + "topic/" + key.TopicId + "?last=" + last;
-            var result = client.Get(url);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
     }
 }

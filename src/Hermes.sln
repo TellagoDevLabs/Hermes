@@ -37,6 +37,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{FC9A5881-07DB-4570-AA8A-47552121185D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsClient", "JsClient\JsClient.csproj", "{330E9CC0-1D78-491A-9942-7B596B1A62D3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D79F25E-0BF5-466B-A1B3-FAFD9A211046} = {6D79F25E-0BF5-466B-A1B3-FAFD9A211046}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleWeb", "ExampleWeb\ExampleWeb.csproj", "{4E88EDCF-2760-431E-A529-E638B8FDAC82}"
 	ProjectSection(ProjectDependencies) = postProject
