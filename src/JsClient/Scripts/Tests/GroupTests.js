@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     module('Group Tests');
 
-    var serviceUrl = 'http://localhost:6156/';
+    var serviceUrl = 'http://localhost:6156';
 
     module('group.Delete');
 

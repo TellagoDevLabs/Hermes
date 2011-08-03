@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     module('Topic Tests');
 
-    var serviceUrl = 'http://localhost:6156/';
+    var serviceUrl = 'http://localhost:6156';
 
     test("Always passes", function () {
         ok(true);

@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     module('Hermes Client Tests');
 
-    var serviceUrl = 'http://localhost:6156/';
+    var serviceUrl = 'http://localhost:6156';
 
     test("Always passes", function () {
         ok(true);
@@ -32,6 +32,40 @@ $(document).ready(function () {
 
     test("Call HermesClient constructor with empty serviceUrl", function () {
         raises(function () { HermesClient(''); });
+    });
+
+    test("Service URL with trailing slash works", function () {
+        var myServiceUrl = serviceUrl;
+        if (!myServiceUrl.endsWith("/"))
+            myServiceUrl += "/";
+        var client = new HermesClient(myServiceUrl);
+        client.GetGroups()
+            .done(function () {
+                start();
+                ok(true);
+            })
+            .fail(function () {
+                start();
+                ok(false, "This may or may not be related to the service URL");
+            });
+        stop();
+    });
+
+    test("Service URL without trailing slash works", function () {
+        var myServiceUrl = serviceUrl;
+        if (myServiceUrl.endsWith("/"))
+            myServiceUrl = myServiceUrl.substring(0, myServiceUrl.length - 1);
+        var client = new HermesClient(myServiceUrl);
+        client.GetGroups()
+            .done(function () {
+                start();
+                ok(true);
+            })
+            .fail(function () {
+                start();
+                ok(false, "This may or may not be related to the service URL");
+            });
+        stop();
     });
 
     module("HermesClient.GetGroups");

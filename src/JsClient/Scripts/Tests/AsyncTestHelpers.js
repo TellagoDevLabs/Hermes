@@ -4,7 +4,7 @@
 ///<reference path="../RestClient.js" />
 ///<reference path="../Hermes.js" />
 
-var serviceUrl = 'http://localhost:6156/';
+var serviceUrl = 'http://localhost:6156';
 
 var ensureAtLeastOneGroupExists = function (action) {
     // Yes, atempt to create this group before each test.

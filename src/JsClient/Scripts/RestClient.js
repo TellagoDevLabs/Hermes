@@ -27,7 +27,12 @@
             settings['contentType'] = 'application/xml';
         }
 
-        return $.ajax(settings);
+        return $.ajax(settings)
+            .fail(function () {
+                var args = Array.prototype.slice.call(arguments);
+                console.log(settings);
+                console.log(args);
+            });
     };
 
     this.Get = function(url, headers) {

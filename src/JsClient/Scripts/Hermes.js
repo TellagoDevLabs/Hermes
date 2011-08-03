@@ -3,7 +3,11 @@
 // reference jquery.jfeed.js 
 // reference RestClient.js 
 // reference rx.js
-// reference rx.jQuery.js 
+// reference rx.jQuery.js
+
+String.prototype.endsWith = function (suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
 
 function HermesClient(serviceUrl) {
     if (!(this instanceof HermesClient))
@@ -11,6 +15,9 @@ function HermesClient(serviceUrl) {
     if (serviceUrl == null || serviceUrl == '')
         throw "serviceUrl should not be null or empty";
 
+    if (!serviceUrl.endsWith("/"))
+        serviceUrl += "/";
+    
     var restClient = new RestClient(serviceUrl);
     var operations = {
         Group: "group",
