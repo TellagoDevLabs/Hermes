@@ -72,7 +72,7 @@ namespace TellagoStudios.Hermes.RestService.Resources
 
         public static Uri OfMessageByTopic(Identity topicId, Identity messageId)
         {
-            return CreateUri( "/" + Constants.Routes.Messages + "/" + messageId + "/topic/" + topicId);
+            return CreateUri( "/" + Constants.Routes.Message + "/" + messageId + "/topic/" + topicId);
         }
 
         public static string LinkToMessage(Identity topicId, Identity messageId)
