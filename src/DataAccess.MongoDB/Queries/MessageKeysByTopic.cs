@@ -21,7 +21,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
             var cursor = col.Find(query);
 
             if (skip.HasValue) cursor.SetSkip(skip.Value);
-            if (limit.HasValue) cursor.SetSkip(limit.Value);
+            if (limit.HasValue) cursor.SetLimit(limit.Value);
 
             return cursor.Select(msg => new MessageKey
                 {

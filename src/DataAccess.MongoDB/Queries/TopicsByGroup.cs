@@ -28,7 +28,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
         {
             var cursor = topicsCollection.Find(QueryGetByGroup(groupId));
             if (skip.HasValue) cursor.SetSkip(skip.Value);
-            if (limit.HasValue) cursor.SetSkip(limit.Value);
+            if (limit.HasValue) cursor.SetLimit(limit.Value);
             return cursor;
         }
 
@@ -38,7 +38,7 @@ namespace TellagoStudios.Hermes.DataAccess.MongoDB.Queries
             cursor.SetFields("_id");
 
             if (skip.HasValue) cursor.SetSkip(skip.Value);
-            if (limit.HasValue) cursor.SetSkip(limit.Value);
+            if (limit.HasValue) cursor.SetLimit(limit.Value);
 
             return cursor.Select(doc => doc.Id.Value);
         }
